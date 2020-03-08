@@ -1,88 +1,9 @@
-<ion-content>
-  
-  <ion-toolbar color="success">
-  
-    <ion-toolbar color="success">
-      
-      <div class="ion-text-center">
-        <!--<img src="./assets/logo.png" class="logo">-->
-        <h3>Ishop.com</h3>
-      </div>
-      <ion-button fill="clear" (click)="openSearch()" slot="end" color="light">
-        <i class="material-icons">search</i>
-      </ion-button>
-
-    </ion-toolbar>
-  
-    <ion-toolbar color="success" class="submenu">
-     
-      <ion-avatar slot="start" class="perfil">
-        <img [src]=" dataUser.foto || './assets/perfil.png' ">
-      </ion-avatar>
-      <ion-label>
-        <h3>Vamos {{ dataUser.nombre || '¡Juan Fernando!'}}</h3>
-        <p>Tu Código {{ dataUser.username }}</p>
-      </ion-label>
-    
-    </ion-toolbar>
-  
-    <ion-toolbar color="success" class="submenu">
-      
-      <ion-icon slot="start" size="large" name="stats-chart-outline" class="paddingLeft"></ion-icon>
-      <ion-text color="light">
-        <h6>Ganancias Por Ventas</h6>
-      </ion-text>
-      <ion-label slot="end">
-        {{ ( dataUser.ganancias || 20000 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}
-      </ion-label>
-
-    </ion-toolbar>
-
+<ion-header>
+  <ion-toolbar>
+    <ion-title>home</ion-title>
   </ion-toolbar>
-    
-  <ion-list>
-    <ion-item>
-      <ion-label>
-        <h2>Mira Como Logra tu</h2>
-        <h3>Primera Venta</h3>
-        <ion-button color="success">
-          ¡ver Pasos!
-        </ion-button>
-      </ion-label>
-      <img slot="end" class="imgSubfoto" src="./assets/perfil.png">
-    </ion-item>
-  </ion-list>
+</ion-header>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" *ngFor="let info of data_app" >
-        <ion-toolbar no-border>
-          <ion-item>
-            <ion-text color="dark" class="margin_left_home">
-              <ion-label> {{ info.titulo }}</ion-label>
-              <ion-label color="primary" class="subheader">{{ info.subtitle }}</ion-label>
-            </ion-text>
-            <!--<ion-icon [routerLink]="['/listproduct', info.valor]" color="medium" slot="end" name="arrow-forward"></ion-icon>-->
-          </ion-item>
-        </ion-toolbar>
-        <br>
-        <ion-slides [options]="slideOpts">
-          <ion-slide *ngFor="let off of info.productos">
-            <img [src]="off.foto" class="imgPrincipal">
-          </ion-slide>
-        </ion-slides>
-
-        <ion-toolbar no-border>
-          <ion-item>
-            <ion-text color="dark" class="margin_left_home">
-              <ion-label> {{ info.descripcion }}</ion-label>
-            </ion-text>
-            <ion-icon [routerLink]="['/listproduct', info.valor]" color="medium" slot="end" name="share-social-outline"></ion-icon>
-          </ion-item>
-        </ion-toolbar>
-
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content>
 
 </ion-content>

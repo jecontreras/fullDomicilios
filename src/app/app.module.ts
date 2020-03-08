@@ -14,7 +14,6 @@ import { StoreModule } from '@ngrx/store';
 import { appReducer } from './redux/app';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { FormordenesPageModule } from './form/formordenes/formordenes.module';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -30,7 +29,6 @@ import { ComponentsModule } from 'src/app/components/components.module';
     }),
     AppRoutingModule,
     HttpClientModule,
-    FormordenesPageModule,
     ComponentsModule
   ],
   providers: [
