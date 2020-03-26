@@ -5,6 +5,9 @@ import { PERSONA } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
 import { PersonaAction } from 'src/app/redux/app.actions';
 import { Router } from '@angular/router';
+import { Indicativo } from 'src/app/JSON/indicativo';
+
+const indicativos = Indicativo;
 
 @Component({
   selector: 'app-registro',
@@ -12,6 +15,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./registro.page.scss'],
 })
 export class RegistroPage implements OnInit {
+
+  listIndicativos = indicativos;
 
   sliderOpts = {
     allowSlidePrev: false,
@@ -37,7 +42,7 @@ export class RegistroPage implements OnInit {
       if(res.status == 200){
         let accion:any = new PersonaAction(res.data, 'post');
         this._store.dispatch(accion);
-        this._router.navigate(['/tabs/home']);
+        this._router.navigate(['/cargando']);
       }else{
         this._tools.presentToast(res.data);
       }

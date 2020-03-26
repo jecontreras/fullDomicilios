@@ -1,0 +1,29 @@
+.perfil {
+    height: 62px;
+}
+
+.scrollContent{
+    max-height: 200px;
+    overflow: scroll;
+}
+.transparent{
+    background: rgba(0,0,0,0);
+}
+.content{
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+}
+.list-bottom-shadow{
+    box-shadow: 0 -6px 10px inset rgba(0,0,0,0.3);
+}
+.notes{
+    font-size: 14px;
+}
+.paddingHeader {
+    padding: 15px 5px 10px 15px;
+}
+.paddingTitle {
+    padding-left: 5px;
+}

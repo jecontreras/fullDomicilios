@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { DataService } from './services/data.service';
+import { WebsocketService } from './services/websocket.services';
 
 @Component({
   selector: 'app-root',
@@ -12,17 +13,15 @@ import { DataService } from './services/data.service';
 })
 export class AppComponent {
   public data:any={};
-  dataMenu:any = {
-    menu1: [],
-    menu2: [],
-    menu3: []
-  };
+
+  dataMenu:any = [];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private dataService: DataService,
+    //private dataService: DataService,
+    private wsService: WebsocketService,
   ) {
     this.initializeApp();
   }
@@ -31,7 +30,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      //this.dataService.getMenuOpts().subscribe(rta=>{this.dataMenu=rta.data; console.log(rta) });
+      //this.dataService.getMenuOpts().subscribe(rta=>{this.dataMenu=rta; console.log(rta) });
     });
   }
 }

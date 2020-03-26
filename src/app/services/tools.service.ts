@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastController, LoadingController } from '@ionic/angular';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ export class ToolsService {
 
   constructor(
     public toastCtrl: ToastController,
-    public loadingCrl: LoadingController
+    public loadingCrl: LoadingController,
+    private localNotifications: LocalNotifications,
   ) { }
  
   async presentToast(mensaje:string) {
@@ -24,12 +26,20 @@ export class ToolsService {
   async presentLoading(mensaje:string = "") {
     this.loading = await this.loadingCrl.create({
       message: mensaje || 'Please wait...',
-      duration: 2000
+      //duration: 2000
     });
     await this.loading.present();
   }
   async dismisPresent(){
-    if(this.loading) await this.loading.onDidDismiss();
+    if(this.loading) await this.loading.dismiss();;
+  }
+
+  async presentNotificacion(mensaje:any){
+    this.localNotifications.schedule({
+      title: mensaje.titulo,
+      text: mensaje.text,
+      foreground: true
+    });
   }
 
 }

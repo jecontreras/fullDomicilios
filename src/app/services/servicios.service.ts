@@ -18,8 +18,8 @@ export class ServiciosService {
   public interval:any;
 
   constructor(private http: HttpClient) { 
-    this.conectionSocket();
-    this.createsocket("emitir", {mensaje:"inicial"}); 
+    //this.conectionSocket();
+    //this.createsocket("emitir", {mensaje:"inicial"}); 
   }
 
   private ejecutarQuery<T>(url: string, data, METODO){

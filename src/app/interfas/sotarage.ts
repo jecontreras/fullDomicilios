@@ -1,82 +1,72 @@
 export interface STORAGES {
-    nameapp?: object;
-    articulos?: PRODUCTOS[];
-    notificaciones?: NOTIFICACIONES[];
-    carrito?: CARRITO[];
-    favorito?: FAVORITO[];
-    user?: PERSONA;
-    usuario?: object;
-    categoria?: CATEGORIA[];
     persona?: PERSONA;
-    buscador?: object;
-    menus?: MENUS[];
+    chat?: CHAT;
+    calificaciones?: CALIFICACIONES;
+    ciudad?: CIUDAD;
+    departamento?: DEPARTAMENTO;
+    notificaciones?: NOTIFICACIONES;
+    ofertando?: OFERTANDO;
     ordenes?: ORDENES;
-    regalos?: REGALOS;
+    paquetes?: PAQUETES;
+    userpaquete?: USERPAQUETE;
+    menus?: MENUS;
+    buscador?: BUSCADOR;
+    carrito?: CARRITO;
+    servicioActivo?: SERVICIOACTIVO;
 };
 
-export interface REGALOS{
+export interface SERVICIOACTIVO{
     
 }
 
-export interface ORDENES{
-    
+export interface CARRITO{
+
+}
+
+export interface BUSCADOR{
+
 }
 
 export interface MENUS{
-    
+
 }
 
-export interface SUBCATEGORIA{
-    
+export interface USERPAQUETE{
+
+}
+
+export interface PAQUETES{
+
+}
+
+export interface ORDENES{
+
+}
+
+export interface OFERTANDO{
+
+}
+
+export interface NOTIFICACIONES{
+
+}
+
+export interface DEPARTAMENTO{
+
+}
+
+export interface CIUDAD{
+
 }
 
 export interface CALIFICACIONES{
-    
+
+}
+
+export interface CHAT{
+
 }
 
 export interface PERSONA{
 
 }
-
-export interface COMPRAS{
-
-};
-export interface COMENTARIOS{
-
-};
-export interface NOTIFICACIONES{
-
-};
-export interface MENSAJESINIT{
-
-};
-export interface MENSAJES{
-
-};
-export interface PRODUCTOS{
-
-};
-export interface CARRITO{
-
-};
-export interface FAVORITO{
-
-};
-export interface SEARCH{
-
-};
-export interface EVENTOS{
-
-};
-export interface CATEGORIA{
-
-};
-export interface SUBASTA{
-
-};
-export interface NEGOCIO{
-
-};
-export interface ARTICULO_SELECT{
-
-};

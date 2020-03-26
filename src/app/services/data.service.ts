@@ -16,15 +16,8 @@ export class DataService {
   ) { }
 
   getMenuOpts() {
-    // return this.http.get<Componente[]>('/assets/data/menu.json');
-    return this._servicio.querys<Component[]>('menu/querys',{},'post');
-  }
-
-  getHeroes() {
-    return this.http.get('/assets/data/superheroes.json')
-        .pipe(
-          delay(2000)
-        );
+     return this.http.get<Componente[]>('/assets/data/menu.json');
+    //return this._servicio.querys<Component[]>('menu/querys',{},'post');
   }
 
 

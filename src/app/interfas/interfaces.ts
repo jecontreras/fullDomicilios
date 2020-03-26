@@ -4,6 +4,17 @@ export interface Componente {
   redirectTo: string;
 }
 
+export interface Lugar {
+  id: string;
+  nombre: string;
+  rol?: string;
+  userID?: string;
+  estado?: boolean;
+  lng: number;
+  lat: number;
+  color: string;
+}
+
 export interface RespuestaMDB {
     page: number;
     total_results: number;

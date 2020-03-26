@@ -3,8 +3,7 @@
     <ion-slide>
       <div class="ion-text-center">
         <img src="./assets/portada.jpg">
-        <ion-button fill="clear" color="success" (click)="ingresar()">Ingresar con tu cuenta</ion-button>
-        <ion-button color="success" (click)="registrar()">Crea tu cuenta</ion-button>
+        <ion-button color="success" [routerLink]="['/login']">Iniciar</ion-button>
         <ion-text color="success" (click)="ayuda()">
           <p>¿Como funciona?</p>
         </ion-text>

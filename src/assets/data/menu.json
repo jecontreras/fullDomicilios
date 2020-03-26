@@ -1,0 +1,43 @@
+[
+    {
+      "icon": "business-outline",
+      "name": "Ciudad",
+      "redirectTo": "/home"
+    },
+    {
+      "icon": "stopwatch-outline",
+      "name": "Mis Viajes",
+      "redirectTo": "/viajes"
+    },
+    {
+      "icon": "earth-outline",
+      "name": "Interurbano",
+      "redirectTo": "/interurbano"
+    },
+    {
+      "icon": "subway-outline",
+      "name": "Carga",
+      "redirectTo": "/carga"
+    },
+    {
+      "icon": "shield-checkmark-outline",
+      "name": "Seguridad y protección",
+      "redirectTo": "/seguridad"
+    },
+    {
+      "icon": "construct-outline",
+      "name": "Configuraciones",
+      "redirectTo": "/configuraciones"
+    },
+    {
+      "icon": "chatbox-ellipses-outline",
+      "name": "Soporte",
+      "redirectTo": "/soporte"
+    },
+    {
+      "icon": "information-circle-outline",
+      "name": "Ayuda",
+      "redirectTo": "/ayuda"
+    }
+  ]
+  

@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./pages/cargando/cargando.module').then( m => m.CargandoPageModule)
   },
   {
     path: 'portada',
@@ -21,7 +21,45 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'viajes',
+    loadChildren: () => import('./pages/viajes/viajes.module').then( m => m.ViajesPageModule)
+  },
+  {
+    path: 'interurbano',
+    loadChildren: () => import('./pages/interurbano/interurbano.module').then( m => m.InterurbanoPageModule)
+  },
+  {
+    path: 'carga',
+    loadChildren: () => import('./pages/carga/carga.module').then( m => m.CargaPageModule)
+  },
+  {
+    path: 'seguridad',
+    loadChildren: () => import('./pages/seguridad/seguridad.module').then( m => m.SeguridadPageModule)
+  },
+  {
+    path: 'configuraciones',
+    loadChildren: () => import('./pages/configuraciones/configuraciones.module').then( m => m.ConfiguracionesPageModule)
+  },
+  {
+    path: 'soporte',
+    loadChildren: () => import('./pages/soporte/soporte.module').then( m => m.SoportePageModule)
+  },
+  {
+    path: 'ayuda',
+    loadChildren: () => import('./pages/ayuda/ayuda.module').then( m => m.AyudaPageModule)
+  },
+  {
+    path: 'cargando',
+    loadChildren: () => import('./pages/cargando/cargando.module').then( m => m.CargandoPageModule)
+  },  {
+    path: 'perfil',
+    loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
   }
+
+
+
 
 ];
 

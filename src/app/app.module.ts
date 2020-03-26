@@ -14,7 +14,10 @@ import { StoreModule } from '@ngrx/store';
 import { appReducer } from './redux/app';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { ComponentsModule } from 'src/app/components/components.module';
+import { SocketIoModule } from 'ngx-socket-io';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { MenuPageModule } from './layout/menu/menu.module';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,10 +32,13 @@ import { ComponentsModule } from 'src/app/components/components.module';
     }),
     AppRoutingModule,
     HttpClientModule,
-    ComponentsModule
+    MenuPageModule,
+    SocketIoModule.forRoot( environment.socketConfig )
   ],
   providers: [
+    Geolocation,
     StatusBar,
+    LocalNotifications,
     SplashScreen, 
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

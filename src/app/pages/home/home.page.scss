@@ -1,0 +1,33 @@
+ion-buttons {
+    position: fixed;
+    top: 10px;
+    //right: 10px;
+    left: 10px;
+    padding: 5px;
+    z-index: 999;
+}
+#btnRefres {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    z-index: 999;
+}
+ion-list {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 55px;
+    padding: 5px;
+    z-index: 999;
+}
+ion-footer {
+    position: fixed;
+    bottom: 1px;
+    padding: 5px;
+    z-index: 999;
+}
+.mapa {
+    height: 100%;
+    padding: 0;
+  }

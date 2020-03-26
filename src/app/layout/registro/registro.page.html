@@ -1,38 +1,108 @@
 <ion-content>
   <ion-slides [options]="sliderOpts">
     <ion-slide>
-      <div class="ion-text-center divPrincipal">
+      <div class="divPrincipal">
         <br>
-        <img src="./assets/registro.jpg">
-        <ion-text color="success">
-          <h4>Crea tu cuenta</h4>
-        </ion-text>
-        <ion-text color="dark" class="texto1">
-          <strong>¡Obten tus primeras ventas directas!</strong>
-        </ion-text>
-        <br>
-        <br>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.username" placeholder="Nombre Usuario / Avatar" required type="text"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.nombre" placeholder="Nombre(s)" required type="text"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.apellido" placeholder="Apellido(s)" required type="text"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.cedula" placeholder="Documento" required type="text"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.celular" placeholder="Telefono Celular" required type="text"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.email" placeholder="Correo electrónicos" required type="text"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.password" placeholder="contraseñea (min 6 caracteres)" required type="password"></ion-input>
-        <ion-input class="ion-color-lavel inputemail" [(ngModel)]="data.confirpassword" placeholder="Confirmar contraseña" required type="password"></ion-input>
-        <br>
-        <ion-checkbox checked="true" class="checkbook"></ion-checkbox> <span class="footer"> He leido y acepto los <ion-text color="primary"><p>terminos de condiciones</p></ion-text></span>
-        <ion-text color="primary" class="footer">
-          <p>¿Tienes un problema con el registro? Contáctenos viá Whatsapp</p>
-        </ion-text>
-        <ion-button expand="full" color="success" (click)="iniciar()" >
-          Crea tu cuenta
-        </ion-button>
         <div class="ion-text-center divPrincipal">
-          <ion-text color="primary" class="footer">
-            <p>Ya tengo una cuenta</p>
+          <img src="./assets/registro.jpg">
+          <ion-text color="success">
+            <h4>Crea tu cuenta</h4>
           </ion-text>
         </div>
+        <br>
+        <br>
+        <ion-list lines="full" class="ion-no-margin ion-no-padding">
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Tipo de Cuenta <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-select interface="popover" [(ngModel)]="data.rol">
+              <ion-select-option value="usuario">Persona Natural</ion-select-option>
+              <ion-select-option value="conductor">Conductor</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Nombre <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.nombre" placeholder="Nombre(s)" required type="text">
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Apellido <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.apellido" placeholder="Apellido(s)" required
+              type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Cedula <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.cedula" placeholder="Documento" required type="text">
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Indicativo <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-select interface="popover" [(ngModel)]="data.indicativo">
+              <ion-select-option [value]="item.phone_code" *ngFor="let item of listIndicativos">{{ item.nombre }}
+                +{{ item.phone_code }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Celular <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.celular" placeholder="Telefono Celular" required
+              type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Correo Electronico <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.email" placeholder="Correo electrónicos" required
+              type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Contraseña <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.password" placeholder="Contraseña"
+              required type="password"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-color-lavel" position="stacked">Confirmar Contraseña <ion-text color="danger">*
+              </ion-text>
+            </ion-label>
+            <ion-input class="ion-color-lavel" [(ngModel)]="data.confirpassword" placeholder="Confirmar contraseña"
+              required type="password"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox checked="true" class="checkbook"></ion-checkbox> <span class="footer"> He leido y acepto los
+              terminos de condiciones</span>
+          </ion-item>
+          <ion-item>
+            <div class="ion-text-center">
+              <ion-button expand="full" color="success" (click)="iniciar()">
+                Crea tu cuenta
+              </ion-button>
+            </div>
+          </ion-item>
+          <ion-item>
+            <ion-text color="primary" class="footer">
+              <p>¿Tienes un problema con el registro? Contáctenos viá Whatsapp</p>
+            </ion-text>
+          </ion-item>
+          <ion-item>
+            <div class="ion-text-center">
+              <ion-text color="primary">
+                <p>Ya tengo una cuenta</p>
+              </ion-text>
+            </div>
+          </ion-item>
+        </ion-list>
       </div>
     </ion-slide>
   </ion-slides>

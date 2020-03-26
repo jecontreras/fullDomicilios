@@ -21,7 +21,7 @@ export class AuthService implements CanActivate {
       this._store
       .subscribe((store:any)=>{
         store = store.name;
-        this.dataUser = store;
+        this.dataUser = store.persona || {};
       });
     }
 
@@ -39,7 +39,7 @@ export class AuthService implements CanActivate {
 
     public isLogged() {
         if (!localStorage.getItem('user')) {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/portada']);
         } else {
           return false;
         }
@@ -64,11 +64,11 @@ export class AuthService implements CanActivate {
     }
     canActivate() {
       const identity = this.dataUser;
-      //console.log(identity)
+      console.log(identity)
       if (Object.keys(identity).length >0) {
         return true;
       } else {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/portada']);
         return false;
       }
     }

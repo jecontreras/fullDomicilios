@@ -6,6 +6,9 @@ import { PERSONA } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { Indicativo } from 'src/app/JSON/indicativo';
+
+const indicativos = Indicativo;
 
 @Component({
   selector: 'app-login',
@@ -18,26 +21,30 @@ export class LoginPage implements OnInit {
     allowSlidePrev: false,
     allowSlideNext: false
   };
+  listIndicativos = indicativos;
 
-  data:any = {};
+  data:any = {
+    // indicativo: 57
+  };
   disablePass:boolean = false;
 
   constructor(
     private _user: UserService,
     private _tools: ToolsService,
     private _store: Store<PERSONA>,
-    private _router: Router,
-    private _authSrvice: AuthService
+    private _router: Router
   ) { 
-    if (this._authSrvice.isLoggedIn()) {
-      this._router.navigate(['/tabs/home']);
-    }
+    
+    // if (this._authSrvice.isLoggedIn()) {
+    //   this._router.navigate(['/cargando']);
+    // }
   }
 
   ngOnInit() {
   }
   validarDocumento(){
-    this._user.get({where:{cedula: this.data.cedula}}).subscribe((res:any)=>{
+    if(!this.data.celular || !this.data.indicativo) return this._tools.presentToast("Error llenar formulario correcto");
+    this._user.get({where:{celular: this.data.celular, indicativo: this.data.indicativo}}).subscribe((res:any)=>{
       if(res.data[0]){this.disablePass = true;}
       else {this._tools.presentToast("Usuario no encontrado")} 
       this._tools.dismisPresent();
@@ -48,14 +55,14 @@ export class LoginPage implements OnInit {
   }
   iniciar(){
     this._tools.presentLoading();
-    if(this.data.cedula && !this.data.password)return this.validarDocumento();
+    if(this.data.celular && !this.data.password)return this.validarDocumento();
     else{
       this._user.login(this.data).subscribe((res:any)=>{
         this._tools.dismisPresent();
         if(res.success){
           let accion:any = new PersonaAction(res.data, 'post');
           this._store.dispatch(accion);
-          this._router.navigate(['/tabs/home']);
+          this._router.navigate(['/cargando']);
         }else{
           this._tools.presentToast("Error de login");
         }

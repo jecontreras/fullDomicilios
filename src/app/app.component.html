@@ -1,3 +1,6 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <app-menu></app-menu>
+  <ion-split-pane when="md" contentId="principal">
+    <ion-router-outlet id="principal"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

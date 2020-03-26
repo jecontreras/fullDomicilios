@@ -1,7 +1,8 @@
 {
   "name": "ishopt",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }

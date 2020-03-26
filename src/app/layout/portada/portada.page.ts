@@ -15,6 +15,7 @@ export class PortadaPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    //location.reload();
   }
   
   ingresar(){

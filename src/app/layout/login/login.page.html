@@ -1,29 +1,44 @@
 <ion-content>
+  <ion-toolbar>
+    <div class="ion-text-center">
+      <h4>Ingrese su número de teléfono para iniciar sesión</h4>
+    </div>
+  </ion-toolbar>
   <ion-slides [options]="sliderOpts">
     <ion-slide>
-      <div class="ion-text-center divPrincipal">
+      <div class="divPrincipal">
         <br>
-        <img src="./assets/login.jpg">
-        <ion-text color="success">
-          <h4>Iniciar sesión</h4>
-        </ion-text>
-        <ion-text color="dark" class="texto1">
-          <strong>Revisa los nuevos productos. compartelos con tus amigos y aumenta tus ganancias</strong>
-        </ion-text>
+        <div class="ion-text-center">
+          <img src="./assets/login.jpg">
+        </div>
         <br>
         <br>
-        <ion-input *ngIf="!disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.cedula" placeholder="Numero de documento" required type="text"></ion-input>
-        <ion-input *ngIf="disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.password" placeholder="Ingrese tu contraseña" required type="password"></ion-input>
+        <ion-select *ngIf="!disablePass" interface="popover" [(ngModel)]="data.indicativo" class="anchos" placeholder="indicativo">
+          <ion-select-option [value]="item.phone_code" *ngFor="let item of listIndicativos">{{ item.nombre }}
+            +{{ item.phone_code }}</ion-select-option>
+        </ion-select>
+        <ion-input *ngIf="!disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.celular"
+          placeholder="Numero de celular" required type="text"></ion-input>
+        <ion-input *ngIf="disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.password"
+          placeholder="Contraseña" required type="password"></ion-input>
         <br>
-        <ion-label class="texto2" *ngIf="!disablePass">Ingresa tu numero de documento para continuar</ion-label>
-        <ion-label class="texto2" *ngIf="disablePass">Ingresa tu contraseña para continuar</ion-label>
         <br>
-        <br>
-        <ion-button color="success" (click)="iniciar()">
-          Iniciar sesión
+        <ion-button color="success" (click)="iniciar()" expand="full">
+          <span *ngIf="!disablePass">Comprobar Sesión</span>
+          <span *ngIf="disablePass">Iniciar sesión</span>
         </ion-button>
       </div>
     </ion-slide>
   </ion-slides>
 
 </ion-content>
+
+<ion-toolbar>
+  <div class="ion-text-center">
+    <ion-button color="success" [routerLink]="['/registro']">
+      Registrarse
+    </ion-button>
+    <p>Al pulsar siguiente acepta los <a href="#" [routerLink]="['/terminos']">Términos y Condiciones y la politica de
+      privacidad</a></p>
+  </div>
+</ion-toolbar>
