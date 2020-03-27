@@ -25,7 +25,10 @@ export class UserService {
     return this._model.querys<PERSONA>('personas/register', user, 'post');
   }
   update(query:any = {}){
-    return this._model.querys<PERSONA>('personas'+query.id ,query, 'put');
+    return this._model.querys<PERSONA>('personas/'+query.id ,query, 'put');
+  }
+  updateRol(query:any = {}){
+    return this._model.querys<PERSONA>('personas/cambioRol' ,query, 'post');
   }
 
 }

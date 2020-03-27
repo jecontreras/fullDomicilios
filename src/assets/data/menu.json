@@ -2,21 +2,25 @@
     {
       "icon": "business-outline",
       "name": "Ciudad",
+      "opt": true,
       "redirectTo": "/home"
     },
     {
       "icon": "stopwatch-outline",
       "name": "Mis Viajes",
+      "opt": true,
       "redirectTo": "/viajes"
     },
     {
       "icon": "earth-outline",
       "name": "Interurbano",
+      "opt": true,
       "redirectTo": "/interurbano"
     },
     {
       "icon": "subway-outline",
       "name": "Carga",
+      "opt": true,
       "redirectTo": "/carga"
     },
     {

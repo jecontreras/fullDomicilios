@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-title>interurbano</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
+    <ion-segment-button mode="md" [value]="item" *ngFor="let item of listPage">
+      <ion-label text-capitalize> {{ item }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-list *ngIf="disableView == 'ENCONTRAR UN VIAJE'">
+    <ion-item>
+      <div class="ion-text-center">
+        <ion-text color="success">
+          <h3>INSTRUCCION DE USO</h3>
+        </ion-text>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Origen <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.origen" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Destino <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Cuando <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.cuando" required type="text"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="disableView == 'MIS VIAJES'">
+    <ion-item *ngFor="let item of listViajes">
+      <ion-avatar slot="start">
+        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
+      </ion-avatar>
+      <ion-label>
+        <h2>Destino {{ item.titulo }}</h2>
+        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <p>{{ item.descripcion }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer *ngIf="disableView == 'ENCONTRAR UN VIAJE'">
+  <ion-toolbar>
+    <ion-button color="success" expand="full" (click)="submit()" class="ion-padding ion-text-center">Encontrar</ion-button>
+  </ion-toolbar>
+</ion-footer>

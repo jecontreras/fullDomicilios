@@ -40,4 +40,14 @@
 
     </ion-list>
   </ion-content>
+  <ion-toolbar>
+    <ion-toolbar>
+      <ion-button [disabled]="disableBtn" *ngIf="rolUser == 'usuario'" color="success" expand="full" (click)="cambioRol('conductor')" class="ion-padding ion-text-center">
+        <span>MODO CONDUCTOR</span>
+      </ion-button>
+      <ion-button [disabled]="disableBtn" *ngIf="rolUser == 'conductor'" color="success" expand="full" (click)="cambioRol('usuario')" class="ion-padding ion-text-center">
+        <span>MODO PASAJERO</span>
+      </ion-button>
+    </ion-toolbar>
+  </ion-toolbar>
 </ion-menu>

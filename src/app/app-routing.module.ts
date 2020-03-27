@@ -19,22 +19,6 @@ const routes: Routes = [
     loadChildren: () => import('./layout/registro/registro.module').then( m => m.RegistroPageModule)
   },
   {
-    path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },
-  {
-    path: 'viajes',
-    loadChildren: () => import('./pages/viajes/viajes.module').then( m => m.ViajesPageModule)
-  },
-  {
-    path: 'interurbano',
-    loadChildren: () => import('./pages/interurbano/interurbano.module').then( m => m.InterurbanoPageModule)
-  },
-  {
-    path: 'carga',
-    loadChildren: () => import('./pages/carga/carga.module').then( m => m.CargaPageModule)
-  },
-  {
     path: 'seguridad',
     loadChildren: () => import('./pages/seguridad/seguridad.module').then( m => m.SeguridadPageModule)
   },
@@ -53,10 +37,19 @@ const routes: Routes = [
   {
     path: 'cargando',
     loadChildren: () => import('./pages/cargando/cargando.module').then( m => m.CargandoPageModule)
-  },  {
+  },
+  {
     path: 'perfil',
     loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
-  }
+  },
+  {
+    path: 'usuarios',
+    loadChildren: () => import('./pages/usuarios/usuarios.module').then( m => m.UsuariosModule)
+  },
+  {
+    path: 'conductor',
+    loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
+  },
 
 
 

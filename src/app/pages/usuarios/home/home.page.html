@@ -54,18 +54,20 @@
     </ion-fab-list>
   </ion-fab>
 </ion-content>
+
 <ion-footer *ngIf="disabled">
-  <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text">
-  </ion-input>
-  <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
-  </ion-input>
-  <ion-input class="ion-color-lavel" [(ngModel)]="data.descripcion" placeholder="Descripcion" required type="text">
-  </ion-input>
-  <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden'" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenar</ion-button>
-  <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'conductor'" color="primary" fill="clear" expand="full" (click)="submitOfreciendo()" class="ion-padding ion-text-center">Responder</ion-button>
-  <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente'" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
-  <ion-button color="danger" fill="clear" expand="full" (click)="solicitar()" class="ion-padding ion-text-center">Cerrar</ion-button>
-  <br>
+  <ion-toolbar class="ion-padding">
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text">
+    </ion-input>
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
+    </ion-input>
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.descripcion" placeholder="Descripcion" required type="text">
+    </ion-input>
+    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden'" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenar</ion-button>
+    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'conductor'" color="primary" fill="clear" expand="full" (click)="submitOfreciendo()" class="ion-padding ion-text-center">Responder</ion-button>
+    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente'" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
+    <ion-button color="danger" fill="clear" expand="full" (click)="solicitar()" class="ion-padding ion-text-center">Cerrar</ion-button>
+  </ion-toolbar>
 </ion-footer>
 
 <ion-footer *ngIf="disabledInfo">

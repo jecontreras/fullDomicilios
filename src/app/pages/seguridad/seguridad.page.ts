@@ -7,6 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SeguridadPage implements OnInit {
 
+  sliderOpts = {
+    allowSlidePrev: false,
+    allowSlideNext: false
+  };
+  
   constructor() { }
 
   ngOnInit() {

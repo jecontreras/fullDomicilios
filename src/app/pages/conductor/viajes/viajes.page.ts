@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { ToolsService } from 'src/app/services/tools.service';
 import * as _ from 'lodash';
+import { PERSONA } from 'src/app/interfas/sotarage';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-viajes',
@@ -21,13 +23,27 @@ export class ViajesPage implements OnInit {
   public ev:any = {};
   public disable_list:boolean = true;
   public evScroll:any = {};
+  public dataUser:any = {};
+  public rolUser:string;
 
   constructor(
     private _orden: OrdenesService,
-    private _tools: ToolsService
-  ) { }
+    private _tools: ToolsService,
+    private _store: Store<PERSONA>,
+  ) { 
+
+    this._store.subscribe((store:any)=>{
+        store = store.name;
+        this.dataUser = store.persona;
+        if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
+    });
+
+  }
 
   ngOnInit() {
+      if(this.rolUser == 'usuario') this.query.where.usuario = this.dataUser.id;
+      if(this.rolUser == 'conductor') this.query.where.coductor = this.dataUser.id;
+
       this.getList();
   }
   

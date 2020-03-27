@@ -60,7 +60,9 @@ export class HomePage implements OnInit {
       .subscribe((store:any)=>{
         store = store.name;
         this.dataUser = store.persona || {};
-        this.rolUser = this.dataUser.rol.rol;
+        if(this.dataUser['rol']){
+          this.rolUser = this.dataUser.rol.rol;
+        }
         ordenActiva = store.servicioActivo || {};
       });
       if(Object.keys(ordenActiva).length >0) this.procesoOrdenConfirmada(ordenActiva[0]);
@@ -335,6 +337,7 @@ export class HomePage implements OnInit {
       usuario: this.dataUser.id,
       titulo: this.data.destino,
       origenLat: this.lat,
+      idClienteSockets: this.id,
       origenLon: this.lon,
       descripcion: this.data.descripcion,
       ofreceCliente: this.data.ofreces

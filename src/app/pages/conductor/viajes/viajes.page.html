@@ -22,10 +22,17 @@
       <ion-avatar slot="start">
         <img [src]="item['conductor']?.foto || './assets/perfil.png'">
       </ion-avatar>
-      <ion-label>
+      <ion-label *ngIf="rolUser == 'usuario'">
         <h2>Destino {{ item.titulo }}</h2>
-        <h3>{{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <p>Conductor: {{ item.coductor.nombre }}</p>
         <p>{{ item.descripcion }}</p>
+      </ion-label>
+      <ion-label *ngIf="rolUser == 'conductor'">
+        <h2>Destino {{ item.titulo }}</h2>
+        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <p>Cliente: {{ item.usuario.nombre }}</p>
+        <p>Descripcion: {{ item.descripcion }}</p>
       </ion-label>
     </ion-item>
   </ion-list>

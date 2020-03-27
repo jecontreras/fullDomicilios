@@ -64,7 +64,7 @@ export class AuthService implements CanActivate {
     }
     canActivate() {
       const identity = this.dataUser;
-      console.log(identity)
+      // console.log(identity)
       if (Object.keys(identity).length >0) {
         return true;
       } else {

@@ -1,6 +1,7 @@
 export interface Componente {
   icon: string;
   name: string;
+  opt: boolean,
   redirectTo: string;
 }
 

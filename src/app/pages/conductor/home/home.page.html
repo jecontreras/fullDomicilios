@@ -1,0 +1,216 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-label slot="end">Estado</ion-label>
+    <ion-toggle slot="end" checked (click)="cambioEstado()"></ion-toggle>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen *ngIf="disableView == 'SOLICITUDES'"> 
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+
+    <ion-item *ngFor="let item of listRow">
+      <ion-avatar slot="start">
+        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
+      </ion-avatar>
+      <ion-label (click)="openMapa( item )">
+        <h2>Destino {{ item.titulo }}</h2>
+        <h3>Costo $ {{ ( item['ofreceCliente'] ||0 ).toLocaleString(1) }} COP</h3>
+        <p>Cliente: {{ item.usuario.nombre }}</p>
+        <p>Descripcion: {{ item.descripcion }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
+
+<ion-content fullscreen *ngIf="disableView == 'INGRESOS'"> 
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+
+    <ion-item *ngFor="let item of listRow2">
+      <ion-avatar slot="start">
+        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
+      </ion-avatar>
+      <ion-label>
+        <h2>Destino {{ item.titulo }}</h2>
+        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <p>Conductor: {{ item.coductor.nombre }}</p>
+        <p>{{ item.descripcion }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
+
+<ion-content fullscreen *ngIf="disableView == 'CLASIFICACIÓN'"> 
+
+  <ion-grid>
+    <ion-row>
+
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <h3>Clasificación <ion-icon color="success" name="help-circle-outline"></ion-icon></h3>
+          {{ dataUser.calificacionName || 'Normal'}}
+        </div>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-label>
+          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <span>Reseña: {{ dataUser.nameResena || 'regular'}}</span>
+        </ion-label>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-label>
+          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <span>Reseña: {{ dataUser.nameExperiencia || 'novato'}}</span>
+        </ion-label>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-label>
+          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <span>Reputación: {{ dataUser.nameReputacion || 'excelente'}}</span>
+        </ion-label>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-label>
+          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <span>Frecuencia de operación: {{ dataUser.nameOperacion || 'muy baja'}}</span>
+        </ion-label>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4">
+        {{ dataUser.countViajes || 0 }}
+        <ion-text color="dark">
+          <span>Viajes</span>
+        </ion-text>
+      </ion-col>
+      <ion-col size="4">
+        {{ dataUser.countResena || 0 }}
+        <ion-text color="dark">
+          <span>Reseñas</span>
+        </ion-text>
+      </ion-col>
+      <ion-col size="4">
+        {{ dataUser.countsaldo || 0 }}
+        <ion-text color="dark">
+          <span>saldo</span>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
+
+      <ion-col size="12">
+        <ion-list>
+          <ion-item *ngFor="let item of lisComentario">
+            <ion-avatar slot="start">
+              <img [src]="item.idPersona.foto || './assets/perfil.png'">
+            </ion-avatar>
+            <ion-label>
+              <h2>{{ item.idPersona.nombre }}</h2>
+              <ion-text color="dark">
+                <p>{{ item.idComentario.detalle }}</p>
+              </ion-text>
+              <p class="clasificacion">
+                <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="item.calificacion"><!--
+                --><label class="label" [ngClass]="{'checkcolor':item.calificacion >=5}" for="radio1" >★</label><!--
+                --><input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.califica"><!--
+                --><label class="label" [ngClass]="{'checkcolor':item.calificacion >=4}" for="radio2">★</label><!--
+                --><input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="item.calificacion"><!--
+                --><label class="label" [ngClass]="{'checkcolor':item.calificacion >=3}" for="radio3">★</label><!--
+                --><input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="item.calificacion"><!--
+                --><label class="label" [ngClass]="{'checkcolor':item.calificacion >=2}" for="radio4">★</label><!--
+                --><input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="item.calificacion"><!--
+                --><label class="label"  [ngClass]="{'checkcolor':item.calificacion >=1}"for="radio5">★</label>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <!-- <ion-col size="12">
+        <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData1( $event )"
+        >
+          <ion-infinite-scroll-content loadingSpinner="crescent"
+                                        loadingtext="Cargando data..">
+
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ion-col> -->
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+<ion-content fullscreen *ngIf="disableView == 'PAGO'" class="ion-padding">  
+
+  <ion-list>
+    <ion-item>
+      <ion-text color="primary">
+        Se agregó un pago ${{ dataUser.porPago || '9.5%' }}.
+      </ion-text>
+    </ion-item>
+    <p>Cuenta personal: {{ dataUser.id }}</p>
+    <p>Saldo: COP ${{ dataUser.valorTotal || 0 }}</p>
+    <p>Reembolso: COP ${{ dataUser.rembolso || 0 }}</p>
+    <p>Estado Ciudad: ${{ dataUser.infoOrigen || 'Ordinario' }}</p>
+    <ion-button expand="full" color="success"> REGISTRO EN LÍNEA </ion-button>
+    <ion-button expand="full" color="warning"> ABONE A SU CUENTA </ion-button>
+    <ion-button expand="full" color="warning"> HISTORIAL DE MOVIMIENTOS </ion-button>
+  </ion-list>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
+      <ion-segment-button mode="md" [value]="item" *ngFor="let item of listPage">
+        <ion-label text-capitalize> {{ item }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-footer>

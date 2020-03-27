@@ -26,7 +26,7 @@ export class ToolsService {
   async presentLoading(mensaje:string = "") {
     this.loading = await this.loadingCrl.create({
       message: mensaje || 'Please wait...',
-      //duration: 2000
+      duration: 2000
     });
     await this.loading.present();
   }
