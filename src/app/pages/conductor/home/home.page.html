@@ -28,6 +28,9 @@
         <p>Cliente: {{ item.usuario.nombre }}</p>
         <p>Descripcion: {{ item.descripcion }}</p>
       </ion-label>
+      <ion-button color="success" (click)="openMapa( item )" *ngIf="item.check" slot="end">
+        Cliente Acepto
+      </ion-button>
     </ion-item>
   </ion-list>
   

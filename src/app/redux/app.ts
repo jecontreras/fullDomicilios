@@ -160,8 +160,12 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
         case 'post': {
           // console.log(action.payload);
           if(!state.servicioActivo) state.servicioActivo = [];
-          data = proceso_data(state.servicioActivo,action.payload, 'post');
-          state.servicioActivo = data;
+          console.log(state.servicioActivo);
+          let data = _.find( state.servicioActivo, (row:any) => row.id == action.payload['id'] );
+          if(!data){
+            data = proceso_data(state.servicioActivo,action.payload, 'post');
+            state.servicioActivo = data;
+          }
           return local_Storage(state);
         }
         break;

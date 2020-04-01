@@ -65,7 +65,7 @@ export class HomePage implements OnInit {
         store = store.name;
         this.dataUser = store.persona;
         if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
-        this.ordenActiva = store.servicioActivo[0] || {};
+        if(store.servicioActivo) this.ordenActiva = store.servicioActivo[0] || {};
     });
   }
 
@@ -135,6 +135,21 @@ export class HomePage implements OnInit {
       if( this.rolUser === 'usuario' ) return false;
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
+    });
+    this.wsServices.listen('orden-confirmada')
+    .subscribe((marcador: any)=> {
+      //console.log(this.listRow, marcador);
+      if(marcador.coductor.id == this.dataUser.id){
+        let item = this.listRow.find( (row:any)=> row.id == marcador.id );
+        item.check = true;
+      }else{
+        if(marcador.id) this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
+      }
+    });
+    this.wsServices.listen('orden-finalizada')
+    .subscribe((marcador: any)=> {
+      //console.log(marcador);
+      this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
     });
   }
 

@@ -12,6 +12,7 @@ import { ToolsService } from 'src/app/services/tools.service';
 import { OfertandoService } from 'src/app/service-component/ofertando.service';
 import * as moment from 'moment';
 import { ServicioActivoAction } from 'src/app/redux/app.actions';
+import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -44,6 +45,9 @@ export class HomePage implements OnInit {
   disabledInfo:boolean = false;
   infoCliente:any = {};
   disableBtnInfo:boolean = false;
+  
+  addresses: any[] = [];
+  selectedAddress = null;
 
   constructor(
     private http: HttpClient,
@@ -52,7 +56,8 @@ export class HomePage implements OnInit {
     private _store: Store<PERSONA>,
     private _ordenes: OrdenesService,
     private _tools: ToolsService,
-    private _Ofertando: OfertandoService
+    private _Ofertando: OfertandoService,
+    private mapboxService: MapboxService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     let ordenActiva:any= {};
@@ -238,6 +243,27 @@ export class HomePage implements OnInit {
    
   }
 
+  getSearchDestinoMapbox( event: any ){
+    const searchTerm = this.data.destino;
+    if (searchTerm && searchTerm.length > 0) {
+    this.mapboxService
+      .search_word(searchTerm)
+      .subscribe((features: Feature[]) => {
+        this.addresses = features;
+        // this.addresses = features.map(feat => feat.place_name);
+      });
+    } else {
+      this.addresses = [];
+    }
+
+  }
+
+  onSelect(address: any) {
+    console.log(address);
+    this.data.destino = address.place_name;
+    this.selectedAddress = address;
+    this.addresses = [];
+  }
 
   audioNotificando(obj:any, mensaje:any){
     let sonido = new Audio();
@@ -328,6 +354,8 @@ export class HomePage implements OnInit {
   }
 
   solicitar(){
+    this.disabledOpt = "orden";
+    this.disabledConfirm = false;
     this.disabled = !this.disabled;
   }
 
@@ -340,12 +368,14 @@ export class HomePage implements OnInit {
       idClienteSockets: this.id,
       origenLon: this.lon,
       descripcion: this.data.descripcion,
-      ofreceCliente: this.data.ofreces
+      ofreceCliente: this.data.ofreces,
+      destinolat: this.selectedAddress.center[1],
+      destinoLon: this.selectedAddress.center[0]
     };
     if( !data.titulo ) return this._tools.presentToast("Error Destino no detallado");
     if( !data.ofreceCliente ) return this._tools.presentToast("Error Precio no establecido");
     this._ordenes.saved(data).subscribe((res:any)=>{
-      console.log(res);
+      // console.log(res);
       this._tools.presentToast('Solicitando servicio');
       this.wsServices.emit( 'orden-nuevo', res);
       this.data = {};
@@ -408,11 +438,11 @@ export class HomePage implements OnInit {
       idOfertando: this.data.id,
       coductor: this.data.coductorId,
       ofreceConductor: this.data.ofreces,
-      destinolat: this.lat,
-      destinoLon: this.lon,
+      // destinolat: this.lat,
+      // destinoLon: this.lon,
       estado: 3
     }).subscribe((res:any)=>{
-      //console.log(res);
+      // console.log(res);
       res.idClienteSockets= this.id;
       this.wsServices.emit( 'orden-confirmada', res);
       this.listOfertas = [];

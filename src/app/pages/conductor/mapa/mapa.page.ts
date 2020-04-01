@@ -13,6 +13,7 @@ import { OfertandoService } from 'src/app/service-component/ofertando.service';
 import * as moment from 'moment';
 import { ServicioActivoAction } from 'src/app/redux/app.actions';
 import { NavParams, ModalController } from '@ionic/angular';
+import { MapboxService, sear_ruta } from 'src/app/service-component/mapbox.service';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -47,6 +48,7 @@ export class MapaPage implements OnInit {
   disableBtnInfo:boolean = false;
   paramsData:any = {};
   ordenActiva:any = {};
+  canvas:any;
 
   constructor(
     private http: HttpClient,
@@ -58,6 +60,7 @@ export class MapaPage implements OnInit {
     private _Ofertando: OfertandoService,
     private navparams: NavParams,
     private modalCtrl: ModalController,
+    private _mapbox: MapboxService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store
@@ -80,6 +83,7 @@ export class MapaPage implements OnInit {
     this.id = this.wsServices.idSocket;
     this.paramsData = this.navparams.get('obj');
     console.log(this.paramsData);
+    if( Object.keys(this.paramsData).length > 0 ) this.getLatLong();
     this.getGeolocation();
     this.escucharSockets();
     if(this.rolUser === 'conductor'){
@@ -87,6 +91,7 @@ export class MapaPage implements OnInit {
       this.getOrdenesPactadasUser();
     }
   }
+
   exit(){
     this.modalCtrl.dismiss();
   }
@@ -95,6 +100,132 @@ export class MapaPage implements OnInit {
     this.markersMapbox = {};
     this.lugares = {};
     this.InitApp();
+  }
+
+  getLatLong(){
+    this._mapbox.search_ruta(this.paramsData).subscribe((res:any)=>{
+      console.log(res);
+      const interval = setInterval(row=>{
+        if(this.mapa){
+          this.armaRuta(res);
+          clearInterval(interval);
+        }
+      }, 1000);
+    });
+  }
+
+  creandorRuta(res:any){
+    let data = res.routes[0];
+    let route = data.geometry.coordinates;
+    let geojson:any = {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: route
+      }
+    };
+    if (this.mapa.getSource('route')) {
+      this.mapa.getSource('route')['setData'](geojson);
+    }else{
+      this.mapa.addLayer({
+        id: 'route',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: geojson
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#3887be',
+          'line-width': 5,
+          'line-opacity': 0.75
+        }
+      });
+    }
+    console.log( this.mapa.getSource('route'));
+  }
+  armaRuta(res:any){
+    if(this.mapa) this.validandoMapa(res);
+    else{
+      this.mapa.on('load', ()=>{
+        console.log("cargado mapa");
+        this.validandoMapa(res);
+      });
+    }
+  }
+  validandoMapa(res){
+    this.creandorRuta(res);
+      let start = [ this.lon, this.lat ];
+      if (this.mapa.getLayer('point')) {
+        //this.mapa.getSource('point')['setData'](start);
+      }else{
+        this.mapa.addLayer({
+          id: 'point',
+          type: 'circle',
+          source: {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: [{
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                  type: 'Point',
+                  coordinates: start
+                }
+              }
+              ]
+            }
+          },
+          paint: {
+            'circle-radius': 10,
+            'circle-color': '#3887be'
+          }
+        });   
+      }
+      let coords = [ this.paramsData.destinoLon, this.paramsData.destinolat ];
+      var end = {
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: coords
+          }
+        }
+        ]
+      };
+      if (this.mapa.getLayer('end')) {
+        this.mapa.getSource('end')['setData'](end);
+      } else {
+        this.mapa.addLayer({
+          id: 'end',
+          type: 'circle',
+          source: {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: [{
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                  type: 'Point',
+                  coordinates: coords
+                }
+              }]
+            }
+          },
+          paint: {
+            'circle-radius': 10,
+            'circle-color': '#f30'
+          }
+        });
+      }
   }
 
   llenandoData(params:any){
@@ -197,7 +328,7 @@ export class MapaPage implements OnInit {
 
     this.wsServices.listen('orden-confirmada')
     .subscribe((marcador: any)=> {
-      console.log(marcador);
+      //console.log(marcador);
       if( this.rolUser === 'usuario' ) return false;
       this.pushStoreServicio(marcador);
       this.procesoOrdenConfirmada(marcador);
@@ -223,15 +354,30 @@ export class MapaPage implements OnInit {
   }
 
   procesoOrdenConfirmada(marcador:any){
-    //console.log(marcador.coductor);
+    //console.log(marcador);
     if( marcador.coductor.id !== this.dataUser.id ) return this._tools.presentToast("Cliente no acepto");
     this._tools.presentToast("Cliente acepto");
+    if( !marcador.origenConductorlat ) this.actualizarOrdenAceptada( marcador );
     this.listOfertas = this.listOfertas.filter((row:any)=> row.id != marcador.id);
     this.disabledInfo = true;
     this.infoCliente = marcador;
     this.removePactado(marcador);
     this.llenandoData({ id: marcador.idClienteSockets });
     this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Cliente acepto el servicio", text: `Destino ${ marcador.titulo } Costo $ ${ ( marcador['idOfertando'] || 0 ).toLocaleString(1) } COP` });
+    this.paramsData = marcador;
+    this.getLatLong();
+  }
+
+  actualizarOrdenAceptada( marcador:any ){
+    this._ordenes.editar({
+      id: marcador.id,
+      origenConductorlat: this.lat,
+      origenConductorlon: this.lon
+    }).subscribe((res:any)=> {
+      //console.log("****", res);
+      let accion = new ServicioActivoAction(res, 'put');
+      this._store.dispatch(accion);
+    });
   }
 
   pushStoreServicio(info:any){
@@ -280,6 +426,8 @@ export class MapaPage implements OnInit {
       center: [ this.lon, this.lat],
       zoom: 16.6
     });
+    this.canvas = this.mapa.getCanvasContainer();
+    this.mapa.addControl(new Mapboxgl.NavigationControl());
   }
 
   agregarMarcador( marcador: Lugar) {
@@ -400,7 +548,7 @@ export class MapaPage implements OnInit {
     this._Ofertando.saved(querys).subscribe((res:any)=>{
       //console.log(res);
       this.listOfertas = this.listOfertas.filter( (row:any)=> row.id !== this.data.id );
-      console.log(this.listOfertas, this.data)
+      //console.log(this.listOfertas, this.data)
       this.disableBtn = false;
       this.disabled = false;
       res.idConductorSockets = this.id;
@@ -431,8 +579,8 @@ export class MapaPage implements OnInit {
       idOfertando: this.data.id,
       coductor: this.data.coductorId,
       ofreceConductor: this.data.ofreces,
-      destinolat: this.lat,
-      destinoLon: this.lon,
+      // destinolat: this.lat,
+      // destinoLon: this.lon,
       estado: 3
     }).subscribe((res:any)=>{
       //console.log(res);
@@ -462,7 +610,7 @@ export class MapaPage implements OnInit {
       estado: 2
     };
     this._ordenes.editar(data).subscribe((res:any)=>{
-      //console.log(res);
+      console.log(res);
       this.infoCliente = {};
       this.disabledInfo = false;
       this.disableBtnInfo = false;
