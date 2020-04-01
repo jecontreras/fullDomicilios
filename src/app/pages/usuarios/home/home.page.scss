@@ -14,9 +14,13 @@ ion-buttons {
     z-index: 999;
 }
 .toolbarFooter {
-    height: 19pc;
+    height: 16pc;
 }
-ion-list {
+.toolbarFooterOpen {
+    height: 24pc;
+}
+
+.ion-listNotificacion {
     position: fixed;
     top: 10px;
     right: 10px;

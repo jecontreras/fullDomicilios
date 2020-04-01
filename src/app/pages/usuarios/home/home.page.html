@@ -12,7 +12,7 @@
     </ion-menu-button>
   </ion-buttons>
 
-  <ion-list detail *ngIf="listOfertas.length > 0">
+  <ion-list detail class="ion-listNotificacion" *ngIf="listOfertas.length > 0">
     <ion-list-header>
       Notificaciones
     </ion-list-header>
@@ -56,18 +56,16 @@
 </ion-content>
 
 <ion-footer *ngIf="disabled">
-  <ion-toolbar class="ion-padding toolbarFooter">
+  <ion-toolbar class="ion-padding toolbarFooter" [ngClass]="{'toolbarFooterOpen': addresses.length > 0}">
     <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text" (keyup)="getSearchDestinoMapbox()">
     </ion-input>
     <!-- <ion-searchbar debounce=500 (ionChange)="getSearchDestinoMapbox($event)" [value]="selectedAddress"></ion-searchbar> -->
-    <div style="position: absolute; width: 100%; z-index: 999;">
-      <ion-list lines="none" *ngIf="addresses.length > 0" class="height: 120px; overflow: scroll; overflow-x: hidden">
-        <ion-item button *ngFor="let address of addresses" (click)="onSelect(address)">
-          <ion-icon name="pin"></ion-icon>
-          {{ address.place_name }}
-        </ion-item>
-      </ion-list>
-    </div>
+    <ion-list lines="none" *ngIf="addresses.length > 0">
+      <ion-item button *ngFor="let address of addresses" (click)="onSelect(address)">
+        <ion-icon name="pin"></ion-icon>
+        {{ address.place_name }}
+      </ion-item>
+    </ion-list>
     <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
     </ion-input>
     <ion-input class="ion-color-lavel" [(ngModel)]="data.descripcion" placeholder="Descripcion" required type="text">
