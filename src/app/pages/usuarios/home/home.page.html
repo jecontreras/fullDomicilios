@@ -57,7 +57,7 @@
 
 <ion-footer *ngIf="disabled">
   <ion-toolbar class="ion-padding toolbarFooter" [ngClass]="{'toolbarFooterOpen': addresses.length > 0}">
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text" (keyup)="getSearchDestinoMapbox()">
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text" (keyup)="getSearchDestinoMapbox($event)">
     </ion-input>
     <!-- <ion-searchbar debounce=500 (ionChange)="getSearchDestinoMapbox($event)" [value]="selectedAddress"></ion-searchbar> -->
     <ion-list lines="none" *ngIf="addresses.length > 0">

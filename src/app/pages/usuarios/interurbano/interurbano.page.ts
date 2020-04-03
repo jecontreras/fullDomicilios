@@ -28,4 +28,8 @@ export class InterurbanoPage implements OnInit {
     this.disableView = ev.detail.value;
   }
 
+  submitViaje(){
+    
+  }
+
 }

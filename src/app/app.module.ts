@@ -18,6 +18,7 @@ import { SocketIoModule } from 'ngx-socket-io';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { MenuPageModule } from './layout/menu/menu.module';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +34,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
     AppRoutingModule,
     HttpClientModule,
     MenuPageModule,
-    SocketIoModule.forRoot( environment.socketConfig )
+    SocketIoModule.forRoot( environment.socketConfig ),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     Geolocation,
