@@ -5,8 +5,10 @@
         <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
       </ion-menu-button>
     </ion-buttons>
+    <ion-label slot="end">Carga</ion-label>
+    <ion-toggle slot="end" checked [(ngModel)]="cargaBolena" (click)="habilitarCarga()"></ion-toggle>
     <ion-label slot="end">Estado</ion-label>
-    <ion-toggle slot="end" checked (click)="cambioEstado()"></ion-toggle>
+    <ion-toggle slot="end" checked [(ngModel)]="estado" (click)="cambioEstado()"></ion-toggle>
   </ion-toolbar>
 </ion-header>
 
@@ -23,7 +25,10 @@
         <img [src]="item['conductor']?.foto || './assets/perfil.png'">
       </ion-avatar>
       <ion-label (click)="openMapa( item )">
-        <h2>Destino {{ item.titulo }}</h2>
+        <ion-text color="dark">
+          <h2>Destino {{ item.titulo }}</h2>
+        </ion-text>
+        <h3>Tipo de servicio: {{ item.tipoOrden == 0 ? 'particular' : 'Carga' }}</h3>
         <h3>Costo $ {{ ( item['ofreceCliente'] ||0 ).toLocaleString(1) }} COP</h3>
         <p>Cliente: {{ item.usuario.nombre }}</p>
         <p>Descripcion: {{ item.descripcion }}</p>

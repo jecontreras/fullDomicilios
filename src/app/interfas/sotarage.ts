@@ -13,9 +13,18 @@ export interface STORAGES {
     buscador?: BUSCADOR;
     carrito?: CARRITO;
     servicioActivo?: SERVICIOACTIVO;
+    ordenactivo?: ORDENACTIVO;
 };
 
-export interface SERVICIOACTIVO{
+export interface ORDENPROGRAMADOS {
+
+}
+
+export interface ORDENACTIVO {
+
+}
+
+export interface SERVICIOACTIVO {
     
 }
 

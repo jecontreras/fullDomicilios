@@ -12,12 +12,6 @@
       "redirectTo": "/viajes"
     },
     {
-      "icon": "earth-outline",
-      "name": "Interurbano",
-      "opt": true,
-      "redirectTo": "/interurbano"
-    },
-    {
       "icon": "subway-outline",
       "name": "Carga",
       "opt": true,

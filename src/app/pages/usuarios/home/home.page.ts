@@ -11,7 +11,7 @@ import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { ToolsService } from 'src/app/services/tools.service';
 import { OfertandoService } from 'src/app/service-component/ofertando.service';
 import * as moment from 'moment';
-import { ServicioActivoAction } from 'src/app/redux/app.actions';
+import { ServicioActivoAction, OrdenActivoAction } from 'src/app/redux/app.actions';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 
 interface RespMarcadores {
@@ -49,6 +49,9 @@ export class HomePage implements OnInit {
   addresses: any[] = [];
   selectedAddress = null;
 
+  dataOrdenActiva:any = {};
+  disableBtnOrdenCancelar:boolean = false;
+
   constructor(
     private http: HttpClient,
     private wsServices: WebsocketService,
@@ -60,7 +63,6 @@ export class HomePage implements OnInit {
     private mapboxService: MapboxService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
-    let ordenActiva:any= {};
     this._store
       .subscribe((store:any)=>{
         store = store.name;
@@ -68,9 +70,13 @@ export class HomePage implements OnInit {
         if(this.dataUser['rol']){
           this.rolUser = this.dataUser.rol.rol;
         }
-        ordenActiva = store.servicioActivo || {};
+        if( store.ordenactivo ) {
+          if(Object.keys( store.ordenactivo ).length >0 ) { this.dataOrdenActiva = store.ordenactivo[0]; this.disabledOpt = 'ordenactiva'; }
+          else this.dataOrdenActiva = false;
+        }
+        else this.dataOrdenActiva = false;
+        console.log(this.dataOrdenActiva)
       });
-      if(Object.keys(ordenActiva).length >0) this.procesoOrdenConfirmada(ordenActiva[0]);
   }
 
   ngOnInit(): void {
@@ -81,10 +87,6 @@ export class HomePage implements OnInit {
     this.id = this.wsServices.idSocket;
     this.getGeolocation();
     this.escucharSockets();
-    if(this.rolUser === 'conductor'){
-      this.getOrdenesActivas();
-      this.getOrdenesPactadasUser();
-    }
   }
 
   resetInit(){
@@ -160,16 +162,6 @@ export class HomePage implements OnInit {
       delete this.markersMapbox[id];
     });
 
-    // orden-nueva
-
-    this.wsServices.listen('orden-nuevo')
-    .subscribe((marcador: any)=> {
-      //console.log(marcador);
-      if( this.rolUser === 'usuario' ) return false;
-      this.listOfertas.unshift(marcador);
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
-    });
-
     //Ofertando
 
     this.wsServices.listen('ofreciendo-nuevo')
@@ -178,16 +170,6 @@ export class HomePage implements OnInit {
       if( this.dataUser.id !== marcador.orden.usuario ) return false;
       this.listOfertas.unshift( marcador );
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Ofreciendo servicio", text: `${ marcador['usuario'].nombre } Te LLevo $ ${ ( marcador['ofrece'] || 0 ).toLocaleString(1) } COP` });
-    });
-
-    //orden confirmada
-
-    this.wsServices.listen('orden-confirmada')
-    .subscribe((marcador: any)=> {
-      console.log(marcador);
-      if( this.rolUser === 'usuario' ) return false;
-      this.pushStoreServicio(marcador);
-      this.procesoOrdenConfirmada(marcador);
     });
 
     // orden finalizada
@@ -202,45 +184,6 @@ export class HomePage implements OnInit {
       this.data = {};
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
     });
-  }
-  procesoOrdenConfirmada(marcador:any){
-    //console.log(marcador.coductor);
-    if( marcador.coductor.id !== this.dataUser.id ) return this._tools.presentToast("Cliente no acepto");
-    this._tools.presentToast("Cliente acepto");
-    this.listOfertas = this.listOfertas.filter((row:any)=> row.id != marcador.id);
-    this.disabledInfo = true;
-    this.infoCliente = marcador;
-    this.removePactado(marcador);
-    this.llenandoData({ id: marcador.idClienteSockets });
-    this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Cliente acepto el servicio", text: `Destino ${ marcador.titulo } Costo $ ${ ( marcador['idOfertando'] || 0 ).toLocaleString(1) } COP` });
-  }
-
-  pushStoreServicio(info:any){
-    let accion = new ServicioActivoAction( info, 'post');
-    this._store.dispatch(accion);
-  }
-
-  getOrdenesActivas(){
-    this._ordenes.get({ 
-      where:{ 
-        estado: 0, 
-        createdAt: {
-          ">=": moment().add(-1, 'days'),
-          "<=": moment().add(1, 'days')
-        }
-      },
-      sort: 'createdAt DESC'
-    }).subscribe((res:any)=>{
-      this.listOfertas = res.data;
-      const interval = setInterval(()=>{ 
-        if(!this.listOfertas[this.listOfertas.length-1]) { clearInterval(interval); return false };
-        this.listOfertas.splice(this.listOfertas.length-1, 1);
-      }, 5000);
-    });
-  }
-
-  getOrdenesPactadasUser(){
-   
   }
 
   getSearchDestinoMapbox( event: any ){
@@ -259,7 +202,7 @@ export class HomePage implements OnInit {
   }
 
   onSelect(address: any) {
-    console.log(address);
+    //console.log(address);
     this.data.destino = address.place_name;
     this.selectedAddress = address;
     this.addresses = [];
@@ -353,18 +296,26 @@ export class HomePage implements OnInit {
     this.wsServices.emit( 'marcador-nuevo', customMarker);
   }
 
-  solicitar(){
+  exitOrden(){
+    if(this.dataOrdenActiva) this.disabledOpt = "ordenactiva";
+    this.disabled = false;
+  }
+
+  solicitar( opt:string ){
+    this.data.tipo = opt;
     this.disabledOpt = "orden";
     this.disabledConfirm = false;
-    this.disabled = !this.disabled;
+    this.disabled = true;
   }
 
   btnOrdenar(){
     this.disableBtn = true;
+    console.log( this.data.tipo );
     let data:any = {
       usuario: this.dataUser.id,
       titulo: this.data.destino,
       origenLat: this.lat,
+      tipoOrden: this.data.tipo == 'Particular' ? 0 : 1,
       idClienteSockets: this.id,
       origenLon: this.lon,
       descripcion: this.data.descripcion,
@@ -381,39 +332,9 @@ export class HomePage implements OnInit {
       this.data = {};
       this.disableBtn = false;
       this.disabled = false;
+      let accion = new OrdenActivoAction( res, 'post');
+      this._store.dispatch(accion);
     },(error)=>{ console.error(error); this._tools.presentToast('Error al crear la orden'); this.disableBtn = false; });
-  }
-
-  btnConductor( item:any ){
-    this.data = {
-      id: item.id,
-      destino: item.titulo,
-      ofreces: item.ofreceCliente,
-      descripcion: item.descripcion,
-    };
-    this.disabledOpt = 'conductor';
-    this.disabled = true;
-  }
-
-  submitOfreciendo(){
-    this.disableBtn = true;
-    let querys:any = {
-      usuario: this.dataUser.id,
-      orden: this.data.id,
-      ofrece: this.data.ofreces,
-      descripcion: this.data.descripcion
-    };
-    if( !querys.ofrece ) return this._tools.presentToast("Error Precio no establecido");
-    this._Ofertando.saved(querys).subscribe((res:any)=>{
-      //console.log(res);
-      this.listOfertas = this.listOfertas.filter( (row:any)=> row.id !== this.data.id );
-      console.log(this.listOfertas, this.data)
-      this.disableBtn = false;
-      this.disabled = false;
-      res.idConductorSockets = this.id;
-      this.wsServices.emit( 'ofreciendo-nuevo', res);
-      this.data = {};
-    },(error)=> { console.error(error); this._tools.presentToast("Error al Ofertar"); this.disableBtn = false; });
   }
 
   btnCliente( item:any ){
@@ -462,28 +383,23 @@ export class HomePage implements OnInit {
     }
   }
 
-  finalizarServicio(){
-    this.disableBtnInfo = true;
-    let data:any= {
-      id: this.infoCliente.id,
-      estado: 2
+  CancelarServicio(){
+    let data:any = {
+      id: this.dataOrdenActiva.id,
+      estado: 1
     };
+    this.disableBtnOrdenCancelar = true;
     this._ordenes.editar(data).subscribe((res:any)=>{
-      //console.log(res);
-      this.infoCliente = {};
-      this.disabledInfo = false;
-      this.disableBtnInfo = false;
-      this._tools.presentToast("Servicio a Finalizado");
-      this.wsServices.emit( 'orden-finalizada', res);
-      
-      for( let [id, item] of Object.entries(this.markersMapbox) ){
-        if( id === this.id ){}
-        else this.markersMapbox[id].remove();
-      }
-
-      let accion = new ServicioActivoAction(res, 'delete');
-      this._store.dispatch(accion);
-    },(error)=> {this._tools.presentToast("Error al actualizar servicio"); this.disabledInfo = false; } );
+      console.log(res);
+      let accion = new OrdenActivoAction( res, 'delete');
+      this._store.dispatch( accion );
+      this.dataOrdenActiva = {};
+      this._tools.presentToast("Cancelado Servicio");
+      this.disableBtnOrdenCancelar = false;
+      this.disabled = false;
+      this.disabledOpt = "orden";
+      this.wsServices.emit( 'orden-cancelada', res);
+    }, ( error:any)=> { this._tools.presentToast("Error al cancelar el servicio"); this.disableBtnOrdenCancelar = false; });
   }
 
 }

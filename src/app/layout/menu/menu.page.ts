@@ -19,7 +19,6 @@ export class MenuPage implements OnInit {
   data:any = {};
   rolUser:string;
   disableBtn:boolean = false;
-
   constructor(
     private dataService: DataService,
     private menu: MenuController,
@@ -32,15 +31,20 @@ export class MenuPage implements OnInit {
     this._store
     .subscribe((store:any)=>{
       store = store.name;
-      console.log(store);
       this.data = store.persona || {};
       if(this.data['rol']){
+        if(this.data['rol'].rol != this.rolUser){
+          this.cargaMenu();
+        }
         this.rolUser = ( this.data['rol'].rol );
       }
     });
   }
 
   ngOnInit() {
+    // this.cargaMenu();
+  }
+  cargaMenu(){
     this.dataService.getMenuOpts().subscribe(rta=>{ 
       this.dataMenu=rta.map((row:any)=>{
         if(row.opt){
@@ -52,7 +56,6 @@ export class MenuPage implements OnInit {
         }
         return row;
       }); 
-      console.log(rta) 
     });
   }
   openEnd() {

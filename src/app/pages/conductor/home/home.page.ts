@@ -10,6 +10,8 @@ import { WebsocketService } from 'src/app/services/websocket.services';
 import { Lugar } from 'src/app/interfas/interfaces';
 import { ModalController, IonSegment } from '@ionic/angular';
 import { MapaPage } from '../mapa/mapa.page';
+import { UserService } from 'src/app/services/user.service';
+import { PersonaAction } from 'src/app/redux/app.actions';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +23,8 @@ export class HomePage implements OnInit {
   listRow:any = [];
   query:any = {
     where:{
-      estado: 0
+      estado: 0,
+      tipoOrden: 0
     },
     skip: 0
   };
@@ -51,7 +54,8 @@ export class HomePage implements OnInit {
   };
   lisComentario:any = [];
   titulo:string = "Ocupado";
-  estado:boolean = false;
+  estado:boolean = true;
+  cargaBolena: boolean = false;
 
   constructor(
     private _tools: ToolsService,
@@ -60,18 +64,22 @@ export class HomePage implements OnInit {
     private geolocation: Geolocation,
     private wsServices: WebsocketService,
     private modalCtrl: ModalController,
+    private _user: UserService
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
         this.dataUser = store.persona;
         if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
         if(store.servicioActivo) this.ordenActiva = store.servicioActivo[0] || {};
+        if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
+        this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
+        this.dataUser.carga === true ? this.cargaBolena =  true : this.cargaBolena = false;
     });
   }
 
   ngOnInit(): void {
     this.id = this.wsServices.idSocket;
-    this.getList();
+    if( this.dataUser.estadoDisponible ) this.getList();
     this.getGeolocation();
     this.escucharSockets();
     if(Object.keys(this.ordenActiva).length > 0) this.openMapa({});
@@ -86,12 +94,6 @@ export class HomePage implements OnInit {
     // console.log(ev);
     this.disableView = ev.detail.value;
     if( this.disableView == 'INGRESOS' ) this.getList2();
-  }
-
-  cambioEstado(){
-    this.titulo = 'LIBRE'
-    this.estado = !this.estado;
-    console.log(this.estado)
   }
 
   getGeolocation(){
@@ -131,8 +133,13 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-nuevo')
     .subscribe((marcador: any)=> {
-      //console.log(marcador);
+      console.log(marcador);
       if( this.rolUser === 'usuario' ) return false;
+      // Validando estado si esta disponible 
+      if( !this.dataUser.estadoDisponible ) return false;
+      //validar tipo de servicio si es normal o de carga
+      if( marcador.tipoOrden == 1 ) if( !this.dataUser.carga ) return false;
+
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
     });
@@ -151,6 +158,15 @@ export class HomePage implements OnInit {
       //console.log(marcador);
       this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
     });
+    //Orden cancelada
+
+    this.wsServices.listen('orden-cancelada')
+    .subscribe((marcador: any)=> {
+      //console.log( marcador , this.listRow );
+      if( !marcador.id ) return false;
+      this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
+    });
+
   }
 
   audioNotificando(obj:any, mensaje:any){
@@ -194,7 +210,7 @@ export class HomePage implements OnInit {
       "<=": moment().add(5, 'minutes')
     }
     this._orden.get(this.query).subscribe((res:any)=>{
-      console.log(res);
+      // console.log(res);
       this.dataFormaList(res);
       this._tools.dismisPresent();
     });
@@ -202,7 +218,7 @@ export class HomePage implements OnInit {
 
   dataFormaList(res:any){
     this.listRow.push(...res.data );
-    console.log(this.listRow)
+    // console.log(this.listRow)
     this.listRow =_.unionBy(this.listRow || [], res.data, 'id');
     if( this.evScroll.target ){
       this.evScroll.target.complete()
@@ -219,7 +235,7 @@ export class HomePage implements OnInit {
   getList2(){
     this._tools.presentLoading();
     this._orden.get(this.query2).subscribe((res:any)=>{
-      console.log(res);
+      // console.log(res);
       this.dataFormaList2(res);
       this._tools.dismisPresent();
     });
@@ -227,7 +243,7 @@ export class HomePage implements OnInit {
 
   dataFormaList2(res:any){
     this.listRow2.push(...res.data );
-    console.log(this.listRow2)
+    // console.log(this.listRow2)
     this.listRow2 =_.unionBy(this.listRow2 || [], res.data, 'id');
     if( this.evScroll.target ){
       this.evScroll.target.complete()
@@ -248,6 +264,50 @@ export class HomePage implements OnInit {
         obj: item
       }
     }).then(modal=>modal.present());
+  }
+
+  habilitarCarga(){
+    this.cargaBolena = !this.cargaBolena;
+    let data:any = {
+      id: this.dataUser.id,
+      carga: this.cargaBolena
+    };
+    this.actualizarUser( data, 'carga');
+  }
+  
+  cambioEstado(){
+    this.estado = !this.estado;
+    let data:any = {
+      id: this.dataUser.id,
+      estadoDisponible: this.estado
+    };
+    this.actualizarUser( data, 'estado');
+  }
+
+  actualizarUser( data:any, opt:string ){
+    this._user.update( data ).subscribe(( res:any )=>{
+      this.mensajesUser( opt, res);
+      let accion = new PersonaAction( res, 'put');
+      this._store.dispatch( accion );
+    },( error:any )=> console.error( error ));
+  }
+
+  mensajesUser( opt:string, res:any){
+    if( opt == 'carga'){
+      this.query = {
+        where:{
+          estado: 0
+        },
+        skip: 0
+      }
+      if( res.carga ) { this._tools.presentToast("Activastes la opcion de carga "); this.query.where.tipoOrden = [ 0, 1 ]; }
+      else { this._tools.presentToast("Inactivaste la opcion de carga "); this.query.where.tipoOrden = 0; }
+      this.getList();
+    }else{
+      if( res.estadoDisponible ) this._tools.presentToast("Estado Activo");
+      else this._tools.presentToast("Estado Inactivo");
+    }
+
   }
   
 }

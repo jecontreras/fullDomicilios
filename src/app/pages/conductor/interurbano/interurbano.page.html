@@ -5,57 +5,59 @@
         <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
       </ion-menu-button>
     </ion-buttons>
-    <ion-title>interurbano</ion-title>
+    <ion-title>Viajes Programados</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
+      <ion-segment-button mode="md" [value]="item" *ngFor="let item of listPage">
+        <ion-label text-capitalize> {{ item }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="disableView == 'VIAJES ACTIVOS'">
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
   
-  <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
-    <ion-segment-button mode="md" [value]="item" *ngFor="let item of listPage">
-      <ion-label text-capitalize> {{ item }}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
-  <ion-list *ngIf="disableView == 'ENCONTRAR UN VIAJE'">
-    <ion-item>
-      <div class="ion-text-center">
-        <ion-text color="success">
-          <h3>INSTRUCCION DE USO</h3>
-        </ion-text>
-      </div>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Origen <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.origen" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Destino <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Cuando <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.cuando" required type="text"></ion-input>
-    </ion-item>
-  </ion-list>
-
-  <ion-list *ngIf="disableView == 'MIS VIAJES'">
-    <ion-item *ngFor="let item of listViajes">
+  <ion-list>  
+    <ion-item *ngFor="let item of listRow">
       <ion-avatar slot="start">
         <img [src]="item['conductor']?.foto || './assets/perfil.png'">
       </ion-avatar>
-      <ion-label>
-        <h2>Destino {{ item.titulo }}</h2>
-        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
-        <p>{{ item.descripcion }}</p>
+      <ion-label (click)="OpenServicio( item ); item.check=true; this.disableDetalle=true;">
+        <h2>Origen {{ item.origen }}</h2>
+        <h2>Destino {{ item.destino }}</h2>
+        <h3>Costo $ {{ ( item['costo'] || 0 ).toLocaleString(1) }} COP</h3>
+        <p>{{ item.descripcion | slice: 0: 80 }}</p>
       </ion-label>
+      <ion-button slot="end" fill="clear" color="success" *ngIf="item.check" (click)="OcultarDetalle(); item.check=false;">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
     </ion-item>
   </ion-list>
 
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
 
-<ion-footer *ngIf="disableView == 'ENCONTRAR UN VIAJE'">
-  <ion-toolbar>
-    <ion-button color="success" expand="full" (click)="submitViaje()" class="ion-padding ion-text-center">Encontrar</ion-button>
+<ion-footer class="ion-footerOrden" *ngIf="disableDetalle">
+  <ion-toolbar class="ion-padding">
+    <ion-label> Origen {{ data.origen | slice: 0: 150 }} </ion-label>
+    <ion-label> Destino {{ data.destino | slice: 0: 150 }} </ion-label>
+    <ion-label> Descripcion {{ data.descripcion | slice: 0: 200 }} </ion-label>
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
+    </ion-input>
+    <ion-button [disabled]="disableBtnOfreciendo" color="primary" fill="clear" expand="full" (click)="submitOfreciendo()" class="ion-padding ion-text-center">Responder</ion-button>
+    <ion-button color="danger" fill="clear" expand="full" (click)="OcultarDetalle()" class="ion-padding ion-text-center">Cerrar</ion-button>
   </ion-toolbar>
 </ion-footer>

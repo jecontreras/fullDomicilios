@@ -26,12 +26,6 @@
           <p> Tengo ${{ ( item['ofreceCliente'] || 0 ).toLocaleString(1) }} COP </p>
         </ion-label>
       </ion-text>
-      <ion-text *ngIf="item.ofrece" (click)="btnCliente(item)" color="dark">
-        <ion-label>
-          <p> Conductor {{ item['usuario']?.nombre | slice: 0: 20 }} </p>
-          <p> Te LLevo ${{ ( item['ofrece'] || 0 ).toLocaleString(1) }} COP </p>
-        </ion-label>
-      </ion-text>
     </ion-item>
   </ion-list>
 
@@ -41,28 +35,14 @@
 
   <div class="mapa" id="mapa"></div>
 
-  <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="rolUser == 'usuario'">
-    <ion-fab-button color="dark">
-      <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button color="light" (click)="solicitar()">
-        <ion-icon name="car-sport-outline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
 </ion-content>
 <ion-footer *ngIf="disabled">
   <ion-toolbar class="ion-padding">
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text">
-    </ion-input>
+    <ion-label> {{ data.destino | slice: 0: 150 }} </ion-label>
     <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
     </ion-input>
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.descripcion" placeholder="Descripcion" required type="text">
-    </ion-input>
-    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden'" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenar</ion-button>
+    <ion-label> {{ data.descripcion | slice: 0: 150 }} </ion-label>
     <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'conductor'" color="primary" fill="clear" expand="full" (click)="submitOfreciendo()" class="ion-padding ion-text-center">Responder</ion-button>
-    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente'" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
     <ion-button color="danger" fill="clear" expand="full" (click)="solicitar()" class="ion-padding ion-text-center">Cerrar</ion-button>
   </ion-toolbar>
 </ion-footer>

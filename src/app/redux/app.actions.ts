@@ -6,6 +6,7 @@ export let BUSCADOR         = '[App] Buscar';
 export let MENUS            = '[App] Menu';
 export let CARRITO          = '[App] Carrito';
 export let SERVICIOACTIVO   = '[App] ServicioActivo';
+export let ORDENACTIVO      = '[App] OrdenActivo';
 
 export class NameappAction implements Action {
     readonly type = NAMEAPP;
@@ -37,9 +38,15 @@ export class ServicioActivoAction implements Action {
     constructor( public payload: object,  public opt: string){}
 }
 
+export class OrdenActivoAction implements Action {
+    readonly type = ORDENACTIVO;
+    constructor( public payload: object,  public opt: string){}
+}
+
 export type actions = NameappAction         |
                       PersonaAction         |
                       BuscadorAction        |
                       MenusAction           |
                       CarritoAction         |
-                      ServicioActivoAction  ;
+                      ServicioActivoAction  |
+                      OrdenActivoAction     ;

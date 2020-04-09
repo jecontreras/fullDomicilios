@@ -3,13 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 import { SocketIoConfig } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'https://gpssockets.herokuapp.com', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
 export const environment = {
   production: false,
   socketConfig: config,
+  //url: "http://localhost:1337",
   url: "https://apigps.herokuapp.com",
-  urlServer: "https://gpssockets.herokuapp.com",
+  urlServer: "http://localhost:5000",
   mapbox: {
     accessTokens: "pk.eyJ1IjoiamVjb250cmVyYXMiLCJhIjoiY2s3eHBtdnU5MDM4bjNtbWMwNzd6ZnRzNCJ9.xiO6H9iPMJh_PVQOjC2FeA"
   }

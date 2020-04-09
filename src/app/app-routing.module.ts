@@ -49,10 +49,7 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
-  },
-
-
-
+  }
 
 ];
 

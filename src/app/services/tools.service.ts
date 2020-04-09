@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ToastController, LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController, AlertController } from '@ionic/angular';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { async } from '@angular/core/testing';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class ToolsService {
     public toastCtrl: ToastController,
     public loadingCrl: LoadingController,
     private localNotifications: LocalNotifications,
+    public alertController: AlertController
   ) { }
  
   async presentToast(mensaje:string) {
@@ -39,6 +41,34 @@ export class ToolsService {
       title: mensaje.titulo,
       text: mensaje.text,
       foreground: true
+    });
+  }
+
+  async presentAlertConfirm( mensaje:any ) {
+    return new Promise( async ( resolve )=>{
+      const alert = await this.alertController.create({
+        header: mensaje.header || 'Confirmar!',
+        message: mensaje.mensaje ||'Message <strong>text</strong>!!!',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (blah) => {
+              resolve(false);
+              return false;
+            }
+          }, {
+            text: 'Confirmar',
+            handler: () => {
+              resolve(true)
+              return true;
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
     });
   }
 

@@ -88,7 +88,6 @@ export class MapaPage implements OnInit {
     this.escucharSockets();
     if(this.rolUser === 'conductor'){
       //this.getOrdenesActivas();
-      this.getOrdenesPactadasUser();
     }
   }
 
@@ -314,16 +313,6 @@ export class MapaPage implements OnInit {
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
     });
 
-    //Ofertando
-
-    this.wsServices.listen('ofreciendo-nuevo')
-    .subscribe((marcador: any)=> {
-      //console.log(marcador);
-      if( this.dataUser.id !== marcador.orden.usuario ) return false;
-      this.listOfertas.unshift( marcador );
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Ofreciendo servicio", text: `${ marcador['usuario'].nombre } Te LLevo $ ${ ( marcador['ofrece'] || 0 ).toLocaleString(1) } COP` });
-    });
-
     //orden confirmada
 
     this.wsServices.listen('orden-confirmada')
@@ -334,18 +323,6 @@ export class MapaPage implements OnInit {
       this.procesoOrdenConfirmada(marcador);
     });
 
-    // orden finalizada
-    this.wsServices.listen('orden-finalizada')
-    .subscribe((marcador: any)=> {
-      //console.log(marcador);
-      if( marcador.usuario.id !== this.dataUser.id ) return false;
-      this._tools.presentToast("Servicio a Finalizado");
-      this.llenandoData({ opt: 'conductor' });
-      this.disabledConfirm = false;
-      this.disabledOpt = 'cliente';
-      this.data = {};
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
-    });
   }
   
   addDialogMapa(){
@@ -403,11 +380,6 @@ export class MapaPage implements OnInit {
       }, 5000);
     });
   }
-
-  getOrdenesPactadasUser(){
-   
-  }
-
 
   audioNotificando(obj:any, mensaje:any){
     let sonido = new Audio();
@@ -499,32 +471,6 @@ export class MapaPage implements OnInit {
     //this.wsServices.emit( 'marcador-nuevo', customMarker);
   }
 
-  solicitar(){
-    this.disabled = !this.disabled;
-  }
-
-  btnOrdenar(){
-    this.disableBtn = true;
-    let data:any = {
-      usuario: this.dataUser.id,
-      titulo: this.data.destino,
-      origenLat: this.lat,
-      origenLon: this.lon,
-      descripcion: this.data.descripcion,
-      ofreceCliente: this.data.ofreces
-    };
-    if( !data.titulo ) return this._tools.presentToast("Error Destino no detallado");
-    if( !data.ofreceCliente ) return this._tools.presentToast("Error Precio no establecido");
-    this._ordenes.saved(data).subscribe((res:any)=>{
-      console.log(res);
-      this._tools.presentToast('Solicitando servicio');
-      this.wsServices.emit( 'orden-nuevo', res);
-      this.data = {};
-      this.disableBtn = false;
-      this.disabled = false;
-    },(error)=>{ console.error(error); this._tools.presentToast('Error al crear la orden'); this.disableBtn = false; });
-  }
-
   btnConductor( item:any ){
     this.data = {
       id: item.id,
@@ -557,44 +503,6 @@ export class MapaPage implements OnInit {
     },(error)=> { console.error(error); this._tools.presentToast("Error al Ofertar"); this.disableBtn = false; });
   }
 
-  btnCliente( item:any ){
-    this.data = {
-      destino: item.orden.titulo,
-      id: item.id,
-      orden: item.orden.id,
-      ofreces: item.ofrece,
-      descripcion: item.descripcion,
-      idConductorSockets: item.idConductorSockets,
-      coductorId: item.usuario.id
-    };
-    this.disabledOpt = 'cliente';
-    this.disabledConfirm = true;
-    this.disabled = true;
-  }
-
-  btnConfirn( ){
-    this.disableBtn = true;
-    this._ordenes.editar({
-      id: this.data.orden,
-      idOfertando: this.data.id,
-      coductor: this.data.coductorId,
-      ofreceConductor: this.data.ofreces,
-      // destinolat: this.lat,
-      // destinoLon: this.lon,
-      estado: 3
-    }).subscribe((res:any)=>{
-      //console.log(res);
-      res.idClienteSockets= this.id;
-      this.wsServices.emit( 'orden-confirmada', res);
-      this.listOfertas = [];
-      this._tools.presentToast("Confirmada la Orden");
-      this.disableBtn = false;
-      this.disabled = false;
-      this.removePactado( this.data );
-      this.data = {};
-    },(error)=>{ console.error(error); this._tools.presentToast("Error al Confirmar Orden"); this.disableBtn=false; });
-  }
-
   removePactado(marcador){
     for( let [id, item] of Object.entries(this.markersMapbox) ){
       //(console.log(id, item, marcador);
@@ -610,7 +518,7 @@ export class MapaPage implements OnInit {
       estado: 2
     };
     this._ordenes.editar(data).subscribe((res:any)=>{
-      console.log(res);
+      //console.log(res);
       this.infoCliente = {};
       this.disabledInfo = false;
       this.disableBtnInfo = false;

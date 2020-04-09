@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { InterurbanoPageRoutingModule } from './interurbano-routing.module';
 
 import { InterurbanoPage } from './interurbano.page';
+import { OrdenProgramadasPageModule } from '../../../dialog/orden-programadas/orden-programadas.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    InterurbanoPageRoutingModule
+    InterurbanoPageRoutingModule,
+    OrdenProgramadasPageModule
   ],
   declarations: [InterurbanoPage]
 })

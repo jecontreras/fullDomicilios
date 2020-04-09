@@ -160,7 +160,6 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
         case 'post': {
           // console.log(action.payload);
           if(!state.servicioActivo) state.servicioActivo = [];
-          console.log(state.servicioActivo);
           let data = _.find( state.servicioActivo, (row:any) => row.id == action.payload['id'] );
           if(!data){
             data = proceso_data(state.servicioActivo,action.payload, 'post');
@@ -183,6 +182,42 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
         break;
         case 'drop': {
           state.servicioActivo = [];
+          return local_Storage(state);
+        }
+        break;
+        default:
+        return local_Storage(state);
+        break;
+      }
+    }
+    case _action.ORDENACTIVO:{
+      switch (action.opt){
+        case 'post': {
+          // console.log(action.payload);
+          if(!state.ordenactivo) state.ordenactivo = [];
+          console.log(state.ordenactivo);
+          let data = _.find( state.ordenactivo, (row:any) => row.id == action.payload['id'] );
+          if(!data){
+            data = proceso_data(state.ordenactivo,action.payload, 'post');
+            state.ordenactivo = data;
+          }
+          return local_Storage(state);
+        }
+        break;
+        case 'put': {
+          data = proceso_data(state.ordenactivo,action.payload, 'put');
+          state.ordenactivo = data;
+          return local_Storage(state);
+        }
+        break;
+        case 'delete': {
+          data = proceso_data(state.ordenactivo,action.payload, 'delete');
+          state.ordenactivo = data;
+          return local_Storage(state);
+        }
+        break;
+        case 'drop': {
+          state.ordenactivo = [];
           return local_Storage(state);
         }
         break;

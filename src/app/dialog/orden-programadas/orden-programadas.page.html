@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Detalle</ion-title>
+    <ion-button slot="end" fill="clear" (click)="editarOrden()" [disabled]="disableBtnEditar">
+      <ion-icon name="pencil-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Origen <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.origen" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Destino <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Costo <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.costo" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Cuando <ion-text color="danger">*</ion-text></ion-label>
+      <ion-datetime [(ngModel)]="data.fecha" placeholder="fecha de cuando lo necesitas"></ion-datetime>
+      <ion-datetime display-format="h:mm A" picker-format="h:mm A" [(ngModel)]="data.hora" placeholder="Hora del servicio"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Descripcion ( detallada ) <ion-text color="danger">*</ion-text></ion-label>
+      <ion-textarea rows="6" cols="20" [(ngModel)]="data.descripcion" placeholder="Escribir con detalle lo que estas pidiendo..."></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>  
+    <ion-item lines="none">
+      <ion-footer>
+        Conductores Interesados
+      </ion-footer>
+    </ion-item>
+    <ion-item *ngFor="let item of listRow">
+      <ion-avatar slot="start">
+        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
+      </ion-avatar>
+      <ion-label (click)="item.check=!item.check">
+        <h2>Conductor {{ item['usuario']?.nombre }}</h2>
+        <h3>Tellevo $ {{ ( item['ofrece'] ||0 ).toLocaleString(1) }} COP</h3>
+        <p>{{ item.descripcion }}</p>
+      </ion-label>
+      <ion-button slot="end" fill="clear" color="success" (click)="aceptoConductor( item )" [disabled]="disableBtnPactada" *ngIf="item.check">
+        Aceptar
+      </ion-button>
+    </ion-item>
+    <ion-item *ngIf="listRow.length == 0" lines="none">
+      <div class="ion-text-center">
+        <h3>Nadie han reaccionado a tu viaje lo siento!</h3>
+      </div>
+    </ion-item>
+  </ion-list>
+
+
+</ion-content>
