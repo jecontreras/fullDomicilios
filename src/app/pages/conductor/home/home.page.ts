@@ -13,6 +13,7 @@ import { MapaPage } from '../mapa/mapa.page';
 import { UserService } from 'src/app/services/user.service';
 import { PersonaAction } from 'src/app/redux/app.actions';
 import { PerfilSettingsPage } from 'src/app/dialog/perfil-settings/perfil-settings.page';
+import { ResenaService } from 'src/app/service-component/resena.service';
 
 @Component({
   selector: 'app-home',
@@ -65,7 +66,8 @@ export class HomePage implements OnInit {
     private geolocation: Geolocation,
     private wsServices: WebsocketService,
     private modalCtrl: ModalController,
-    private _user: UserService
+    private _user: UserService,
+    private _resena: ResenaService
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
@@ -96,7 +98,10 @@ export class HomePage implements OnInit {
     // console.log(ev);
     this.disableView = ev.detail.value;
     if( this.disableView == 'INGRESOS' ) this.getList2();
+    if( this.disableView == 'CLASIFICACIÓN' ) this.informacionResena();
   }
+
+
 
   getGeolocation(){
     let vandera:boolean = true;
@@ -236,6 +241,10 @@ export class HomePage implements OnInit {
   }
 
   getList2(){
+    this.query.where.createdAt = {
+      ">=": moment().add(-1, 'days'),
+      "<=": moment().add(1, 'days')
+    }
     this._tools.presentLoading();
     this._orden.get(this.query2).subscribe((res:any)=>{
       // console.log(res);
@@ -280,6 +289,21 @@ export class HomePage implements OnInit {
       const { data } = await modal.onWillDismiss();
       this.getList();
     });
+  }
+
+  informacionResena(){
+    let data:any = {
+      user: this.dataUser.id
+    };
+    this._resena.getResena( data ).subscribe((res:any)=>{
+      if( res.data == 0 ) return false;
+      this.dataUser.nameResena = res.data.nameResena;
+      this.dataUser.nameOperacion = res.data.nameOperacion;
+      this.dataUser.nameResenaCount = res.data.nameResenaCount / 100;
+      this.dataUser.nameOperacionCount = res.data.nameOperacionCount / 100;
+      this.dataUser.nameResenaTotal = res.data.nameResenaCount;
+      this.dataUser.nameOperacionTotal = res.data.nameOperacionCount;
+    }, () => this._tools.presentToast("Error de servidor") );
   }
   
 }

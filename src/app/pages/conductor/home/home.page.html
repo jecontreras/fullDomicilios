@@ -106,28 +106,14 @@
 
       <ion-col size="6">
         <ion-label>
-          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <ion-progress-bar [value]="dataUser.nameResenaCount"></ion-progress-bar>
           <span>Reseña: {{ dataUser.nameResena || 'regular'}}</span>
         </ion-label>
       </ion-col>
 
       <ion-col size="6">
         <ion-label>
-          <ion-progress-bar value="0.5"></ion-progress-bar>
-          <span>Reseña: {{ dataUser.nameExperiencia || 'novato'}}</span>
-        </ion-label>
-      </ion-col>
-
-      <ion-col size="6">
-        <ion-label>
-          <ion-progress-bar value="0.5"></ion-progress-bar>
-          <span>Reputación: {{ dataUser.nameReputacion || 'excelente'}}</span>
-        </ion-label>
-      </ion-col>
-
-      <ion-col size="6">
-        <ion-label>
-          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <ion-progress-bar [value]="dataUser.nameOperacionCount"></ion-progress-bar>
           <span>Frecuencia de operación: {{ dataUser.nameOperacion || 'muy baja'}}</span>
         </ion-label>
       </ion-col>
@@ -138,13 +124,13 @@
   <ion-grid>
     <ion-row>
       <ion-col size="4">
-        {{ dataUser.countViajes || 0 }}
+        {{ dataUser.nameOperacionTotal || 0 }}
         <ion-text color="dark">
           <span>Viajes</span>
         </ion-text>
       </ion-col>
       <ion-col size="4">
-        {{ dataUser.countResena || 0 }}
+        {{ dataUser.nameResenaTotal || 0 }}
         <ion-text color="dark">
           <span>Reseñas</span>
         </ion-text>

@@ -52,6 +52,10 @@ const routes: Routes = [
   },  {
     path: 'perfil-settings',
     loadChildren: () => import('./dialog/perfil-settings/perfil-settings.module').then( m => m.PerfilSettingsPageModule)
+  },
+  {
+    path: 'calificacion',
+    loadChildren: () => import('./dialog/calificacion/calificacion.module').then( m => m.CalificacionPageModule)
   }
 
 

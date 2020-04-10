@@ -14,7 +14,12 @@ export interface STORAGES {
     carrito?: CARRITO;
     servicioActivo?: SERVICIOACTIVO;
     ordenactivo?: ORDENACTIVO;
+    resena?: RESENA;
 };
+
+export interface RESENA {
+
+}
 
 export interface ORDENPROGRAMADOS {
 

@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { MenuPageModule } from 'src/app/layout/menu/menu.module';
+import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { MenuPageModule } from 'src/app/layout/menu/menu.module';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    MenuPageModule
+    MenuPageModule,
+    CalificacionPageModule
   ],
   declarations: [HomePage]
 })

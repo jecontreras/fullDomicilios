@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Calificacion de usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item>
+      <div class="ion-text-center">
+        <h3>
+          <ion-avatar>
+            <img src="./assets/perfil.png">
+          </ion-avatar>
+        </h3>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-text color="dark">
+        <p>{{ dataUser.nombre  }}</p>
+      </ion-text>
+    </ion-item>
+    <ion-list-header>
+      Comentarios de Otras Personas
+    </ion-list-header>
+    <ion-item *ngFor="let item of listRow">
+      <ion-avatar slot="start">
+        <img [src]="item.usuario.foto">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ item.usuario.nombre }}</h2>
+        <p class="clasificacion">
+          <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="item.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':item.valoracion >=5}" for="radio1">★</label>
+          <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':item.valoracion >=4}" for="radio2">★</label>
+          <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="item.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':item.valoracion >=3}" for="radio3">★</label>
+          <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="item.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':item.valoracion >=2}" for="radio4">★</label>
+          <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="item.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':item.valoracion >=1}" for="radio5">★</label>
+        </p>
+        <p>{{ item.descripcion }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <p class="clasificacion">
+          <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="dataComentario.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':dataComentario.valoracion >=5}" for="radio1">★</label>
+          <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="dataComentario.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':dataComentario.valoracion >=4}" for="radio2">★</label>
+          <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="dataComentario.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':dataComentario.valoracion >=3}" for="radio3">★</label>
+          <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="dataComentario.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':dataComentario.valoracion >=2}" for="radio4">★</label>
+          <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="dataComentario.valoracion">
+          <label class="label" [ngClass]="{'checkcolor':dataComentario.valoracion >=1}" for="radio5">★</label>
+        </p>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-label class="ion-color-lavel" position="stacked">Deja un Comentario<ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-textarea [(ngModel)]="dataComentario.descripcion" placeholder="Descripcion" rows="6" cols="20">
+        </ion-textarea>
+        <ion-button color="success" (click)="submitComentario()" [disabled]="btndisableComentario">
+          Enviar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

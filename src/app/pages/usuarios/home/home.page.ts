@@ -13,6 +13,8 @@ import { OfertandoService } from 'src/app/service-component/ofertando.service';
 import * as moment from 'moment';
 import { ServicioActivoAction, OrdenActivoAction } from 'src/app/redux/app.actions';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
+import { ModalController } from '@ionic/angular';
+import { CalificacionPage } from 'src/app/dialog/calificacion/calificacion.page';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -60,7 +62,8 @@ export class HomePage implements OnInit {
     private _ordenes: OrdenesService,
     private _tools: ToolsService,
     private _Ofertando: OfertandoService,
-    private mapboxService: MapboxService
+    private mapboxService: MapboxService,
+    private modalCtrl: ModalController,
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store
@@ -186,6 +189,7 @@ export class HomePage implements OnInit {
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
       let accion = new OrdenActivoAction( marcador, 'delete');
       this._store.dispatch( accion );
+      this.openCalificacion( marcador );
     });
   }
 
@@ -415,6 +419,15 @@ export class HomePage implements OnInit {
     if( this.dataOrdenActiva ) this.disabledOpt = "ordenactiva";
     this.disabled = false;
     this.disabledOpt = "";
+  }
+
+  openCalificacion( item:any ){
+    this.modalCtrl.create({
+      component: CalificacionPage,
+      componentProps: {
+        obj: item
+      }
+    }).then(modal=>modal.present());
   }
 
 }
