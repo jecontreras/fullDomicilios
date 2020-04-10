@@ -9,6 +9,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import { MenuPageModule } from 'src/app/layout/menu/menu.module';
 import { MapaPageModule } from '../mapa/mapa.module';
+import { PerfilSettingsPageModule } from 'src/app/dialog/perfil-settings/perfil-settings.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { MapaPageModule } from '../mapa/mapa.module';
     IonicModule,
     HomePageRoutingModule,
     MenuPageModule,
-    MapaPageModule
+    MapaPageModule,
+    PerfilSettingsPageModule
   ],
   declarations: [HomePage]
 })

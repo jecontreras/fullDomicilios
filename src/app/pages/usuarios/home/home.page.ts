@@ -38,7 +38,7 @@ export class HomePage implements OnInit {
   data:any = {};
   dataUser:any = {};
   rolUser:string;
-  disabledOpt:string = 'orden';
+  disabledOpt:string = '';
   disableBtn: boolean = false;
   disabled:boolean = false;
   disabledConfirm:boolean = false;
@@ -112,6 +112,7 @@ export class HomePage implements OnInit {
     setInterval(()=>{ 
       this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
         //console.log(geoposition)
+        if( this.disabledOpt ==  "orden" ) return false;
         if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
         this.lat = geoposition.coords.latitude;
         this.lon = geoposition.coords.longitude;
@@ -175,7 +176,7 @@ export class HomePage implements OnInit {
     // orden finalizada
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
-      //console.log(marcador);
+      // console.log(marcador);
       if( marcador.usuario.id !== this.dataUser.id ) return false;
       this._tools.presentToast("Servicio a Finalizado");
       this.llenandoData({ opt: 'conductor' });
@@ -183,6 +184,8 @@ export class HomePage implements OnInit {
       this.disabledOpt = 'cliente';
       this.data = {};
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
+      let accion = new OrdenActivoAction( marcador, 'delete');
+      this._store.dispatch( accion );
     });
   }
 
@@ -261,6 +264,7 @@ export class HomePage implements OnInit {
         id: marcador.id,
         ...lngLat
       };
+      if( marcador.id  == this.id ) { this.lat = lngLat.lat; this.lon = lngLat.lng; }
       this.wsServices.emit( 'marcador-mover', nuevoMarker);
     });
 
@@ -310,12 +314,14 @@ export class HomePage implements OnInit {
 
   btnOrdenar(){
     this.disableBtn = true;
-    console.log( this.data.tipo );
+    let tipo = 0;
+    if(this.data.tipo == 'Carga') tipo = 1;
+    if(this.data.tipo == 'Domicilio') tipo = 2;
     let data:any = {
       usuario: this.dataUser.id,
       titulo: this.data.destino,
       origenLat: this.lat,
-      tipoOrden: this.data.tipo == 'Particular' ? 0 : 1,
+      tipoOrden: tipo,
       idClienteSockets: this.id,
       origenLon: this.lon,
       descripcion: this.data.descripcion,
@@ -332,6 +338,7 @@ export class HomePage implements OnInit {
       this.data = {};
       this.disableBtn = false;
       this.disabled = false;
+      this.disabledOpt = "";
       let accion = new OrdenActivoAction( res, 'post');
       this._store.dispatch(accion);
     },(error)=>{ console.error(error); this._tools.presentToast('Error al crear la orden'); this.disableBtn = false; });
@@ -363,7 +370,7 @@ export class HomePage implements OnInit {
       // destinoLon: this.lon,
       estado: 3
     }).subscribe((res:any)=>{
-      // console.log(res);
+      //console.log(res);
       res.idClienteSockets= this.id;
       this.wsServices.emit( 'orden-confirmada', res);
       this.listOfertas = [];
@@ -372,6 +379,8 @@ export class HomePage implements OnInit {
       this.disabled = false;
       this.removePactado( this.data );
       this.data = {};
+      let accion = new OrdenActivoAction( res, 'put');
+      this._store.dispatch(accion);
     },(error)=>{ console.error(error); this._tools.presentToast("Error al Confirmar Orden"); this.disableBtn=false; });
   }
 
@@ -390,7 +399,7 @@ export class HomePage implements OnInit {
     };
     this.disableBtnOrdenCancelar = true;
     this._ordenes.editar(data).subscribe((res:any)=>{
-      console.log(res);
+      //console.log(res);
       let accion = new OrdenActivoAction( res, 'delete');
       this._store.dispatch( accion );
       this.dataOrdenActiva = {};
@@ -400,6 +409,12 @@ export class HomePage implements OnInit {
       this.disabledOpt = "orden";
       this.wsServices.emit( 'orden-cancelada', res);
     }, ( error:any)=> { this._tools.presentToast("Error al cancelar el servicio"); this.disableBtnOrdenCancelar = false; });
+  }
+
+  ocultarMenu(){
+    if( this.dataOrdenActiva ) this.disabledOpt = "ordenactiva";
+    this.disabled = false;
+    this.disabledOpt = "";
   }
 
 }

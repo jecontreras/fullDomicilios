@@ -12,6 +12,7 @@ import { ModalController, IonSegment } from '@ionic/angular';
 import { MapaPage } from '../mapa/mapa.page';
 import { UserService } from 'src/app/services/user.service';
 import { PersonaAction } from 'src/app/redux/app.actions';
+import { PerfilSettingsPage } from 'src/app/dialog/perfil-settings/perfil-settings.page';
 
 @Component({
   selector: 'app-home',
@@ -72,6 +73,7 @@ export class HomePage implements OnInit {
         if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
         if(store.servicioActivo) this.ordenActiva = store.servicioActivo[0] || {};
         if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
+        if( this.dataUser.domicilio ) this.query.where.tipoOrden = [ 0, 1, 2 ];
         this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
         this.dataUser.carga === true ? this.cargaBolena =  true : this.cargaBolena = false;
     });
@@ -139,6 +141,7 @@ export class HomePage implements OnInit {
       if( !this.dataUser.estadoDisponible ) return false;
       //validar tipo de servicio si es normal o de carga
       if( marcador.tipoOrden == 1 ) if( !this.dataUser.carga ) return false;
+      if( marcador.tipoOrden == 2 ) if( !this.dataUser.domicilio ) return false;
 
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
@@ -266,48 +269,17 @@ export class HomePage implements OnInit {
     }).then(modal=>modal.present());
   }
 
-  habilitarCarga(){
-    this.cargaBolena = !this.cargaBolena;
-    let data:any = {
-      id: this.dataUser.id,
-      carga: this.cargaBolena
-    };
-    this.actualizarUser( data, 'carga');
-  }
-  
-  cambioEstado(){
-    this.estado = !this.estado;
-    let data:any = {
-      id: this.dataUser.id,
-      estadoDisponible: this.estado
-    };
-    this.actualizarUser( data, 'estado');
-  }
-
-  actualizarUser( data:any, opt:string ){
-    this._user.update( data ).subscribe(( res:any )=>{
-      this.mensajesUser( opt, res);
-      let accion = new PersonaAction( res, 'put');
-      this._store.dispatch( accion );
-    },( error:any )=> console.error( error ));
-  }
-
-  mensajesUser( opt:string, res:any){
-    if( opt == 'carga'){
-      this.query = {
-        where:{
-          estado: 0
-        },
-        skip: 0
+  async openSettingUser( ){
+    this.modalCtrl.create({
+      component: PerfilSettingsPage,
+      componentProps: {
+        obj: this.dataUser
       }
-      if( res.carga ) { this._tools.presentToast("Activastes la opcion de carga "); this.query.where.tipoOrden = [ 0, 1 ]; }
-      else { this._tools.presentToast("Inactivaste la opcion de carga "); this.query.where.tipoOrden = 0; }
+    }).then( async (modal)=>{
+      modal.present()
+      const { data } = await modal.onWillDismiss();
       this.getList();
-    }else{
-      if( res.estadoDisponible ) this._tools.presentToast("Estado Activo");
-      else this._tools.presentToast("Estado Inactivo");
-    }
-
+    });
   }
   
 }

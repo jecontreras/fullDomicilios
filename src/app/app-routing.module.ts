@@ -49,7 +49,11 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
+  },  {
+    path: 'perfil-settings',
+    loadChildren: () => import('./dialog/perfil-settings/perfil-settings.module').then( m => m.PerfilSettingsPageModule)
   }
+
 
 ];
 

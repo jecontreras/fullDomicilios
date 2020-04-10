@@ -195,7 +195,6 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
         case 'post': {
           // console.log(action.payload);
           if(!state.ordenactivo) state.ordenactivo = [];
-          console.log(state.ordenactivo);
           let data = _.find( state.ordenactivo, (row:any) => row.id == action.payload['id'] );
           if(!data){
             data = proceso_data(state.ordenactivo,action.payload, 'post');

@@ -50,6 +50,9 @@
       <ion-fab-button color="light" (click)="solicitar('Carga')">
         <ion-icon name="bus-outline"></ion-icon>
       </ion-fab-button>
+      <ion-fab-button color="light" (click)="solicitar('Domicilio')">
+        <ion-icon name="fast-food-outline"></ion-icon>
+      </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
 </ion-content>
@@ -60,7 +63,7 @@
       <ion-text color="dark" slot="start">
         <h5>Servicio {{ data.tipo }}</h5>
       </ion-text>
-      <ion-button slot="end" id="btnRefres" fill="clear" color="dark" (click)=" this.disabled = false; ">
+      <ion-button slot="end" id="btnRefres" fill="clear" color="dark" (click)=" ocultarMenu() ">
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-item>
@@ -75,11 +78,10 @@
     </ion-list>
     <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
     </ion-input>
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.descripcion" placeholder="Descripcion" required type="text">
-    </ion-input>
+    <ion-textarea [(ngModel)]="data.descripcion" placeholder="Descripcion" ></ion-textarea>
     <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden'" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenando Servicio</ion-button>
     <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente'" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
-    <ion-button color="danger" fill="clear" expand="full" (click)="exitOrden()" class="ion-padding ion-text-center">Cerrar</ion-button>
+    <!-- <ion-button color="danger" fill="clear" expand="full" (click)="exitOrden()" class="ion-padding ion-text-center">Cerrar</ion-button> -->
   </ion-toolbar>
 </ion-footer>
 
@@ -88,6 +90,6 @@
     <ion-label>
       <p>Destino {{ dataOrdenActiva.titulo }} Costo ${{ ( dataOrdenActiva.ofreceCliente || 0 ).toLocaleString(1) }} COP</p>
     </ion-label>
-    <ion-button [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
+    <ion-button *ngIf="dataOrdenActiva.estado != 3" [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
   </ion-toolbar>
 </ion-footer>

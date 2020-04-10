@@ -5,89 +5,51 @@
         <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
       </ion-menu-button>
     </ion-buttons>
-    <ion-title>carga</ion-title>
+    <ion-title>Mis Carga</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content fullscreen> 
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+
+    <ion-item *ngFor="let item of listRow" lines="none">
+      <ion-avatar slot="start">
+        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
+      </ion-avatar>
+      <ion-label *ngIf="rolUser == 'usuario'">
+        <h2>Destino {{ item.titulo }}</h2>
+        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <p>Conductor: {{ item.coductor.nombre }}</p>
+        <p>{{ item.descripcion }}</p>
+      </ion-label>
+      <ion-label *ngIf="rolUser == 'conductor'">
+        <h2>Destino {{ item.titulo }}</h2>
+        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
+        <p>Cliente: {{ item.usuario.nombre }}</p>
+        <p>Descripcion: {{ item.descripcion }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="ion-text-center" *ngIf="listRow.length == 0">
+    <ion-text colo="dark">
+      <span>Lista Vacia</span>
+    </ion-text>
+  </div>
   
-  <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
-    <ion-segment-button mode="md" [value]="item" *ngFor="let item of listPage">
-      <ion-label text-capitalize> {{ item }}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
 
-  <ion-list *ngIf="disableView == 'SOLICITAR'">
-    <ion-item>
-      <div class="ion-text-center">
-        <ion-text color="success">
-          <h3>INSTRUCCION DE USO</h3>
-        </ion-text>
-      </div>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Lugar de recogida <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.origen" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Destino <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Precio <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.precio" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel" position="stacked">Descripcion <ion-text color="danger">*</ion-text></ion-label>
-      <ion-textarea [(ngModel)]="data.descripcion" placeholder="Fecha, Hora, Tamaño y tipo de carga(detalles para los conductores de camionetas)"></ion-textarea>
-    </ion-item>
-  </ion-list>
-
-  <ion-list *ngIf="disableView == 'AUTOS CERCA'">
-    <ion-item>
-      <ion-list>
-        <ion-item *ngFor="let item of listAutos">
-          <ion-avatar slot="start">
-            <img [src]="item.foto || './assets/perfil.png'">
-          </ion-avatar>
-          <ion-label>
-            <h2>{{ item['usuario']?.nombre }}</h2>
-            <p>{{ item.createdAt }}</p>
-            <ion-text color="dark">
-              <p>{{ item.descripcion }}</p>
-            </ion-text>
-            <ion-button slot="end" fill="clear">
-              <ion-icon name="logo-whatsapp"></ion-icon>
-            </ion-button>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-item>
-  </ion-list>
-
-  <ion-list *ngIf="disableView == 'MIS VIAJES'">
-    <ion-item>
-      <ion-list>
-
-        <ion-item *ngFor="let item of listViajes">
-          <ion-avatar slot="start">
-            <img [src]="item['conductor']?.foto || './assets/perfil.png'">
-          </ion-avatar>
-          <ion-label>
-            <h2>Destino {{ item.titulo }}</h2>
-            <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
-            <p>{{ item.descripcion }}</p>
-          </ion-label>
-        </ion-item>
-
-      </ion-list>
-    </ion-item>
-  </ion-list>
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 </ion-content>
-
-<ion-footer *ngIf="disableView == 'SOLICITAR'">
-  <ion-toolbar>
-    <ion-button color="success" expand="full" (click)="submit()" class="ion-padding ion-text-center">Solicitar un auto</ion-button>
-  </ion-toolbar>
-</ion-footer>

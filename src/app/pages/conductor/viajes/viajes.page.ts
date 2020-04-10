@@ -15,7 +15,8 @@ export class ViajesPage implements OnInit {
   listRow:any = [];
   query:any = {
     where:{
-      estado: 2
+      estado: 2,
+      tipoOrden: 0
     },
     skip: 0
   };
