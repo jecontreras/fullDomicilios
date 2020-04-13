@@ -119,7 +119,7 @@ export class HomePage implements OnInit {
         if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
         this.lat = geoposition.coords.latitude;
         this.lon = geoposition.coords.longitude;
-        if(vandera){ this.initializeMap(); if( this.rolUser == 'usuario' ) { this.llenandoData({ opt: 'conductor' }); } if( !this.markersMapbox[ this.id ] ) this.crearMarcador(); }
+        if(vandera){ this.initializeMap(); this.getSearchMyUbicacion(); if( this.rolUser == 'usuario' ) { this.llenandoData({ opt: 'conductor' }); } if( !this.markersMapbox[ this.id ] ) this.crearMarcador(); }
         vandera = false;
         const nuevoMarker = {
           id: this.id,
@@ -193,6 +193,12 @@ export class HomePage implements OnInit {
     });
   }
 
+  getSearchMyUbicacion(  ){
+    this.mapboxService
+      .search_wordLngLat(`${ this.lon },${ this.lat }`)
+      .subscribe((features: Feature[]) => { });
+  }
+
   getSearchDestinoMapbox( event: any ){
     const searchTerm = this.data.destino;
     if (searchTerm && searchTerm.length > 0) {
@@ -232,6 +238,12 @@ export class HomePage implements OnInit {
       center: [ this.lon, this.lat],
       zoom: 16.6
     });
+    this.mapa.addControl(new Mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true
+    }));
   }
 
   agregarMarcador( marcador: Lugar) {

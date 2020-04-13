@@ -51,7 +51,7 @@ export class CargandoPage implements OnInit {
     let accion = new PersonaAction({},'drop');
     this._store.dispatch(accion);
     this._router.navigate(['/login']);
-    location.reload();
+    //location.reload();
   }
 
 }

@@ -14,6 +14,7 @@ import { UserService } from 'src/app/services/user.service';
 import { PersonaAction } from 'src/app/redux/app.actions';
 import { PerfilSettingsPage } from 'src/app/dialog/perfil-settings/perfil-settings.page';
 import { ResenaService } from 'src/app/service-component/resena.service';
+import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 
 @Component({
   selector: 'app-home',
@@ -67,13 +68,21 @@ export class HomePage implements OnInit {
     private wsServices: WebsocketService,
     private modalCtrl: ModalController,
     private _user: UserService,
-    private _resena: ResenaService
+    private _resena: ResenaService,
+    private mapboxService: MapboxService
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
         this.dataUser = store.persona;
         if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
         if(store.servicioActivo) this.ordenActiva = store.servicioActivo[0] || {};
+        this.query = {
+          where:{
+            estado: 0,
+            tipoOrden: 0
+          },
+          skip: 0
+        };
         if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
         if( this.dataUser.domicilio ) this.query.where.tipoOrden = [ 0, 1, 2 ];
         this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
@@ -91,7 +100,12 @@ export class HomePage implements OnInit {
     var intervalID = window.setTimeout(()=>{
       this.segment.value = "SOLICITUDES";
     }, 200);
+  }
 
+  getSearchMyUbicacion(){
+    this.mapboxService
+      .search_wordLngLat(`${ this.lon },${ this.lat }`)
+      .subscribe((features: Feature[]) => { });
   }
 
   cambioView(ev:any){
@@ -111,7 +125,7 @@ export class HomePage implements OnInit {
         if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
         this.lat = geoposition.coords.latitude;
         this.lon = geoposition.coords.longitude;
-        if(vandera){ this.crearMarcador() }
+        if(vandera){ this.crearMarcador(); this.getSearchMyUbicacion(); }
         vandera = false;
         this.seconds = 5000;
       });
@@ -140,14 +154,13 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-nuevo')
     .subscribe((marcador: any)=> {
-      console.log(marcador);
       if( this.rolUser === 'usuario' ) return false;
       // Validando estado si esta disponible 
       if( !this.dataUser.estadoDisponible ) return false;
       //validar tipo de servicio si es normal o de carga
       if( marcador.tipoOrden == 1 ) if( !this.dataUser.carga ) return false;
       if( marcador.tipoOrden == 2 ) if( !this.dataUser.domicilio ) return false;
-
+      if( !( this.RangoOrden( marcador) ) ) return false;
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
     });
@@ -175,6 +188,11 @@ export class HomePage implements OnInit {
       this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
     });
 
+  }
+
+  RangoOrden( orden:any ){
+    if( this.dataUser.departamento == orden.usuario.departamento ) return true;
+    else return false;
   }
 
   audioNotificando(obj:any, mensaje:any){
@@ -225,9 +243,14 @@ export class HomePage implements OnInit {
   }
 
   dataFormaList(res:any){
-    this.listRow.push(...res.data );
+    let formatiada = [];
+    for(let row of res.data){
+      if( !( this.RangoOrden(row) ) ) continue;
+      formatiada.push( row );
+    }
+    this.listRow.push(...formatiada );
     // console.log(this.listRow)
-    this.listRow =_.unionBy(this.listRow || [], res.data, 'id');
+    this.listRow =_.unionBy(this.listRow || [], formatiada, 'id');
     if( this.evScroll.target ){
       this.evScroll.target.complete()
     }
@@ -241,7 +264,7 @@ export class HomePage implements OnInit {
   }
 
   getList2(){
-    this.query.where.createdAt = {
+    this.query2.where.createdAt = {
       ">=": moment().add(-1, 'days'),
       "<=": moment().add(1, 'days')
     }

@@ -20,6 +20,9 @@ import { MenuPageModule } from './layout/menu/menu.module';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
+import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { FileTransfer } from '@ionic-native/file-transfer/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -42,6 +45,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     StatusBar,
     LocalNotifications,
     SplashScreen, 
+    ImagePicker,
+    FileTransfer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

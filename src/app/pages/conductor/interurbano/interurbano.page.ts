@@ -34,6 +34,7 @@ export class InterurbanoPage implements OnInit {
   dataUser:any = {};
   disableDetalle:boolean = false;
   disableBtnOfreciendo:boolean = false;
+  disabledConfirm:boolean = false;
 
   constructor(
     private _tools: ToolsService,
