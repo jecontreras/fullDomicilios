@@ -10,10 +10,12 @@ import { PERSONA } from 'src/app/interfas/sotarage';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { ToolsService } from 'src/app/services/tools.service';
 import { OfertandoService } from 'src/app/service-component/ofertando.service';
+import { PaqueteService } from 'src/app/service-component/paquete.service';
 import * as moment from 'moment';
 import { ServicioActivoAction } from 'src/app/redux/app.actions';
 import { NavParams, ModalController } from '@ionic/angular';
 import { MapboxService, sear_ruta } from 'src/app/service-component/mapbox.service';
+import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -60,7 +62,8 @@ export class MapaPage implements OnInit {
     private _Ofertando: OfertandoService,
     private navparams: NavParams,
     private modalCtrl: ModalController,
-    private _mapbox: MapboxService
+    private _mapbox: MapboxService,
+    private _paquete: PaqueteService,
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store
@@ -482,7 +485,7 @@ export class MapaPage implements OnInit {
     this.disabled = true;
   }
 
-  submitOfreciendo(){
+  async submitOfreciendo(){
     this.disableBtn = true;
     let querys:any = {
       usuario: this.dataUser.id,
@@ -491,6 +494,8 @@ export class MapaPage implements OnInit {
       descripcion: this.data.descripcion
     };
     if( !querys.ofrece ) return this._tools.presentToast("Error Precio no establecido");
+    let permiso:any = await this.getUserPaquete();
+    if( !permiso ) { this.openPaquete(); return this._tools.presentToast("Error no tienes Paquete Activo Por Favor Recargar"); }
     this._Ofertando.saved(querys).subscribe((res:any)=>{
       //console.log(res);
       this.listOfertas = this.listOfertas.filter( (row:any)=> row.id !== this.data.id );
@@ -501,6 +506,25 @@ export class MapaPage implements OnInit {
       this.wsServices.emit( 'ofreciendo-nuevo', res);
       this.data = {};
     },(error)=> { console.error(error); this._tools.presentToast("Error al Ofertar"); this.disableBtn = false; });
+  }
+
+  async getUserPaquete(){
+    return new Promise( async(resolve) =>{
+      this._paquete.getUser( { where: { usuario: this.dataUser.id, estado: 0 } }).subscribe(( res:any )=>{
+        console.log(res);
+        res = res.data[0];
+        if( res ) resolve( true );
+        else resolve( false );
+      }, (error)=> resolve( false ));
+    });
+  }
+
+  openPaquete(){
+    this.modalCtrl.create({
+      component: PaquetesPage,
+      componentProps: {}
+    }).then(modal=>modal.present());
+    this.exit();
   }
 
   removePactado(marcador){

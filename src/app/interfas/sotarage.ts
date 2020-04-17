@@ -17,6 +17,10 @@ export interface STORAGES {
     resena?: RESENA;
 };
 
+export interface PAGOS {
+    
+}
+
 export interface RESENA {
 
 }

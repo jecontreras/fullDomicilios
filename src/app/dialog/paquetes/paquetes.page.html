@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Paquetes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngFor="let item of listPaquetes">
+    <img [src]="item.foto || './assets/product.jpg'" (click)="OpenEpayco( item )"/>
+    <ion-card-header>
+      <ion-card-subtitle>{{ ( item.costoPaquete || 0 ).toLocaleString(1) }}</ion-card-subtitle>
+      <ion-card-title>{{ item.paquete }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p [innerHtml]="item.descripcion"></p>
+      <ion-text color="primary">
+        <a [href]="item.urlInfo"> Mas Informacion </a>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

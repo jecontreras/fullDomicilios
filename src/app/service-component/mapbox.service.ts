@@ -75,10 +75,10 @@ export class MapboxService {
     });
   }
 
-  search_word(query: string) {
+  search_word(query: string, lat:number, lon:number) {
     const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
     // return this.http.get(url + query + '.json?types=region&access_token='
-    return this.http.get(url + query + '.json?proximity=-74.2478958,4.6486259&language=es&access_token='
+    return this.http.get(url + query + `.json?proximity=${ lon },${ lat }&language=es&region=Colombia&access_token=`
     + environment.mapbox.accessTokens)
     .pipe(map((res: MapboxOutput) => {
       return res.features;

@@ -18,9 +18,9 @@
             +{{ item.phone_code }}</ion-select-option>
         </ion-select>
         <ion-input *ngIf="!disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.celular"
-          placeholder="Numero de celular" required type="text"></ion-input>
+          placeholder="Numero de celular" required type="text" (change)="iniciar()"></ion-input>
         <ion-input *ngIf="disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.password"
-          placeholder="Contraseña" required type="password"></ion-input>
+          placeholder="Contraseña" required type="password" (change)="iniciar()"></ion-input>
         <br>
         <br>
         <ion-button color="success" (click)="iniciar()" expand="full">

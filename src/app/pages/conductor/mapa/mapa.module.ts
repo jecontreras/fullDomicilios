@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { MapaPageRoutingModule } from './mapa-routing.module';
 
 import { MapaPage } from './mapa.page';
+import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MapaPageRoutingModule
+    MapaPageRoutingModule,
+    PaquetesPageModule
   ],
   exports: [
     MapaPage

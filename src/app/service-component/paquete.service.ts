@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PAQUETES } from '../interfas/sotarage';
+import { PAQUETES, PAGOS } from '../interfas/sotarage';
 import { ServiciosService } from '../services/servicios.service';
 
 @Injectable({
@@ -14,6 +14,10 @@ export class PaqueteService {
   get(query: any){
     return this._model.querys<PAQUETES>('paquete/querys', query, 'post');
   }
+
+  getUser(query: any){
+    return this._model.querys<PAQUETES>('userpaquete/querys', query, 'post');
+  }
   
   editar (query: any){
     return this._model.querys<PAQUETES>('paquete/'+query.id, query, 'put');
@@ -25,6 +29,10 @@ export class PaqueteService {
 
   saved (query: any){
     return this._model.querys<PAQUETES>('paquete', query, 'post');
+  }
+
+  createPago(query: any){
+    return this._model.querys<PAGOS>('pagos', query, 'post');
   }
 
 }

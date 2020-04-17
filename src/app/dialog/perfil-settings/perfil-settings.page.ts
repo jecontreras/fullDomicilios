@@ -33,7 +33,7 @@ export class PerfilSettingsPage implements OnInit {
       this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
       this.dataUser.carga === true ? this.cargaBolena =  true : this.cargaBolena = false;
       this.dataUser.domicilio === true ? this.domicilioBolena =  true : this.domicilioBolena = false;
-  });
+    });
   }
 
   ngOnInit() {

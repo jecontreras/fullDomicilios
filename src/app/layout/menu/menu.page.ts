@@ -65,6 +65,8 @@ export class MenuPage implements OnInit {
     let accion = new PersonaAction({}, 'delete');
     this._store.dispatch(accion);
     localStorage.removeItem('user');
+    localStorage.removeItem('APP');
+    location.reload();
     this.router.navigate(['/portada']);
   }
   cambioRol(opt:string){
@@ -81,7 +83,7 @@ export class MenuPage implements OnInit {
         }else{
           this.router.navigate(['/usuarios']);
         }
-        //location.reload();
+        location.reload();
       }, 3000);
     },(error)=> { console.error(error); this._tools.presentToast("Error al cambiar de tipo de cuenta"); this.disableBtn = false;})
   }

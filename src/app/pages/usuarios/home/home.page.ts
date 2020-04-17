@@ -203,7 +203,7 @@ export class HomePage implements OnInit {
     const searchTerm = this.data.destino;
     if (searchTerm && searchTerm.length > 0) {
     this.mapboxService
-      .search_word(searchTerm)
+      .search_word(searchTerm, this.lat, this.lon)
       .subscribe((features: Feature[]) => {
         this.addresses = features;
         // this.addresses = features.map(feat => feat.place_name);

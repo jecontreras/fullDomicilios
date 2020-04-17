@@ -43,7 +43,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
   validarDocumento(){
-    if(!this.data.celular || !this.data.indicativo) return this._tools.presentToast("Error llenar formulario correcto");
+    if(!this.data.celular || !this.data.indicativo || this.data.celular == "") return this._tools.presentToast("Error llenar formulario correcto");
     this._user.get({where:{celular: this.data.celular, indicativo: this.data.indicativo}}).subscribe((res:any)=>{
       if(res.data[0]){this.disablePass = true;}
       else {this._tools.presentToast("Usuario no encontrado")} 
@@ -64,7 +64,8 @@ export class LoginPage implements OnInit {
           this._store.dispatch(accion);
           this._router.navigate(['/cargando']);
         }else{
-          this._tools.presentToast("Error de login");
+          this.data.password = "";
+          this._tools.presentToast("Error de Password");
         }
       },(error)=>{
         this._tools.presentToast("Error de servidor")

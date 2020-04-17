@@ -56,6 +56,10 @@ const routes: Routes = [
   {
     path: 'calificacion',
     loadChildren: () => import('./dialog/calificacion/calificacion.module').then( m => m.CalificacionPageModule)
+  },
+  {
+    path: 'paquetes',
+    loadChildren: () => import('./dialog/paquetes/paquetes.module').then( m => m.PaquetesPageModule)
   }
 
 
