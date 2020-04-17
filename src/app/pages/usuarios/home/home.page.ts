@@ -382,6 +382,7 @@ export class HomePage implements OnInit {
       idOfertando: this.data.id,
       coductor: this.data.coductorId,
       ofreceConductor: this.data.ofreces,
+      descontarPaquete: true,
       // destinolat: this.lat,
       // destinoLon: this.lon,
       estado: 3

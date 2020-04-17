@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Historial de pagos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item>
+      <div class="ion-text-center">
+        <h3>
+          <ion-avatar>
+            <img [src]="dataUser.foto || './assets/perfil.png'">
+          </ion-avatar>
+        </h3>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-text color="dark">
+        <p>{{ dataUser.nombre  }}</p>
+      </ion-text>
+    </ion-item>
+    <ion-list-header>
+      Historial de tus Pagos
+    </ion-list-header>
+    <ion-item *ngFor="let item of listRow">
+      <ion-avatar slot="start">
+        <img [src]="item.paquete.foto || './assets/product.jpg'">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ item.paquete.paquete }}</h2>
+        <h4>Costo: {{ ( item.pago.x_amount || 0 ).toLocaleString(1) }}</h4>
+        <p>Fecha: {{ item.pago.x_fecha_transaccion }}</p>
+        <p>Consumo: {{ ( item.consumoServicio || 0).toLocaleString(1) }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="ion-text-center" *ngIf="listRow.length == 0">
+    <ion-text colo="dark">
+      <span>Lista Vacia</span>
+    </ion-text>
+  </div>
+
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

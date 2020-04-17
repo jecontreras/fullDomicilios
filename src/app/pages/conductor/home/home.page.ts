@@ -15,6 +15,9 @@ import { PersonaAction } from 'src/app/redux/app.actions';
 import { PerfilSettingsPage } from 'src/app/dialog/perfil-settings/perfil-settings.page';
 import { ResenaService } from 'src/app/service-component/resena.service';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
+import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
+import { PaqueteService } from 'src/app/service-component/paquete.service';
+import { HistorialPagosPage } from 'src/app/dialog/historial-pagos/historial-pagos.page';
 
 @Component({
   selector: 'app-home',
@@ -59,6 +62,7 @@ export class HomePage implements OnInit {
   titulo:string = "Ocupado";
   estado:boolean = true;
   cargaBolena: boolean = false;
+  dataPagos:number;
 
   constructor(
     private _tools: ToolsService,
@@ -69,7 +73,8 @@ export class HomePage implements OnInit {
     private modalCtrl: ModalController,
     private _user: UserService,
     private _resena: ResenaService,
-    private mapboxService: MapboxService
+    private mapboxService: MapboxService,
+    private _paquete: PaqueteService
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
@@ -113,9 +118,8 @@ export class HomePage implements OnInit {
     this.disableView = ev.detail.value;
     if( this.disableView == 'INGRESOS' ) this.getList2();
     if( this.disableView == 'CLASIFICACIÓN' ) this.informacionResena();
+    if( this.disableView == 'PAGO') this.informacionCuenta();
   }
-
-
 
   getGeolocation(){
     let vandera:boolean = true;
@@ -327,6 +331,32 @@ export class HomePage implements OnInit {
       this.dataUser.nameResenaTotal = res.data.nameResenaCount;
       this.dataUser.nameOperacionTotal = res.data.nameOperacionCount;
     }, () => this._tools.presentToast("Error de servidor") );
+  }
+
+  OpenPaquetes(){
+    this.modalCtrl.create({
+      component: PaquetesPage,
+      componentProps: {}
+    }).then(modal=>modal.present());
+  }
+
+  OpenHistorialPagos(){
+    this.modalCtrl.create({
+      component: HistorialPagosPage,
+      componentProps: {}
+    }).then(modal=>modal.present());
+  }
+
+  registrarCuenta(){
+
+  }
+
+  informacionCuenta(){
+    this._paquete.getUser( { where:{ usuario: this.dataUser.id, estado: 0 } } ).subscribe(( res:any )=>{
+      res = res.data;
+      this.dataPagos = ( _.sumBy( res, ( row:any ) => row.acomuladoCostoServicio ) ) - ( _.sumBy( res, ( row:any ) => row.pago.x_amount ) );
+      console.log(res, this.dataPagos );
+    });
   }
   
 }

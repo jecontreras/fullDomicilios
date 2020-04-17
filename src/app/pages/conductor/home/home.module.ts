@@ -10,6 +10,8 @@ import { HomePage } from './home.page';
 import { MenuPageModule } from 'src/app/layout/menu/menu.module';
 import { MapaPageModule } from '../mapa/mapa.module';
 import { PerfilSettingsPageModule } from 'src/app/dialog/perfil-settings/perfil-settings.module';
+import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
+import { HistorialPagosPageModule } from 'src/app/dialog/historial-pagos/historial-pagos.module';
 
 @NgModule({
   imports: [
@@ -19,7 +21,9 @@ import { PerfilSettingsPageModule } from 'src/app/dialog/perfil-settings/perfil-
     HomePageRoutingModule,
     MenuPageModule,
     MapaPageModule,
-    PerfilSettingsPageModule
+    PerfilSettingsPageModule,
+    PaquetesPageModule,
+    HistorialPagosPageModule
   ],
   declarations: [HomePage]
 })

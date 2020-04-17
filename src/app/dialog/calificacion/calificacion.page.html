@@ -29,7 +29,7 @@
     </ion-list-header>
     <ion-item *ngFor="let item of listRow">
       <ion-avatar slot="start">
-        <img [src]="item.usuario.foto">
+        <img [src]="item.usuario.foto || './assets/perfil.png'">
       </ion-avatar>
       <ion-label>
         <h2>{{ item.usuario.nombre }}</h2>

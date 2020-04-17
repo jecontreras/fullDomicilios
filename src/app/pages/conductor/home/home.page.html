@@ -198,12 +198,12 @@
       </ion-text>
     </ion-item>
     <p>Cuenta personal: {{ dataUser.id }}</p>
-    <p>Saldo: COP ${{ dataUser.valorTotal || 0 }}</p>
+    <p>Saldo: COP ${{ dataPagos || 0 }}</p>
     <p>Reembolso: COP ${{ dataUser.rembolso || 0 }}</p>
-    <p>Estado Ciudad: ${{ dataUser.infoOrigen || 'Ordinario' }}</p>
-    <ion-button expand="full" color="success"> REGISTRO EN LÍNEA </ion-button>
-    <ion-button expand="full" color="warning"> ABONE A SU CUENTA </ion-button>
-    <ion-button expand="full" color="warning"> HISTORIAL DE MOVIMIENTOS </ion-button>
+    <p>Estado Ciudad: ${{ dataUser.departamento || 'Ordinario' }}</p>
+    <ion-button expand="full" color="success" (click)="registrarCuenta()"> REGISTRO EN LÍNEA </ion-button>
+    <ion-button expand="full" color="warning" (click)="OpenPaquetes()"> ABONE A SU CUENTA </ion-button>
+    <ion-button expand="full" color="warning" (click)="OpenHistorialPagos()"> HISTORIAL DE MOVIMIENTOS </ion-button>
   </ion-list>
   
 </ion-content>

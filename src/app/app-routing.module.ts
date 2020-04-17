@@ -60,6 +60,10 @@ const routes: Routes = [
   {
     path: 'paquetes',
     loadChildren: () => import('./dialog/paquetes/paquetes.module').then( m => m.PaquetesPageModule)
+  },
+  {
+    path: 'historial-pagos',
+    loadChildren: () => import('./dialog/historial-pagos/historial-pagos.module').then( m => m.HistorialPagosPageModule)
   }
 
 
