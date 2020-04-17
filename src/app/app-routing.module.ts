@@ -49,23 +49,7 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
-  },  {
-    path: 'perfil-settings',
-    loadChildren: () => import('./dialog/perfil-settings/perfil-settings.module').then( m => m.PerfilSettingsPageModule)
-  },
-  {
-    path: 'calificacion',
-    loadChildren: () => import('./dialog/calificacion/calificacion.module').then( m => m.CalificacionPageModule)
-  },
-  {
-    path: 'paquetes',
-    loadChildren: () => import('./dialog/paquetes/paquetes.module').then( m => m.PaquetesPageModule)
-  },
-  {
-    path: 'historial-pagos',
-    loadChildren: () => import('./dialog/historial-pagos/historial-pagos.module').then( m => m.HistorialPagosPageModule)
   }
-
 
 ];
 
