@@ -18,6 +18,10 @@ import { MapboxService, Feature } from 'src/app/service-component/mapbox.service
 import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
 import { PaqueteService } from 'src/app/service-component/paquete.service';
 import { HistorialPagosPage } from 'src/app/dialog/historial-pagos/historial-pagos.page';
+import { environment } from 'src/environments/environment';
+
+
+const URLACTIVACION =  environment.urlActivacion;
 
 @Component({
   selector: 'app-home',
@@ -328,9 +332,10 @@ export class HomePage implements OnInit {
       this.dataUser.nameOperacion = res.data.nameOperacion;
       this.dataUser.nameResenaCount = res.data.nameResenaCount / 100;
       this.dataUser.nameOperacionCount = res.data.nameOperacionCount / 100;
-      this.dataUser.nameResenaTotal = res.data.nameResenaCount;
+      this.dataUser.nameResenaTotal = res.data.totalResena;
       this.dataUser.nameOperacionTotal = res.data.nameOperacionCount;
     }, () => this._tools.presentToast("Error de servidor") );
+    this.informacionCuenta();
   }
 
   OpenPaquetes(){
@@ -348,13 +353,13 @@ export class HomePage implements OnInit {
   }
 
   registrarCuenta(){
-
+    window.open( URLACTIVACION );
   }
 
   informacionCuenta(){
     this._paquete.getUser( { where:{ usuario: this.dataUser.id, estado: 0 } } ).subscribe(( res:any )=>{
       res = res.data;
-      this.dataPagos = ( _.sumBy( res, ( row:any ) => row.acomuladoCostoServicio ) ) - ( _.sumBy( res, ( row:any ) => row.pago.x_amount ) );
+      this.dataPagos = ( _.sumBy( res, ( row:any ) => row.pago.x_amount ) ) - ( _.sumBy( res, ( row:any ) => row.acomuladoCostoServicio ) );
       console.log(res, this.dataPagos );
     });
   }

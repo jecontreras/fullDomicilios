@@ -11,6 +11,7 @@ export const environment = {
   //url: "http://localhost:1337",
   url: "https://apigps.herokuapp.com",
   urlServer: "https://gpssockets.herokuapp.com",
+  urlActivacion: "https://www.google.com",
   mapbox: {
     accessTokens: "pk.eyJ1IjoiamVjb250cmVyYXMiLCJhIjoiY2s3eHBtdnU5MDM4bjNtbWMwNzd6ZnRzNCJ9.xiO6H9iPMJh_PVQOjC2FeA"
   }

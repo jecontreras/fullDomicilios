@@ -21,6 +21,8 @@ interface RespMarcadores {
   [ key:string ]: Lugar
 };
 
+const URLACTIVACION =  environment.urlActivacion;
+
 @Component({
   selector: 'app-mapa',
   templateUrl: './mapa.page.html',
@@ -493,9 +495,10 @@ export class MapaPage implements OnInit {
       ofrece: this.data.ofreces,
       descripcion: this.data.descripcion
     };
-    if( !querys.ofrece ) return this._tools.presentToast("Error Precio no establecido");
+    if( !this.dataUser.estadoCuenta ) { this.activarCuenta(); this.disableBtn = false; return this._tools.presentToast("Por favor primero debes activar tu cuenta"); }
+    if( !querys.ofrece ) { this.disableBtn = false; return this._tools.presentToast("Error Precio no establecido"); }
     let permiso:any = await this.getUserPaquete();
-    if( !permiso ) { this.openPaquete(); return this._tools.presentToast("Error no tienes Paquete Activo Por Favor Recargar"); }
+    if( !permiso ) { this.openPaquete(); this.disableBtn = false; return this._tools.presentToast("Error no tienes Paquete Activo Por Favor Recargar"); }
     this._Ofertando.saved(querys).subscribe((res:any)=>{
       //console.log(res);
       this.listOfertas = this.listOfertas.filter( (row:any)=> row.id !== this.data.id );
@@ -517,6 +520,11 @@ export class MapaPage implements OnInit {
         else resolve( false );
       }, (error)=> resolve( false ));
     });
+  }
+
+
+  activarCuenta(){
+    window.open( URLACTIVACION );
   }
 
   openPaquete(){

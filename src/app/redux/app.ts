@@ -44,6 +44,29 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
     if(!state.carrito) state.carrito = [];
   }
   switch (action.type) {
+    case _action.NAMEAPP: {
+      switch(action.opt) {
+        case 'post' :
+          if(!state.APP) state.APP = {};
+            state.APP = action.payload;
+            return local_Storage(state);
+        break;
+        case 'put': {
+          state.APP = action.payload;
+        }
+        return local_Storage(state);
+        break;
+        case 'delete': 
+          state.APP = {};
+          return local_Storage(state);
+        break;
+        case 'drop': {
+          state.APP = {};
+          return local_Storage(state);
+        }
+        break;
+      }
+    }
     case _action.PERSONA: {
       switch(action.opt) {
         case 'post' :

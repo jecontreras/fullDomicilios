@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { DataService } from './services/data.service';
 import { WebsocketService } from './services/websocket.services';
+import { VersionService } from './service-component/version.service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent {
     private statusBar: StatusBar,
     //private dataService: DataService,
     private wsService: WebsocketService,
+    private _app: VersionService
   ) {
     this.initializeApp();
   }

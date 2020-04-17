@@ -15,7 +15,12 @@ export interface STORAGES {
     servicioActivo?: SERVICIOACTIVO;
     ordenactivo?: ORDENACTIVO;
     resena?: RESENA;
+    APP?: APP;
 };
+
+export interface APP {
+
+}
 
 export interface PAGOS {
     

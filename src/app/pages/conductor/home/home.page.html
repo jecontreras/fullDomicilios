@@ -136,7 +136,7 @@
         </ion-text>
       </ion-col>
       <ion-col size="4">
-        {{ dataUser.countsaldo || 0 }}
+        ${{ ( dataPagos || 0 ).toLocaleString(1) }}
         <ion-text color="dark">
           <span>saldo</span>
         </ion-text>
@@ -198,9 +198,9 @@
       </ion-text>
     </ion-item>
     <p>Cuenta personal: {{ dataUser.id }}</p>
-    <p>Saldo: COP ${{ dataPagos || 0 }}</p>
+    <p>Saldo: COP ${{ ( dataPagos || 0 ).toLocaleString(1) }}</p>
     <p>Reembolso: COP ${{ dataUser.rembolso || 0 }}</p>
-    <p>Estado Ciudad: ${{ dataUser.departamento || 'Ordinario' }}</p>
+    <p>Estado Ciudad: {{ dataUser.departamento || 'Ordinario' }}</p>
     <ion-button expand="full" color="success" (click)="registrarCuenta()"> REGISTRO EN LÍNEA </ion-button>
     <ion-button expand="full" color="warning" (click)="OpenPaquetes()"> ABONE A SU CUENTA </ion-button>
     <ion-button expand="full" color="warning" (click)="OpenHistorialPagos()"> HISTORIAL DE MOVIMIENTOS </ion-button>
