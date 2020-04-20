@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import { PersonaAction } from 'src/app/redux/app.actions';
 import { Router } from '@angular/router';
 import { Indicativo } from 'src/app/JSON/indicativo';
+import { ModalController } from '@ionic/angular';
+import { PoliticasPage } from '../politicas/politicas.page';
 
 const indicativos = Indicativo;
 
@@ -30,7 +32,8 @@ export class RegistroPage implements OnInit {
     private _user: UserService,
     private _tools: ToolsService,
     private _store: Store<PERSONA>,
-    private _router: Router
+    private _router: Router,
+    private modalCtrl: ModalController,
   ) { }
 
   ngOnInit() {
@@ -48,6 +51,13 @@ export class RegistroPage implements OnInit {
       }
       this._tools.dismisPresent();
     }, error=>{ this._tools.presentToast("Error de Servidor") });
+  }
+
+  openPoliticas(){
+    this.modalCtrl.create({
+      component: PoliticasPage,
+      componentProps: {}
+    }).then(modal=>modal.present());
   }
 
 }

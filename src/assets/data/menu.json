@@ -12,6 +12,11 @@
       "redirectTo": "/viajes"
     },
     {
+      "icon": "notifications-outline",
+      "name": "Notificaciones",
+      "redirectTo": "/notificaciones"
+    },
+    {
       "icon": "subway-outline",
       "name": "Carga",
       "opt": true,

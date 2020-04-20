@@ -49,7 +49,15 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
+  },  {
+    path: 'notificaciones',
+    loadChildren: () => import('./pages/notificaciones/notificaciones.module').then( m => m.NotificacionesPageModule)
+  },
+  {
+    path: 'politicas',
+    loadChildren: () => import('./layout/politicas/politicas.module').then( m => m.PoliticasPageModule)
   }
+
 
 ];
 

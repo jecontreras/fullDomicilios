@@ -19,6 +19,7 @@ import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
 import { PaqueteService } from 'src/app/service-component/paquete.service';
 import { HistorialPagosPage } from 'src/app/dialog/historial-pagos/historial-pagos.page';
 import { environment } from 'src/environments/environment';
+import { CalificacionPage } from 'src/app/dialog/calificacion/calificacion.page';
 
 
 const URLACTIVACION =  environment.urlActivacion;
@@ -37,6 +38,15 @@ export class HomePage implements OnInit {
       tipoOrden: 0
     },
     skip: 0
+  };
+
+  query3:any = {
+    where:{
+      estado: 0
+    },
+    sort: "createdAt DESC",
+    skip: 0,
+    limit: 10
   };
 
   listPage:any = ["SOLICITUDES","INGRESOS","CLASIFICACIÓN","PAGO"];
@@ -67,6 +77,7 @@ export class HomePage implements OnInit {
   estado:boolean = true;
   cargaBolena: boolean = false;
   dataPagos:number;
+  disabledComentarios: boolean = false;
 
   constructor(
     private _tools: ToolsService,
@@ -85,13 +96,7 @@ export class HomePage implements OnInit {
         this.dataUser = store.persona;
         if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
         if(store.servicioActivo) this.ordenActiva = store.servicioActivo[0] || {};
-        this.query = {
-          where:{
-            estado: 0,
-            tipoOrden: 0
-          },
-          skip: 0
-        };
+        this.query = { where:{ estado: 0, tipoOrden: 0 }, skip: 0 };
         if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
         if( this.dataUser.domicilio ) this.query.where.tipoOrden = [ 0, 1, 2 ];
         this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
@@ -101,6 +106,7 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.id = this.wsServices.idSocket;
+    this.query3.where.usuario = this.dataUser.id;
     if( this.dataUser.estadoDisponible ) this.getList();
     this.getGeolocation();
     this.escucharSockets();
@@ -121,7 +127,7 @@ export class HomePage implements OnInit {
     // console.log(ev);
     this.disableView = ev.detail.value;
     if( this.disableView == 'INGRESOS' ) this.getList2();
-    if( this.disableView == 'CLASIFICACIÓN' ) this.informacionResena();
+    if( this.disableView == 'CLASIFICACIÓN' ) { this.informacionResena(); this.getListComentario(); }
     if( this.disableView == 'PAGO') this.informacionCuenta();
   }
 
@@ -360,7 +366,43 @@ export class HomePage implements OnInit {
     this._paquete.getUser( { where:{ usuario: this.dataUser.id, estado: 0 } } ).subscribe(( res:any )=>{
       res = res.data;
       this.dataPagos = ( _.sumBy( res, ( row:any ) => row.pago.x_amount ) ) - ( _.sumBy( res, ( row:any ) => row.acomuladoCostoServicio ) );
-      console.log(res, this.dataPagos );
+    });
+  }
+
+  getListComentario(){
+    this._tools.presentLoading();
+    this._resena.get( this.query3 ).subscribe((res:any)=>{
+      this.dataFormaListComentario(res);
+      this._tools.dismisPresent();
+    });
+  }
+
+  dataFormaListComentario(res:any){
+    this.lisComentario.push(...res.data );
+    this.lisComentario =_.unionBy(this.lisComentario || [], res.data, 'id');
+    if( this.evScroll.target ){
+      this.evScroll.target.complete()
+    }
+    if(this.ev){
+      this.disable_list = true;
+      if(this.ev.target){
+        this.ev.target.complete();
+      }
+    }
+    this._tools.dismisPresent();
+  }
+
+  openComentarios(){
+    this.disabledComentarios = true;
+    this._orden.get({ where: { coductor: this.dataUser.id }, limit: 1  }).subscribe((res:any)=>{
+      if(!res.data[0]) return this._tools.presentToast( "Lo sentimos no tienes Comentarios!");
+      this.disabledComentarios = false;
+      this.modalCtrl.create({
+        component: CalificacionPage,
+        componentProps: {
+          obj: res.data[0]
+        }
+      }).then(modal=>modal.present());
     });
   }
   

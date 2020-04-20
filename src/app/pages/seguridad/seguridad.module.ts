@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { SeguridadPageRoutingModule } from './seguridad-routing.module';
 
+import { CallNumber } from '@ionic-native/call-number/ngx';
 import { SeguridadPage } from './seguridad.page';
 
 @NgModule({
@@ -14,6 +15,9 @@ import { SeguridadPage } from './seguridad.page';
     FormsModule,
     IonicModule,
     SeguridadPageRoutingModule
+  ],
+  providers:[
+    CallNumber
   ],
   declarations: [SeguridadPage]
 })

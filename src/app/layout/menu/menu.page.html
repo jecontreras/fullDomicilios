@@ -5,8 +5,10 @@
       <ion-avatar class="perfil" slot="start">
         <img [src]=" data.foto || './assets/perfil.png'">
       </ion-avatar>
-      <ion-text color="dark" class="paddingTitle">
+      <ion-text color="light" class="paddingTitle">
         <ion-label>{{ data.nombre || 'Visitante' }}</ion-label>
+        <!-- <p class="padingCargador" *ngIf="rolUser == 'conductor'"><ion-progress-bar color="warning" [value]="dataUser.nameOperacionCount"></ion-progress-bar></p> -->
+        <!-- <p class="padingCargador" *ngIf="rolUser == 'conductor'">{{ dataUser.nameOperacion }}</p> -->
       </ion-text>
       <ion-button slot="end" (click)="openEnd()" fill="clear" color="light">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -20,6 +22,7 @@
         <ion-item [routerLink]="c.redirectTo">
           <ion-icon color="primary" slot="start" [name]="c.icon"></ion-icon>
           <ion-label>{{ c.name }}</ion-label>
+          <ion-badge *ngIf="c.count" color="primary">{{ ( c.count || 0 ) }}</ion-badge>
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle>

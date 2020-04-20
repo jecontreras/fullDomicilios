@@ -16,7 +16,7 @@
             <ion-label class="ion-color-lavel" position="stacked">Tipo de Cuenta <ion-text color="danger">*
               </ion-text>
             </ion-label>
-            <ion-select interface="popover" [(ngModel)]="data.rol">
+            <ion-select interface="action-sheet" [(ngModel)]="data.rol">
               <ion-select-option value="usuario">Persona Natural</ion-select-option>
               <ion-select-option value="conductor">Conductor</ion-select-option>
             </ion-select>
@@ -80,7 +80,7 @@
               required type="password"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-checkbox checked="true" class="checkbook"></ion-checkbox> <span class="footer"> He leido y acepto los
+            <ion-checkbox checked="true" class="checkbook"></ion-checkbox> <span class="footer" (click)="openPoliticas()"> He leido y acepto los
               terminos de condiciones</span>
           </ion-item>
           <ion-item>

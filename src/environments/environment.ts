@@ -9,7 +9,8 @@ export const environment = {
   production: false,
   socketConfig: config,
   //url: "http://localhost:1337",
-  url: "https://apigps.herokuapp.com",
+  // url: "https://apigps.herokuapp.com",
+  url: "https://17114203.ngrok.io",
   urlServer: "https://gpssockets.herokuapp.com",
   urlActivacion: "https://www.google.com",
   mapbox: {

@@ -12,6 +12,7 @@ import { MapaPageModule } from '../mapa/mapa.module';
 import { PerfilSettingsPageModule } from 'src/app/dialog/perfil-settings/perfil-settings.module';
 import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
 import { HistorialPagosPageModule } from 'src/app/dialog/historial-pagos/historial-pagos.module';
+import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { HistorialPagosPageModule } from 'src/app/dialog/historial-pagos/histori
     MapaPageModule,
     PerfilSettingsPageModule,
     PaquetesPageModule,
-    HistorialPagosPageModule
+    HistorialPagosPageModule,
+    CalificacionPageModule,
   ],
   declarations: [HomePage]
 })

@@ -39,7 +39,7 @@
 <ion-footer *ngIf="disabled">
   <ion-toolbar class="ion-padding">
     <ion-label> {{ data.destino | slice: 0: 150 }} </ion-label>
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="number">
     </ion-input>
     <ion-label> {{ data.descripcion | slice: 0: 150 }} </ion-label>
     <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'conductor'" color="primary" fill="clear" expand="full" (click)="submitOfreciendo()" class="ion-padding ion-text-center">Responder</ion-button>
@@ -51,7 +51,9 @@
   <ion-toolbar class="ion-padding">
     <ion-label>
       <p>Destino {{ infoCliente.titulo }} Costo ${{ ( infoCliente['idOfertando']?.ofrece || 0 ).toLocaleString(1) }} COP</p>
-      <p>Numero de contacto +{{ infoCliente.usuario.indicativo }} {{ infoCliente.usuario.celular }}</p>
+      <ion-text (click)="openLlamadas()" color="primary">
+        <p>Numero de contacto +{{ infoCliente.usuario.indicativo }} {{ infoCliente.usuario.celular }}</p>
+      </ion-text>
     </ion-label>
     <ion-button [disabled]="disableBtnInfo" color="success" expand="full" (click)="finalizarServicio()" class="ion-padding ion-text-center">Finalizar servicio</ion-button>
   </ion-toolbar>

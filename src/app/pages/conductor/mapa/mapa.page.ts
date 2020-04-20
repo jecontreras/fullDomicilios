@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import * as Mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment';
 import { Lugar } from 'src/app/interfas/interfaces';
@@ -14,9 +14,9 @@ import { PaqueteService } from 'src/app/service-component/paquete.service';
 import * as moment from 'moment';
 import { ServicioActivoAction } from 'src/app/redux/app.actions';
 import { NavParams, ModalController } from '@ionic/angular';
-import { MapboxService, sear_ruta } from 'src/app/service-component/mapbox.service';
+import { MapboxService } from 'src/app/service-component/mapbox.service';
 import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
-import { config } from 'rxjs';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -67,6 +67,7 @@ export class MapaPage implements OnInit {
     private modalCtrl: ModalController,
     private _mapbox: MapboxService,
     private _paquete: PaqueteService,
+    private callNumber: CallNumber
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store
@@ -520,6 +521,12 @@ export class MapaPage implements OnInit {
 
     //emitiendo evento marcador nuevo
     //this.wsServices.emit( 'marcador-nuevo', customMarker);
+  }
+  
+  openLlamadas(){
+    this.callNumber.callNumber(this.infoCliente.usuario.celular, true)
+    .then(res => console.log('Launched dialer!', res))
+    .catch(err => console.log('Error launching dialer', err));
   }
 
   btnConductor( item:any ){

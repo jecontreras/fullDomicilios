@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { STORAGES } from '../interfas/sotarage';
+import { Store } from '@ngrx/store';
 
 declare var io: any;
 const headers = new HttpHeaders({
@@ -17,9 +19,11 @@ export class ServiciosService {
   public disable_reconect: boolean = false;
   public interval:any;
 
-  constructor(private http: HttpClient) { 
-    //this.conectionSocket();
-    //this.createsocket("emitir", {mensaje:"inicial"}); 
+  constructor(
+    private http: HttpClient,
+  ) { 
+    this.conectionSocket();
+    this.createsocket("emitir", {mensaje:"inicial"}); 
   }
 
   private ejecutarQuery<T>(url: string, data, METODO){
@@ -81,6 +85,7 @@ export class ServiciosService {
       console.log('conectado');
       this.disable_reconect = false;
       this.stopConter(this.interval);
+      this.createsocket("emitir", {mensaje:"inicial"}); 
     });
     /* Reconectar si se cae la conexion del socket */
     this.sock.on('disconnect', () =>{

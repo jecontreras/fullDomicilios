@@ -45,7 +45,6 @@ export class CalificacionPage implements OnInit {
 
   ngOnInit() {
     this.data = this.navparams.get('obj');
-    console.log(this.data);
     this.query.where.usuario = this.data.coductor.id;
     this.getList();
   }

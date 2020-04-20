@@ -8,6 +8,7 @@ import { MapaPageRoutingModule } from './mapa-routing.module';
 
 import { MapaPage } from './mapa.page';
 import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @NgModule({
   imports: [
@@ -16,6 +17,9 @@ import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
     IonicModule,
     MapaPageRoutingModule,
     PaquetesPageModule
+  ],
+  providers: [
+    CallNumber
   ],
   exports: [
     MapaPage

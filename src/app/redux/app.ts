@@ -248,6 +248,41 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
         break;
       }
     }
+    case _action.NOTIFICACIONES:{
+      switch (action.opt){
+        case 'post': {
+          // console.log(action.payload);
+          if(!state.notificaciones) state.notificaciones = [];
+          let data = _.find( state.notificaciones, (row:any) => row.id == action.payload['id'] );
+          if(!data){
+            data = proceso_data(state.notificaciones,action.payload, 'post');
+            state.notificaciones = data;
+          }
+          return local_Storage(state);
+        }
+        break;
+        case 'put': {
+          data = proceso_data(state.notificaciones,action.payload, 'put');
+          state.notificaciones = data;
+          return local_Storage(state);
+        }
+        break;
+        case 'delete': {
+          data = proceso_data(state.notificaciones,action.payload, 'delete');
+          state.notificaciones = data;
+          return local_Storage(state);
+        }
+        break;
+        case 'drop': {
+          state.notificaciones = [];
+          return local_Storage(state);
+        }
+        break;
+        default:
+        return local_Storage(state);
+        break;
+      }
+    }
     default: return state;
   }
 }

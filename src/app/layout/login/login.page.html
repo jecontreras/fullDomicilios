@@ -13,7 +13,7 @@
         </div>
         <br>
         <br>
-        <ion-select *ngIf="!disablePass" interface="popover" [(ngModel)]="data.indicativo" class="anchos" placeholder="indicativo">
+        <ion-select *ngIf="!disablePass" interface="action-sheet" [(ngModel)]="data.indicativo" class="anchos" placeholder="indicativo">
           <ion-select-option [value]="item.phone_code" *ngFor="let item of listIndicativos">{{ item.nombre }}
             +{{ item.phone_code }}</ion-select-option>
         </ion-select>
@@ -23,10 +23,6 @@
           placeholder="Contraseña" required type="password" (change)="iniciar()"></ion-input>
         <br>
         <br>
-        <ion-button color="success" (click)="iniciar()" expand="full">
-          <span *ngIf="!disablePass">Comprobar Sesión</span>
-          <span *ngIf="disablePass">Iniciar sesión</span>
-        </ion-button>
       </div>
     </ion-slide>
   </ion-slides>
@@ -35,10 +31,14 @@
 
 <ion-toolbar>
   <div class="ion-text-center">
+    <ion-button color="success" (click)="iniciar()" fill="clear">
+      <span *ngIf="!disablePass">Comprobar Sesión</span>
+      <span *ngIf="disablePass">Iniciar sesión</span>
+    </ion-button>
     <ion-button color="success" [routerLink]="['/registro']">
       Registrarse
     </ion-button>
-    <p>Al pulsar siguiente acepta los <a href="#" [routerLink]="['/terminos']">Términos y Condiciones y la politica de
+    <p>Al pulsar siguiente acepta los <a class="pointer" (click)="openPoliticas()">Términos y Condiciones y la politica de
       privacidad</a></p>
   </div>
 </ion-toolbar>

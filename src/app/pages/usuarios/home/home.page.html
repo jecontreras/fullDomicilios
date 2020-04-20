@@ -76,7 +76,7 @@
         {{ address.place_name }}
       </ion-item>
     </ion-list>
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="text">
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="number">
     </ion-input>
     <ion-textarea [(ngModel)]="data.descripcion" placeholder="Descripcion" ></ion-textarea>
     <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden'" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenando Servicio</ion-button>
