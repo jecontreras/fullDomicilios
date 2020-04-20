@@ -79,9 +79,8 @@ export class ArchivoService {
       }
       
     };
-    console.log("la porrta", file_array)
     file_array.forEach((row: any)=>{
-      return FileTransfer.upload(row, URL+"galeria/file", options)
+      return FileTransfer.upload(row, URL+"/galeria/file", options)
       .then((file:any)=>{
         console.log("el men",file);
         return file;

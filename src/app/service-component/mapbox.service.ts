@@ -85,7 +85,7 @@ export class MapboxService {
     }));
   }
   search_ruta(query:any){
-    let url = `https://api.mapbox.com/directions/v5/mapbox/driving/`+encodeURIComponent(`${ query.origenLon },${ query.origenLat };${ query.destinoLon },${ query.destinolat }`);
+    let url = `https://api.mapbox.com/directions/v5/mapbox/driving/`+encodeURIComponent(`${ query.origenlon },${ query.origenlat };${ query.destinolon },${ query.destinolat }`);
     url+=`.json?geometries=geojson&steps=true&overview=full&language=es&access_token=${ environment.mapbox.accessTokens }`;
     return this.http.get( url )
     .pipe(map((res: sear_ruta) => {

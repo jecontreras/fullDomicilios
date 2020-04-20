@@ -16,6 +16,7 @@ import { ServicioActivoAction } from 'src/app/redux/app.actions';
 import { NavParams, ModalController } from '@ionic/angular';
 import { MapboxService, sear_ruta } from 'src/app/service-component/mapbox.service';
 import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
+import { config } from 'rxjs';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -88,7 +89,6 @@ export class MapaPage implements OnInit {
     this.id = this.wsServices.idSocket;
     this.paramsData = this.navparams.get('obj');
     console.log(this.paramsData);
-    if( Object.keys(this.paramsData).length > 0 ) this.getLatLong();
     this.getGeolocation();
     this.escucharSockets();
     if(this.rolUser === 'conductor'){
@@ -106,19 +106,64 @@ export class MapaPage implements OnInit {
     this.InitApp();
   }
 
-  getLatLong(){
-    this._mapbox.search_ruta(this.paramsData).subscribe((res:any)=>{
-      console.log(res);
+  getLatLongCliente(){
+    let data:any = {
+      origenlat: this.paramsData.origenLat,
+      origenlon: this.paramsData.origenLon,
+      destinolon: this.paramsData.destinoLon,
+      destinolat: this.paramsData.destinolat
+    }
+    this._mapbox.search_ruta( data ).subscribe((res:any)=>{
       const interval = setInterval(row=>{
         if(this.mapa){
-          this.armaRuta(res);
+          let config:any = {
+            startLon: this.paramsData.origenLon,
+            startLat: this.paramsData.origenLat,
+            startId: "point",
+            startColor: '#3887be',
+            destinoLon: this.paramsData.destinoLon,
+            destinoLat: this.paramsData.destinolat,
+            destinoColor: '#f30',
+            idRoute: 'route',
+            rutaColor: '#3887be'
+          }
+          this.armaRuta(res, config);
           clearInterval(interval);
+        };
+      }, 1000);
+    });
+  }
+
+  getLatLongConductor(){
+    let data:any = {
+      origenlat: this.lat,
+      origenlon: this.lon,
+      destinolon: this.paramsData.origenLon,
+      destinolat: this.paramsData.origenLat
+    }
+    this._mapbox.search_ruta( data ).subscribe((res:any)=>{
+      const interval = setInterval(row=>{
+        if(this.mapa){
+          let config:any = {
+            startLon: this.paramsData.origenLon,
+            startLat: this.paramsData.origenLat,
+            startId: "point2",
+            startColor: '#3887be',
+            destinoLon: this.paramsData.destinoLon,
+            destinoLat: this.paramsData.destinolat,
+            destinoColor: '#3773fb',
+            idRoute: 'route2',
+            rutaColor: '#28ba62'
+          };
+          this.armaRuta(res, config);
+          clearInterval(interval);
+          this.getLatLongCliente();
         }
       }, 1000);
     });
   }
 
-  creandorRuta(res:any){
+  creandorRuta( res:any, config:any ){
     let data = res.routes[0];
     let route = data.geometry.coordinates;
     let geojson:any = {
@@ -133,7 +178,7 @@ export class MapaPage implements OnInit {
       this.mapa.getSource('route')['setData'](geojson);
     }else{
       this.mapa.addLayer({
-        id: 'route',
+        id: config.idRoute,
         type: 'line',
         source: {
           type: 'geojson',
@@ -144,31 +189,31 @@ export class MapaPage implements OnInit {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#3887be',
+          'line-color': config.rutaColor,
           'line-width': 5,
           'line-opacity': 0.75
         }
       });
     }
-    console.log( this.mapa.getSource('route'));
   }
-  armaRuta(res:any){
-    if(this.mapa) this.validandoMapa(res);
+  armaRuta( res:any, config:any ){
+    if(this.mapa) this.validandoMapa(res, config);
     else{
       this.mapa.on('load', ()=>{
         console.log("cargado mapa");
-        this.validandoMapa(res);
+        this.validandoMapa(res, config);
       });
     }
   }
-  validandoMapa(res){
-    this.creandorRuta(res);
-      let start = [ this.lon, this.lat ];
+  validandoMapa(res, config:any){
+    this.creandorRuta(res, config);
+      // let start = [ this.lon, this.lat ];
+      let start = [ config.startLon, config.startLat ];
       if (this.mapa.getLayer('point')) {
         //this.mapa.getSource('point')['setData'](start);
       }else{
         this.mapa.addLayer({
-          id: 'point',
+          id: config.startId,
           type: 'circle',
           source: {
             type: 'geojson',
@@ -187,11 +232,11 @@ export class MapaPage implements OnInit {
           },
           paint: {
             'circle-radius': 10,
-            'circle-color': '#3887be'
+            'circle-color': config.startColor
           }
         });   
       }
-      let coords = [ this.paramsData.destinoLon, this.paramsData.destinolat ];
+      let coords = [ config.destinoLon, config.destinoLat ];
       var end = {
         type: 'FeatureCollection',
         features: [{
@@ -226,7 +271,7 @@ export class MapaPage implements OnInit {
           },
           paint: {
             'circle-radius': 10,
-            'circle-color': '#f30'
+            'circle-color': config.destinoColor
           }
         });
       }
@@ -254,6 +299,7 @@ export class MapaPage implements OnInit {
         this.lon = geoposition.coords.longitude;
         if(vandera){ 
           this.initializeMap(); 
+          if( Object.keys(this.paramsData).length > 0 ) this.getLatLongConductor();
           if( this.rolUser == 'usuario' ) { 
             this.llenandoData({ opt: 'conductor' }); 
           } if( !this.markersMapbox[ this.id ] ) { 
@@ -347,7 +393,7 @@ export class MapaPage implements OnInit {
     this.llenandoData({ id: marcador.idClienteSockets });
     this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Cliente acepto el servicio", text: `Destino ${ marcador.titulo } Costo $ ${ ( marcador['idOfertando'] || 0 ).toLocaleString(1) } COP` });
     this.paramsData = marcador;
-    this.getLatLong();
+    this.getLatLongCliente();
   }
 
   actualizarOrdenAceptada( marcador:any ){
@@ -495,7 +541,7 @@ export class MapaPage implements OnInit {
       ofrece: this.data.ofreces,
       descripcion: this.data.descripcion
     };
-    if( !this.dataUser.estadoCuenta ) { this.activarCuenta(); this.disableBtn = false; return this._tools.presentToast("Por favor primero debes activar tu cuenta"); }
+    //if( !this.dataUser.estadoCuenta ) { this.activarCuenta(); this.disableBtn = false; return this._tools.presentToast("Por favor primero debes activar tu cuenta"); }
     if( !querys.ofrece ) { this.disableBtn = false; return this._tools.presentToast("Error Precio no establecido"); }
     let permiso:any = await this.getUserPaquete();
     if( !permiso ) { this.openPaquete(); this.disableBtn = false; return this._tools.presentToast("Error no tienes Paquete Activo Por Favor Recargar"); }

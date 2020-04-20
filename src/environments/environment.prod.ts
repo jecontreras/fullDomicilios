@@ -5,7 +5,7 @@ const config: SocketIoConfig = { url: 'https://gpssockets.herokuapp.com', option
 export const environment = {
   production: true,
   socketConfig: config,
-  url: "https://apigps.herokuapp.com",
+  url: "https://61cc5e26.ngrok.io",
   urlServer: "https://gpssockets.herokuapp.com",
   urlActivacion: "https://www.google.com",
   mapbox: {

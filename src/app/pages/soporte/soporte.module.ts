@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SoportePageRoutingModule } from './soporte-routing.module';
 
 import { SoportePage } from './soporte.page';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { SoportePage } from './soporte.page';
     FormsModule,
     IonicModule,
     SoportePageRoutingModule
+  ],
+  providers: [
+    InAppBrowser
   ],
   declarations: [SoportePage]
 })

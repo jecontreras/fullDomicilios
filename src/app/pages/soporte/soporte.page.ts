@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'app-soporte',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SoportePage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private iab: InAppBrowser,
+  ) { }
 
   ngOnInit() {
+    const browser = this.iab.create("https://dilisoft-f16d2.web.app/", '_system');
   }
 
 }

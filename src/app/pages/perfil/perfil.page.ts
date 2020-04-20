@@ -19,6 +19,7 @@ export class PerfilPage implements OnInit {
   options:any;
   imageResponse:any = [];
   imagenView:any = [];
+  disableImagen:boolean = false;
 
   constructor(
     private _store: Store<PERSONA>,
@@ -60,7 +61,7 @@ export class PerfilPage implements OnInit {
 
   getImages() {
     this.options = {
-      maximumImagesCount: 6,
+      maximumImagesCount: 1,
       width: 300,
       height: 600,
       quality: 100,
@@ -69,8 +70,10 @@ export class PerfilPage implements OnInit {
     this.imageResponse = [];
     this.imagenView = [];
     this.imagePicker.getPictures(this.options).then((results) => {
+      this.disableImagen = true;
       for (var i = 0; i < results.length; i++) {
         this.imageResponse.push('data:image/jpeg;base64,' + results[i]);
+        this.fotoPerfil = `data:image/jpeg;base64,'${ results[i] }`
         this.imagenView.push({
           id: i,
           foto: 'data:image/jpeg;base64,' + results[i]
@@ -96,6 +99,9 @@ export class PerfilPage implements OnInit {
     this.data.opt_archivo = 'articulo';
     this._archivo.upload(this.imageResponse, this.data ).then(()=>{
       if(this.imageResponse.length >0)alert("Exitoso");
+      this.imageResponse = [];
+      this.imagenView = [];
+      this.disableImagen = false;
     });
   }
   

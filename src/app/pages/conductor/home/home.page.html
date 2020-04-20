@@ -136,7 +136,7 @@
         </ion-text>
       </ion-col>
       <ion-col size="4">
-        ${{ ( dataPagos || 0 ).toLocaleString(1) }} COP
+        ${{ ( dataPagos || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}
         <ion-text color="dark">
           <span>saldo</span>
         </ion-text>
@@ -198,7 +198,7 @@
       </ion-text>
     </ion-item>
     <p>Cuenta personal: {{ dataUser.id }}</p>
-    <p>Saldo: COP ${{ ( dataPagos || 0 ).toLocaleString(1) }} COP</p>
+    <p>Saldo: COP ${{ ( dataPagos || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}</p>
     <p>Reembolso: COP ${{ dataUser.rembolso || 0 }}</p>
     <p>Estado Ciudad: {{ dataUser.departamento || 'Ordinario' }}</p>
     <ion-button expand="full" color="success" (click)="registrarCuenta()"> REGISTRO EN LÍNEA </ion-button>

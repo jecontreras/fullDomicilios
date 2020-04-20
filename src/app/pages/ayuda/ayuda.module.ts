@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AyudaPageRoutingModule } from './ayuda-routing.module';
 
 import { AyudaPage } from './ayuda.page';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { AyudaPage } from './ayuda.page';
     FormsModule,
     IonicModule,
     AyudaPageRoutingModule
+  ],
+  providers: [
+    InAppBrowser
   ],
   declarations: [AyudaPage]
 })
