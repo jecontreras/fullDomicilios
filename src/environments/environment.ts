@@ -9,11 +9,12 @@ export const environment = {
   production: false,
   socketConfig: config,
   //url: "http://localhost:1337",
-  // url: "https://apigps.herokuapp.com",
-  url: "https://17114203.ngrok.io",
+  url: "https://apigps.herokuapp.com",
+  // url: "https://17114203.ngrok.io",
   urlServer: "https://gpssockets.herokuapp.com",
   urlActivacion: "https://www.google.com",
   mapbox: {
+    // pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg
     accessTokens: "pk.eyJ1IjoiamVjb250cmVyYXMiLCJhIjoiY2s3eHBtdnU5MDM4bjNtbWMwNzd6ZnRzNCJ9.xiO6H9iPMJh_PVQOjC2FeA"
   },
   vercionApp: "1.0"

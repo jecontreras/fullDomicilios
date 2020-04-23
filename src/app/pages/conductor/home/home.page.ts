@@ -204,9 +204,20 @@ export class HomePage implements OnInit {
 
   }
 
-  RangoOrden( orden:any ){
-    if( this.dataUser.departamento == orden.usuario.departamento ) return true;
-    else return false;
+  async RangoOrden( orden:any ){
+    // return true;
+    let data:any = {
+      latitud1: this.lat,
+      longitud1: this.lon,
+      latitud2:  orden.origenLat,
+      longitud2: orden.origenLon
+    };
+    let result = await this.mapboxService.calcularDistancia( data );
+    console.log( result );
+    if( result <= 10000 ) return true;
+    return false;
+    // if( this.dataUser.departamento == orden.usuario.departamento ) return true;
+    // else return false;
   }
 
   audioNotificando(obj:any, mensaje:any){

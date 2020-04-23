@@ -38,9 +38,9 @@
       </ion-avatar>
       <ion-label>
         <h2>{{ item.paquete.paquete }}</h2>
-        <h4>Costo: {{ ( item.pago.x_amount || 0 ).toLocaleString(1) }}</h4>
+        <h4>Costo: {{ ( item.pago.x_amount || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}</h4>
         <p>Fecha: {{ item.pago.x_fecha_transaccion }}</p>
-        <p>Consumo: {{ ( ( item.pago.x_amount - item.acomuladoCostoServicio ) || 0).toLocaleString(1) }}</p>
+        <p>Consumo: {{ ( ( item.pago.x_amount - item.acomuladoCostoServicio ) || 0).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}</p>
       </ion-label>
     </ion-item>
   </ion-list>

@@ -6,4 +6,5 @@ export interface Lugar {
     estado: boolean;
     lat?: number;
     lng?: number;
+    icon?: string;
 }

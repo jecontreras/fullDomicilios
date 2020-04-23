@@ -79,16 +79,16 @@ export class ArchivoService {
       }
       
     };
-    file_array.forEach((row: any)=>{
-      return FileTransfer.upload(row, URL+"/galeria/file", options)
-      .then((file:any)=>{
-        console.log("el men",file);
-        return file;
-      }, (err)=>{
-        alert("Error");
-      })
+    return new Promise( async (resolve:any) =>{
+      file_array.forEach((row: any)=>{
+        return FileTransfer.upload(row, URL+"/galeria/file", options)
+        .then((file:any)=>{
+          return file;
+        }, (err)=>{
+        });
+      });
+      resolve(true);
     });
-    return true;
   }
 
 }

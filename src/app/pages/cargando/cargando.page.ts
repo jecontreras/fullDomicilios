@@ -40,8 +40,8 @@ export class CargandoPage implements OnInit {
     setTimeout(()=>{ 
       console.log(this.rolUser);
       if(!this.rolUser) return this.clearLogin();
-      if(this.rolUser == 'usuario') this._router.navigate(['/usuarios']);
-      if(this.rolUser == 'conductor') this._router.navigate(['/conductor']);
+      if(this.rolUser == 'usuario') this._router.navigate(['/usuarios/home']);
+      if(this.rolUser == 'conductor') this._router.navigate(['/conductor/home']);
       this._tools.dismisPresent();
     }, 3000);
   }

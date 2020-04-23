@@ -14,6 +14,7 @@ export interface Lugar {
   lng: number;
   lat: number;
   color: string;
+  icon?: string;
 }
 
 export interface RespuestaMDB {

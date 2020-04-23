@@ -84,6 +84,7 @@ export class MapboxService {
       return res.features;
     }));
   }
+
   search_ruta(query:any){
     let url = `https://api.mapbox.com/directions/v5/mapbox/driving/`+encodeURIComponent(`${ query.origenlon },${ query.origenlat };${ query.destinolon },${ query.destinolat }`);
     url+=`.json?geometries=geojson&steps=true&overview=full&language=es&access_token=${ environment.mapbox.accessTokens }`;
@@ -91,5 +92,39 @@ export class MapboxService {
     .pipe(map((res: sear_ruta) => {
       return res;
     }));
+  }
+
+  calcularDistancia( params:any ) {
+
+    let latitud1:any = params.latitud1;
+    let longitud1:any = params.longitud1;
+    let latitud2:any = params.latitud2;
+    let longitud2:any = params.longitud2;
+    let unidad_metrica:any = String();
+
+    let distancia:any = Number();
+    let radius:any = Number();
+    radius = 6378.137;
+
+    let deg2radMultiplier = Number();
+    deg2radMultiplier = Math.PI / 180;
+
+    latitud1 = latitud1 * deg2radMultiplier;
+    longitud1 = longitud1 * deg2radMultiplier;
+
+    latitud2 = latitud2 * deg2radMultiplier;
+    longitud2 = longitud2 * deg2radMultiplier;
+
+    let dlongitud = Number();
+    dlongitud = longitud2 - longitud1;
+
+        distancia = Math.acos(Math.sin(latitud1) * Math.sin(latitud2) + Math.cos(latitud1) *
+        Math.cos(latitud2) * Math.cos(dlongitud)) * radius;
+
+    if (unidad_metrica) unidad_metrica = 'M';
+    distancia = distancia * 1000;
+
+    return distancia;
+
   }
 }

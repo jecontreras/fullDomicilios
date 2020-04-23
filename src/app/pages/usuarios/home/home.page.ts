@@ -54,6 +54,8 @@ export class HomePage implements OnInit {
   dataOrdenActiva:any = {};
   disableBtnOrdenCancelar:boolean = false;
 
+  banderaRefres:boolean = false;
+
   constructor(
     private http: HttpClient,
     private wsServices: WebsocketService,
@@ -84,6 +86,24 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.InitApp();
+  }
+
+  ionViewWillEnter(){
+    console.log(1)
+    // if( this.banderaRefres ) location.reload();
+  }
+  ionViewDidEnter(){
+    console.log(2)
+  }
+  ionViewWillLeave(){
+    console.log(3)
+  }
+  ionViewDidLeave(){
+    console.log(4)
+    this.banderaRefres = true;
+  }
+  ngOnDestroy(){
+    console.log(5)
   }
   
   InitApp(){
@@ -201,7 +221,7 @@ export class HomePage implements OnInit {
 
   getSearchDestinoMapbox( event: any ){
     const searchTerm = this.data.destino;
-    if (searchTerm && searchTerm.length > 0) {
+    if (searchTerm && searchTerm.length > 0 && searchTerm.length >=3 ) {
     this.mapboxService
       .search_word(searchTerm, this.lat, this.lon)
       .subscribe((features: Feature[]) => {

@@ -72,8 +72,10 @@ export class PerfilPage implements OnInit {
     this.imagePicker.getPictures(this.options).then((results) => {
       this.disableImagen = true;
       for (var i = 0; i < results.length; i++) {
+        console.log("***************", 'data:image/jpeg;base64,' + results[i]);
         this.imageResponse.push('data:image/jpeg;base64,' + results[i]);
         this.fotoPerfil = `data:image/jpeg;base64,'${ results[i] }`
+        this.data.foto = 'data:image/jpeg;base64,' + results[i];
         this.imagenView.push({
           id: i,
           foto: 'data:image/jpeg;base64,' + results[i]
@@ -96,13 +98,17 @@ export class PerfilPage implements OnInit {
     // this._archivo.upload( this.data ).then((res)=>{
     //   console.log( res);
     // });
+    this._tools.presentLoading();
     this.data.opt_archivo = 'articulo';
-    this._archivo.upload(this.imageResponse, this.data ).then(()=>{
-      if(this.imageResponse.length >0)alert("Exitoso");
+    this._archivo.upload(this.imageResponse, this.data ).then((rta)=>{
+      if(!rta) this._tools.presentToast("Error de servidor");
       this.imageResponse = [];
       this.imagenView = [];
       this.disableImagen = false;
+      this._tools.dismisPresent();
     });
+    let accion = new PersonaAction( this.data, 'put');
+    this._store.dispatch( accion );
   }
   
 

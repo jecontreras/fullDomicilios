@@ -57,7 +57,7 @@ export class MenuPage implements OnInit {
       this._store.dispatch( accion );
       this.countNotificaciones++;
     });
-    this.informacionResena();
+    if( this.dataUser.id ) this.informacionResena();
   }
   cargaMenu(){
     this.dataService.getMenuOpts().subscribe(rta=>{ 
