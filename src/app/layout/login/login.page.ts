@@ -57,6 +57,8 @@ export class LoginPage implements OnInit {
     });
   }
   iniciar(){
+    if( !this.data.indicativo ) return this._tools.presentToast("Por favor colocar Indicativo de tu pais");
+    if( !this.data.celular ) return this._tools.presentToast("Por favor colocar numero celular");
     this._tools.presentLoading();
     if(this.data.celular && !this.data.password)return this.validarDocumento();
     else{

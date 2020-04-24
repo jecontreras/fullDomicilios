@@ -11,7 +11,7 @@ import { Lugar } from 'src/app/interfas/interfaces';
 import { ModalController, IonSegment } from '@ionic/angular';
 import { MapaPage } from '../mapa/mapa.page';
 import { UserService } from 'src/app/services/user.service';
-import { PersonaAction } from 'src/app/redux/app.actions';
+import { PersonaAction, OrdenActivoAction, ServicioActivoAction } from 'src/app/redux/app.actions';
 import { PerfilSettingsPage } from 'src/app/dialog/perfil-settings/perfil-settings.page';
 import { ResenaService } from 'src/app/service-component/resena.service';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
@@ -78,6 +78,7 @@ export class HomePage implements OnInit {
   cargaBolena: boolean = false;
   dataPagos:number;
   disabledComentarios: boolean = false;
+  interval:any;
 
   constructor(
     private _tools: ToolsService,
@@ -94,27 +95,49 @@ export class HomePage implements OnInit {
     this._store.subscribe((store:any)=>{
         store = store.name;
         this.dataUser = store.persona;
-        if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
-        if(store.servicioActivo) this.ordenActiva = store.servicioActivo[0] || {};
-        this.query = { where:{ estado: 0, tipoOrden: 0 }, skip: 0 };
-        if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
-        if( this.dataUser.domicilio ) this.query.where.tipoOrden = [ 0, 1, 2 ];
-        this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
-        this.dataUser.carga === true ? this.cargaBolena =  true : this.cargaBolena = false;
+        if( !store.servicioActivo ) store.servicioActivo = [];
+        if( Object.keys( store.servicioActivo ).length > 0 ) this.ordenActiva = store.servicioActivo[0] || {};
+        this.validanQueryUser();
     });
   }
 
-  ngOnInit(): void {
-    this.id = this.wsServices.idSocket;
-    this.query3.where.usuario = this.dataUser.id;
-    if( this.dataUser.estadoDisponible ) this.getList();
-    this.getGeolocation();
-    this.escucharSockets();
-    if(Object.keys(this.ordenActiva).length > 0) this.openMapa({});
+  validanQueryUser(){
+    if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
+    this.query = { where:{ estado: 0, tipoOrden: 0 }, skip: 0 };
+    if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
+    if( this.dataUser.domicilio ) this.query.where.tipoOrden = [ 0, 1, 2 ];
+    this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
+    this.dataUser.carga === true ? this.cargaBolena =  true : this.cargaBolena = false;
+  }
 
+  ngOnInit(): void {
+    this.InitApp();
     var intervalID = window.setTimeout(()=>{
       this.segment.value = "SOLICITUDES";
     }, 200);
+  }
+
+  InitApp(){
+    this.id = this.wsServices.idSocket;
+    this.InitProceso();
+    if(!this.id ) this.contador();
+  }
+
+  contador(){
+    this.interval = setInterval(()=>{
+      this.InitProceso();
+    },5000);
+  }
+
+  InitProceso( ){
+    this.id = this.wsServices.idSocket;
+    if(!this.id) {this._tools.presentToast("No hay Conexion"); return false;}
+    this.query3.where.usuario = this.dataUser.id;
+    if( this.dataUser.estadoDisponible ) { this.getList();}
+    this.getGeolocation();
+    this.escucharSockets();
+    this.getMisOrdenesActivar()
+    clearInterval(this.interval);
   }
 
   getSearchMyUbicacion(){
@@ -181,12 +204,7 @@ export class HomePage implements OnInit {
     this.wsServices.listen('orden-confirmada')
     .subscribe((marcador: any)=> {
       //console.log(this.listRow, marcador);
-      if(marcador.coductor.id == this.dataUser.id){
-        let item = this.listRow.find( (row:any)=> row.id == marcador.id );
-        item.check = true;
-      }else{
-        if(marcador.id) this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
-      }
+      this.procesoOrdenConfirmada( marcador );
     });
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
@@ -202,6 +220,15 @@ export class HomePage implements OnInit {
       this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
     });
 
+  }
+
+  procesoOrdenConfirmada( marcador:any ){
+    if(marcador.coductor.id == this.dataUser.id){
+      let item = this.listRow.find( (row:any)=> row.id == marcador.id );
+      item.check = true;
+    }else{
+      if(marcador.id) this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
+    }
   }
 
   async RangoOrden( orden:any ){
@@ -234,6 +261,7 @@ export class HomePage implements OnInit {
     if(this.disableView == 'SOLICITUDES'){
       this.listRow = [];
       this.getList();
+      if(Object.keys(this.ordenActiva).length > 0) this.openMapa({});
     }
     if(this.disableView == 'INGRESOS'){
       this.listRow2 = [];
@@ -254,6 +282,16 @@ export class HomePage implements OnInit {
     }
   }
 
+  getMisOrdenesActivar(){
+    this._orden.get({ where:{ coductor: this.dataUser.id, estado: 3} }).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) return false;
+      let accion = new ServicioActivoAction( res, 'post');
+      this._store.dispatch( accion );
+      this.openMapa( res );
+    },(error)=>this._tools.presentToast("Error de Conexion por favor refrescar"));
+  }
+
   getList(){
     this._tools.presentLoading();
     this.query.where.createdAt = {
@@ -264,7 +302,7 @@ export class HomePage implements OnInit {
       // console.log(res);
       this.dataFormaList(res);
       this._tools.dismisPresent();
-    });
+    },(error)=> { this._tools.presentToast( "Error de conexion"); this._tools.dismisPresent(); });
   }
 
   dataFormaList(res:any){
@@ -298,7 +336,7 @@ export class HomePage implements OnInit {
       // console.log(res);
       this.dataFormaList2(res);
       this._tools.dismisPresent();
-    });
+    },(error)=> { this._tools.presentToast( "Error de conexion"); this._tools.dismisPresent(); });
   }
 
   dataFormaList2(res:any){
@@ -323,7 +361,14 @@ export class HomePage implements OnInit {
       componentProps: {
         obj: item
       }
-    }).then(modal=>modal.present());
+    }).then( async (modal)=>{
+      modal.present();
+      const { data } = await modal.onWillDismiss();
+      this.listRow = [];
+      this.query.skip = 0;
+      this.validanQueryUser();
+      this.getList();
+    });
   }
 
   async openSettingUser( ){

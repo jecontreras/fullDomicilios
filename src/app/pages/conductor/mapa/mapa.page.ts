@@ -17,6 +17,7 @@ import { NavParams, ModalController } from '@ionic/angular';
 import { MapboxService } from 'src/app/service-component/mapbox.service';
 import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { UserService } from 'src/app/services/user.service';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -67,7 +68,8 @@ export class MapaPage implements OnInit {
     private modalCtrl: ModalController,
     private _mapbox: MapboxService,
     private _paquete: PaqueteService,
-    private callNumber: CallNumber
+    private callNumber: CallNumber,
+    private _user: UserService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store
@@ -107,6 +109,101 @@ export class MapaPage implements OnInit {
     this.InitApp();
   }
 
+  getGeolocation(){
+    let bandera:boolean = true;
+    setInterval(()=>{ 
+      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+        // console.log(geoposition)
+        if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
+        this.lat = geoposition.coords.latitude;
+        this.lon = geoposition.coords.longitude;
+        // console.log(bandera)
+        if(bandera){ 
+          this.initializeMap(); 
+          if( this.rolUser == 'usuario' ) { 
+            this.llenandoData({ opt: 'conductor' }); 
+          } if( !this.markersMapbox[ this.id ] ) { 
+            this.crearMarcador(); 
+            // buscando id del sockeets para agregarlo al mapa
+            if(this.paramsData) { this.addDialogMapa(); }
+          }
+          this.getLatLongConductor();
+        }
+        bandera = false;
+        const nuevoMarker = {
+          id: this.id,
+          lng: this.lon,
+          lat: this.lat
+        };
+        this.wsServices.emit( 'marcador-mover', nuevoMarker);
+        if(this.markersMapbox[ this.id ]){
+          this.markersMapbox[ this.id ]
+          .setLngLat([ this.lon, this.lat ]);
+        }
+        this.seconds = 3000;
+      });
+     }, this.seconds);
+  }
+
+  escucharSockets(){
+    // marcador-nuevo
+    this.wsServices.listen('marcador-nuevo')
+    .subscribe((marcador: Lugar)=> {
+      // console.log(marcador)
+      if( this.rolUser === 'conductor' || marcador.rol === "usuario" ) return false;
+      if( !this.mapa ) return false;
+      if( !this.markersMapbox[ marcador.id ] )console.log(this.mapa); this.agregarMarcador( marcador )
+    });
+
+    // marcador-mover
+
+    this.wsServices.listen('marcador-mover')
+    .subscribe((marcador: Lugar)=> {
+      if(!this.mapa) return false;
+      if(!this.markersMapbox[ marcador.id ]) return false;
+      this.markersMapbox[ marcador.id ]
+      .setLngLat([ marcador.lng, marcador.lat ]);
+    });
+
+    // marcador-borrar
+
+    this.wsServices.listen('marcador-borrar')
+    .subscribe((id: string)=> {
+      if(!this.mapa) return false;
+      if(!this.markersMapbox[id]) return false;
+      this.markersMapbox[id].remove();
+      delete this.markersMapbox[id];
+    });
+
+    // orden-nueva
+
+    this.wsServices.listen('orden-nuevo')
+    .subscribe((marcador: any)=> {
+      //console.log(marcador);
+      if( this.rolUser === 'usuario' ) return false;
+      this.listOfertas.unshift(marcador);
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
+    });
+
+    //Orden cancelada
+
+    this.wsServices.listen('orden-cancelada')
+    .subscribe((marcador: any)=> {
+      if( !marcador.id ) return false;
+      if( marcador.id == this.paramsData.id ) this.exit();
+    });
+    //orden confirmada
+
+    this.wsServices.listen('orden-confirmada')
+    .subscribe((marcador: any)=> {
+      //console.log(marcador);
+      if( this.rolUser === 'usuario' ) return false;
+      this.pushStoreServicio(marcador);
+      this.procesoOrdenConfirmada(marcador);
+    });
+
+  }
+
   getLatLongCliente(){
     let data:any = {
       origenlat: this.paramsData.origenLat,
@@ -141,27 +238,29 @@ export class MapaPage implements OnInit {
       origenlon: this.lon,
       destinolon: this.paramsData.origenLon,
       destinolat: this.paramsData.origenLat
-    }
-    this._mapbox.search_ruta( data ).subscribe((res:any)=>{
-      const interval = setInterval(row=>{
-        if(this.mapa){
-          let config:any = {
-            startLon: this.paramsData.origenLon,
-            startLat: this.paramsData.origenLat,
-            startId: "point2",
-            startColor: '#3887be',
-            destinoLon: this.paramsData.destinoLon,
-            destinoLat: this.paramsData.destinolat,
-            destinoColor: '#3773fb',
-            idRoute: 'route2',
-            rutaColor: '#28ba62'
-          };
-          this.armaRuta(res, config);
-          clearInterval(interval);
-          this.getLatLongCliente();
-        }
-      }, 1000);
-    });
+    };
+    const interval = setTimeout(row=>{
+      this._mapbox.search_ruta( data ).subscribe((res:any)=>{
+        const interval = setTimeout(row=>{
+          if(this.mapa){
+            let config:any = {
+              startLon: this.paramsData.origenLon,
+              startLat: this.paramsData.origenLat,
+              startId: "point2",
+              startColor: '#3887be',
+              destinoLon: this.paramsData.destinoLon,
+              destinoLat: this.paramsData.destinolat,
+              destinoColor: '#3773fb',
+              idRoute: 'route2',
+              rutaColor: '#28ba62'
+            };
+            this.armaRuta(res, config);
+            clearInterval(interval);
+            this.getLatLongCliente();
+          }
+        }, 1000);
+      });
+    }, 2000);
   }
 
   creandorRuta( res:any, config:any ){
@@ -197,6 +296,7 @@ export class MapaPage implements OnInit {
       });
     }
   }
+
   armaRuta( res:any, config:any ){
     if(this.mapa) this.validandoMapa(res, config);
     else{
@@ -206,6 +306,7 @@ export class MapaPage implements OnInit {
       });
     }
   }
+
   validandoMapa(res, config:any){
     this.creandorRuta(res, config);
       // let start = [ this.lon, this.lat ];
@@ -289,101 +390,13 @@ export class MapaPage implements OnInit {
       }
     });
   }
-
-  getGeolocation(){
-    let vandera:boolean = true;
-    setInterval(()=>{ 
-      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
-        //console.log(geoposition)
-        if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
-        this.lat = geoposition.coords.latitude;
-        this.lon = geoposition.coords.longitude;
-        if(vandera){ 
-          this.initializeMap(); 
-          if( Object.keys(this.paramsData).length > 0 ) this.getLatLongConductor();
-          if( this.rolUser == 'usuario' ) { 
-            this.llenandoData({ opt: 'conductor' }); 
-          } if( !this.markersMapbox[ this.id ] ) { 
-            this.crearMarcador(); 
-            // buscando id del sockeets para agregarlo al mapa
-            if(this.paramsData) { this.addDialogMapa(); }
-          }
-        }
-        vandera = false;
-        const nuevoMarker = {
-          id: this.id,
-          lng: this.lon,
-          lat: this.lat
-        };
-        this.wsServices.emit( 'marcador-mover', nuevoMarker);
-        if(this.markersMapbox[ this.id ]){
-          this.markersMapbox[ this.id ]
-          .setLngLat([ this.lon, this.lat ]);
-        }
-        this.seconds = 3000;
-      });
-     }, this.seconds);
-  }
-
-  escucharSockets(){
-    // marcador-nuevo
-    this.wsServices.listen('marcador-nuevo')
-    .subscribe((marcador: Lugar)=> {
-      // console.log(marcador)
-      if( this.rolUser === 'conductor' || marcador.rol === "usuario" ) return false;
-      if( !this.mapa ) return false;
-      if( !this.markersMapbox[ marcador.id ] )console.log(this.mapa); this.agregarMarcador( marcador )
-    });
-
-    // marcador-mover
-
-    this.wsServices.listen('marcador-mover')
-    .subscribe((marcador: Lugar)=> {
-      if(!this.mapa) return false;
-      if(!this.markersMapbox[ marcador.id ]) return false;
-      this.markersMapbox[ marcador.id ]
-      .setLngLat([ marcador.lng, marcador.lat ]);
-    });
-
-    // marcador-borrar
-
-    this.wsServices.listen('marcador-borrar')
-    .subscribe((id: string)=> {
-      if(!this.mapa) return false;
-      if(!this.markersMapbox[id]) return false;
-      this.markersMapbox[id].remove();
-      delete this.markersMapbox[id];
-    });
-
-    // orden-nueva
-
-    this.wsServices.listen('orden-nuevo')
-    .subscribe((marcador: any)=> {
-      //console.log(marcador);
-      if( this.rolUser === 'usuario' ) return false;
-      this.listOfertas.unshift(marcador);
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
-    });
-
-    //orden confirmada
-
-    this.wsServices.listen('orden-confirmada')
-    .subscribe((marcador: any)=> {
-      //console.log(marcador);
-      if( this.rolUser === 'usuario' ) return false;
-      this.pushStoreServicio(marcador);
-      this.procesoOrdenConfirmada(marcador);
-    });
-
-  }
   
   addDialogMapa(){
-    this.llenandoData({ id: this.paramsData.idClienteSockets });
+    // this.llenandoData({ id: this.paramsData.idClienteSockets });
     if( Object.keys(this.ordenActiva).length == 0 ) this.btnConductor( this.paramsData );
   }
 
   procesoOrdenConfirmada(marcador:any){
-    //console.log(marcador);
     if( marcador.coductor.id !== this.dataUser.id ) return this._tools.presentToast("Cliente no acepto");
     this._tools.presentToast("Cliente acepto");
     if( !marcador.origenConductorlat ) this.actualizarOrdenAceptada( marcador );
@@ -394,7 +407,7 @@ export class MapaPage implements OnInit {
     this.llenandoData({ id: marcador.idClienteSockets });
     this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Cliente acepto el servicio", text: `Destino ${ marcador.titulo } Costo $ ${ ( marcador['idOfertando'] || 0 ).toLocaleString(1) } COP` });
     this.paramsData = marcador;
-    this.getLatLongCliente();
+    //this.getLatLongCliente(); 
   }
 
   actualizarOrdenAceptada( marcador:any ){
@@ -481,15 +494,15 @@ export class MapaPage implements OnInit {
     .setPopup( customPopup )
     .addTo( this.mapa );
 
-    marker.on('drag', ()=>{
-      const lngLat = marker.getLngLat();
-      //console.log( lngLat );
-      const nuevoMarker = {
-        id: marcador.id,
-        ...lngLat
-      };
-      this.wsServices.emit( 'marcador-mover', nuevoMarker);
-    });
+    // marker.on('drag', ()=>{
+    //   const lngLat = marker.getLngLat();
+    //   //console.log( lngLat );
+    //   const nuevoMarker = {
+    //     id: marcador.id,
+    //     ...lngLat
+    //   };
+    //   this.wsServices.emit( 'marcador-mover', nuevoMarker);
+    // });
 
     // btnBorrar.addEventListener( 'click', ()=>{
     //   marker.remove();
@@ -588,12 +601,21 @@ export class MapaPage implements OnInit {
     this.exit();
   }
 
-  removePactado(marcador){
+  removePactado( res:any ){
     for( let [id, item] of Object.entries(this.markersMapbox) ){
-      //(console.log(id, item, marcador);
-      if(id === this.id || id === ( marcador.idClienteSockets || marcador.idConductorSockets )){}
+      console.log(id, res);
+      if(id === this.id ){}
       else this.markersMapbox[id].remove();
     }
+    this.llenoConductor( res );
+  }
+
+  llenoConductor( res ){
+    this._user.get( { where: { id: res.usuario.id }}).subscribe(( res:any )=>{
+      res = res.data[0];
+      if(!res) this._tools.presentToast("Error Cliente no encontrado");
+      this.llenandoData({ id: res.idSockets });
+    },(error)=> { this._tools.presentToast("A ocurrido un Error Por Favor refrescar");});
   }
 
   finalizarServicio(){
@@ -618,7 +640,7 @@ export class MapaPage implements OnInit {
       let accion = new ServicioActivoAction(res, 'delete');
       this._store.dispatch(accion);
       this.exit();
-    },(error)=> {this._tools.presentToast("Error al actualizar servicio"); this.disabledInfo = false; } );
+    },(error)=> {this._tools.presentToast("Error al actualizar servicio"); this.disableBtnInfo = false; } );
   }
 
 }

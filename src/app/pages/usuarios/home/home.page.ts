@@ -15,6 +15,8 @@ import { ServicioActivoAction, OrdenActivoAction } from 'src/app/redux/app.actio
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 import { ModalController } from '@ionic/angular';
 import { CalificacionPage } from 'src/app/dialog/calificacion/calificacion.page';
+import { UserService } from 'src/app/services/user.service';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 interface RespMarcadores {
   [ key:string ]: Lugar
@@ -56,6 +58,10 @@ export class HomePage implements OnInit {
 
   banderaRefres:boolean = false;
 
+  interval:any;
+  disableRefresco:boolean = false;
+  banderaPactado:boolean = false;
+
   constructor(
     private http: HttpClient,
     private wsServices: WebsocketService,
@@ -66,6 +72,8 @@ export class HomePage implements OnInit {
     private _Ofertando: OfertandoService,
     private mapboxService: MapboxService,
     private modalCtrl: ModalController,
+    private callNumber: CallNumber,
+    private _user: UserService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store
@@ -76,7 +84,7 @@ export class HomePage implements OnInit {
           this.rolUser = this.dataUser.rol.rol;
         }
         if( store.ordenactivo ) {
-          if(Object.keys( store.ordenactivo ).length >0 ) { this.dataOrdenActiva = store.ordenactivo[0]; this.disabledOpt = 'ordenactiva'; }
+          if(Object.keys( store.ordenactivo ).length >0 ) { this.dataOrdenActiva = store.ordenactivo[0]; this.procesoOrdenActiva( false ) }
           else this.dataOrdenActiva = false;
         }
         else this.dataOrdenActiva = false;
@@ -86,30 +94,46 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.InitApp();
+    if( this.dataOrdenActiva ) this.procesoOrdenActiva( true );
   }
 
-  ionViewWillEnter(){
-    console.log(1)
-    // if( this.banderaRefres ) location.reload();
-  }
-  ionViewDidEnter(){
-    console.log(2)
-  }
-  ionViewWillLeave(){
-    console.log(3)
-  }
+  // ionViewWillEnter(){
+  //   console.log(1)
+  //   // if( this.banderaRefres ) location.reload();
+  // }
+  // ionViewDidEnter(){
+  //   console.log(2)
+  // }
+  // ionViewWillLeave(){
+  //   console.log(3)
+  // }
   ionViewDidLeave(){
     console.log(4)
     this.banderaRefres = true;
   }
-  ngOnDestroy(){
-    console.log(5)
-  }
+  // ngOnDestroy(){
+  //   console.log(5)
+  // }
   
   InitApp(){
     this.id = this.wsServices.idSocket;
+    this.InitProceso();
+    if( !this.id ) this.contador();
+  }
+
+  contador(){
+    this.interval = setInterval(()=>{
+      this.InitProceso();
+    },5000);
+  }
+
+  InitProceso( ){
+    this.id = this.wsServices.idSocket;
+    console.log( this.id );
+    if(!this.id) { this._tools.presentToast("No hay Conexion"); return false;}
     this.getGeolocation();
     this.escucharSockets();
+    clearInterval(this.interval);
   }
 
   resetInit(){
@@ -139,7 +163,7 @@ export class HomePage implements OnInit {
         if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
         this.lat = geoposition.coords.latitude;
         this.lon = geoposition.coords.longitude;
-        if(vandera){ this.initializeMap(); this.getSearchMyUbicacion(); if( this.rolUser == 'usuario' ) { this.llenandoData({ opt: 'conductor' }); } if( !this.markersMapbox[ this.id ] ) this.crearMarcador(); }
+        if(vandera){ this.initializeMap(); this.getSearchMyUbicacion(); if( this.rolUser == 'usuario' && !this.banderaPactado ) { this.llenandoData({ opt: 'conductor' }); } if( !this.markersMapbox[ this.id ] ) this.crearMarcador(); }
         vandera = false;
         const nuevoMarker = {
           id: this.id,
@@ -200,16 +224,7 @@ export class HomePage implements OnInit {
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
       // console.log(marcador);
-      if( marcador.usuario.id !== this.dataUser.id ) return false;
-      this._tools.presentToast("Servicio a Finalizado");
-      this.llenandoData({ opt: 'conductor' });
-      this.disabledConfirm = false;
-      this.disabledOpt = 'cliente';
-      this.data = {};
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
-      let accion = new OrdenActivoAction( marcador, 'delete');
-      this._store.dispatch( accion );
-      this.openCalificacion( marcador );
+     this.procesoOrdenFinalizada( marcador );
     });
   }
 
@@ -293,16 +308,16 @@ export class HomePage implements OnInit {
     .setPopup( customPopup )
     .addTo( this.mapa );
 
-    marker.on('drag', ()=>{
-      const lngLat = marker.getLngLat();
-      //console.log( lngLat );
-      const nuevoMarker = {
-        id: marcador.id,
-        ...lngLat
-      };
-      if( marcador.id  == this.id ) { this.lat = lngLat.lat; this.lon = lngLat.lng; }
-      this.wsServices.emit( 'marcador-mover', nuevoMarker);
-    });
+    // marker.on('drag', ()=>{
+    //   const lngLat = marker.getLngLat();
+    //   //console.log( lngLat );
+    //   const nuevoMarker = {
+    //     id: marcador.id,
+    //     ...lngLat
+    //   };
+    //   if( marcador.id  == this.id ) { this.lat = lngLat.lat; this.lon = lngLat.lng; }
+    //   this.wsServices.emit( 'marcador-mover', nuevoMarker);
+    // });
 
     // btnBorrar.addEventListener( 'click', ()=>{
     //   marker.remove();
@@ -319,7 +334,6 @@ export class HomePage implements OnInit {
 
   crearMarcador(){
     //this.id = new Date().toISOString();
-    if(!this.id) return false;
     const customMarker: Lugar = {
       id: this.id,
       userID: this.dataUser.id,
@@ -334,6 +348,10 @@ export class HomePage implements OnInit {
 
     //emitiendo evento marcador nuevo
     this.wsServices.emit( 'marcador-nuevo', customMarker);
+  }
+
+  codigo(){
+    return (Date.now().toString(20).substr(2, 3) + Math.random().toString(20).substr(2, 3)).toUpperCase();
   }
 
   exitOrden(){
@@ -414,19 +432,61 @@ export class HomePage implements OnInit {
       this._tools.presentToast("Confirmada la Orden");
       this.disableBtn = false;
       this.disabled = false;
-      this.removePactado( this.data );
+      this.removePactado( res );
       this.data = {};
       let accion = new OrdenActivoAction( res, 'put');
       this._store.dispatch(accion);
     },(error)=>{ console.error(error); this._tools.presentToast("Error al Confirmar Orden"); this.disableBtn=false; });
   }
 
-  removePactado(marcador){
+  llenoConductor( res ){
+    this._user.get( { where: { id: res.coductor.id }}).subscribe(( res:any )=>{
+      res = res.data[0];
+      if(!res) this._tools.presentToast("Error conductor no encontrado");
+      this.llenandoData({ id: res.idSockets });
+    },(error)=> { this._tools.presentToast("A ocurrido un Error Por Favor refrescar");});
+  }
+
+  removePactado( res:any ){
     for( let [id, item] of Object.entries(this.markersMapbox) ){
-      //(console.log(id, item, marcador);
-      if(id === this.id || id === ( marcador.idClienteSockets || marcador.idConductorSockets )){}
+      console.log(id, res);
+      if(id === this.id ){}
       else this.markersMapbox[id].remove();
     }
+    this.llenoConductor( res );
+  }
+
+  async procesoOrdenActiva( opt ){
+    this.disabledOpt = 'ordenactiva'; this.disableRefresco = true; if( this.dataOrdenActiva.estado == 2) this.banderaPactado = true;
+    let result:any = await this.getOrdenActivas( this.dataOrdenActiva );
+    if( opt ) if( result ) return this.procesoOrdenFinalizada( result );
+    // opt falso es por que no se a recargado la pagina o la app y no se  a perdio la informacion;
+    if( !opt ) return false;
+    if( this.dataOrdenActiva.coductor ) this.llenandoData( this.dataOrdenActiva );
+  }
+
+  async getOrdenActivas( obj:any ){
+    return new Promise((resolve) =>{
+      this._ordenes.get( { where: { id: obj.id } }).subscribe((res:any)=>{
+        res = res.data[0];
+        if(!res) resolve(false);
+        if(res.estado == 2) return  resolve( res );
+        return resolve(false)
+      });
+    });
+  }
+
+  procesoOrdenFinalizada( marcador:any ){
+    if( marcador.usuario.id !== this.dataUser.id ) return false;
+    this._tools.presentToast("Servicio a Finalizado");
+    this.llenandoData({ opt: 'conductor' });
+    this.disabledConfirm = false;
+    this.disabledOpt = 'cliente';
+    this.data = {};
+    this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
+    let accion = new OrdenActivoAction( marcador, 'delete');
+    this._store.dispatch( accion );
+    this.openCalificacion( marcador );
   }
 
   CancelarServicio(){
@@ -461,6 +521,12 @@ export class HomePage implements OnInit {
         obj: item
       }
     }).then(modal=>modal.present());
+  }
+
+  openLlamadas(){
+    this.callNumber.callNumber(this.infoCliente.coductor.celular, true)
+    .then(res => console.log('Launched dialer!', res))
+    .catch(err => console.log('Error launching dialer', err));
   }
 
 }

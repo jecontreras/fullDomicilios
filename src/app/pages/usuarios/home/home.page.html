@@ -89,7 +89,10 @@
   <ion-toolbar class="ion-padding">
     <ion-label>
       <p>Destino {{ dataOrdenActiva.titulo }} Costo ${{ ( dataOrdenActiva.ofreceCliente || 0 ).toLocaleString(1) }} COP</p>
+      <ion-text (click)="openLlamadas()" color="primary">
+        <p>Numero de contacto +{{ infoCliente.coductor.indicativo }} {{ infoCliente.coductor.celular }}</p>
+      </ion-text>
     </ion-label>
-    <ion-button *ngIf="dataOrdenActiva.estado != 3" [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
+    <ion-button *ngIf="dataOrdenActiva.estado != 3 || disableRefresco " [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
   </ion-toolbar>
 </ion-footer>
