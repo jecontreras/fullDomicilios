@@ -79,8 +79,8 @@
     <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="number">
     </ion-input>
     <ion-textarea [(ngModel)]="data.descripcion" placeholder="Descripcion" ></ion-textarea>
-    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden'" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenando Servicio</ion-button>
-    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente'" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
+    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden' && id" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenando Servicio</ion-button>
+    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente' && id" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
     <!-- <ion-button color="danger" fill="clear" expand="full" (click)="exitOrden()" class="ion-padding ion-text-center">Cerrar</ion-button> -->
   </ion-toolbar>
 </ion-footer>
@@ -89,10 +89,10 @@
   <ion-toolbar class="ion-padding">
     <ion-label>
       <p>Destino {{ dataOrdenActiva.titulo }} Costo ${{ ( dataOrdenActiva.ofreceCliente || 0 ).toLocaleString(1) }} COP</p>
-      <ion-text (click)="openLlamadas()" color="primary">
-        <p>Numero de contacto +{{ infoCliente.coductor.indicativo }} {{ infoCliente.coductor.celular }}</p>
+      <ion-text (click)="openLlamadas()" color="primary" *ngIf="dataOrdenActiva.coductor">
+        <p>Numero de contacto +{{ dataOrdenActiva.coductor.indicativo }} {{ dataOrdenActiva.coductor.celular }}</p>
       </ion-text>
     </ion-label>
-    <ion-button *ngIf="dataOrdenActiva.estado != 3 || disableRefresco " [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
+    <ion-button *ngIf="dataOrdenActiva.estado != 3 || disableRefresco && id" [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
   </ion-toolbar>
 </ion-footer>

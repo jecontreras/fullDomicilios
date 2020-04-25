@@ -9,6 +9,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import { MenuPageModule } from 'src/app/layout/menu/menu.module';
 import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @NgModule({
   imports: [
@@ -18,6 +19,9 @@ import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion
     HomePageRoutingModule,
     MenuPageModule,
     CalificacionPageModule
+  ],
+  providers: [
+    CallNumber
   ],
   declarations: [HomePage]
 })

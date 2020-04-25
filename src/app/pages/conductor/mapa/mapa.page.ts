@@ -465,6 +465,16 @@ export class MapaPage implements OnInit {
     });
     this.canvas = this.mapa.getCanvasContainer();
     this.mapa.addControl(new Mapboxgl.NavigationControl());
+    const geolocate:any = new Mapboxgl.GeolocateControl({
+      positionOptions: {
+          enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    });
+    this.mapa.addControl(geolocate)
+    setTimeout(function() {
+      geolocate._geolocateButton.click();
+    },5000);
   }
 
   agregarMarcador( marcador: Lugar) {
@@ -587,7 +597,6 @@ export class MapaPage implements OnInit {
       }, (error)=> resolve( false ));
     });
   }
-
 
   activarCuenta(){
     window.open( URLACTIVACION );

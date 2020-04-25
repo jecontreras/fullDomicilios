@@ -430,7 +430,7 @@ export class HomePage implements OnInit {
     this._resena.get( this.query3 ).subscribe((res:any)=>{
       this.dataFormaListComentario(res);
       this._tools.dismisPresent();
-    });
+    },(error)=> this._tools.dismisPresent());
   }
 
   dataFormaListComentario(res:any){

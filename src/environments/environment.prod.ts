@@ -11,6 +11,7 @@ export const environment = {
   mapbox: {
     accessTokens: "pk.eyJ1IjoiamVjb250cmVyYXMiLCJhIjoiY2s3eHBtdnU5MDM4bjNtbWMwNzd6ZnRzNCJ9.xiO6H9iPMJh_PVQOjC2FeA"
   },
+  urlFront: "https://gpsmaster-d6ee7.firebaseapp.com/",
   vercionApp: "1.0"
   
 };

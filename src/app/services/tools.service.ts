@@ -27,13 +27,18 @@ export class ToolsService {
   
   async presentLoading(mensaje:string = "") {
     this.loading = await this.loadingCrl.create({
-      message: mensaje || 'Please wait...',
-      duration: 20000
+      spinner: 'crescent',
+      message: 'Iniciando...',
+      translucent: true,
+      cssClass: 'custom-class custom-loading'
     });
     await this.loading.present();
   }
   async dismisPresent(){
-    if(this.loading) await this.loading.dismiss();;
+    if(this.loading) this.loading.dismiss();
+    else{
+      let interval:any = setInterval(()=>{ if(this.loading) { this.loading.dismiss(); clearInterval( interval ); } },2000)
+    }
   }
 
   async presentNotificacion(mensaje:any){

@@ -17,7 +17,7 @@
     <ion-card-content>
       <p [innerHtml]="item.descripcion"></p>
       <ion-text color="primary">
-        <a [href]="item.urlInfo"> Mas Informacion </a>
+        <a class="pointer" (click)="OpenEpayco( item )"> Adquirir Paquete</a>
       </ion-text>
     </ion-card-content>
   </ion-card>

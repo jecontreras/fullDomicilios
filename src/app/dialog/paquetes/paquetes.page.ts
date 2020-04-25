@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 declare var ePayco: any;
 
 const URL = environment.url;
+const URLFRONT = environment.urlFront;
 
 @Component({
   selector: 'app-paquetes',
@@ -18,6 +19,7 @@ export class PaquetesPage implements OnInit {
 
   listPaquetes:any = [];
   dataUser:any = {};
+  disableBtn:boolean = false;
 
   constructor(
     private _paquete: PaqueteService,
@@ -45,7 +47,10 @@ export class PaquetesPage implements OnInit {
   }
   
   OpenEpayco( obj:any ){
+    if( this.disableBtn ) return false;
     if( !obj.paquete ) return this._tools.presentToast("Error de formulario Por Favor serrar la app")
+    this.disableBtn = true;
+    this._tools.presentLoading();
     const handler:any = ePayco.checkout.configure({
       key: '90506d3b72d22b822f53b54dcf22dc3a',
       test: true
@@ -69,7 +74,7 @@ export class PaquetesPage implements OnInit {
       extra3: "extra3",
       confirmation: URL+"/paquete/comprado",
       //confirmation: "https://f37798ba.ngrok.io/paquete/comprado",
-      response: "https://zapatosgold.000webhostapp.com",
+      response: URLFRONT,
 
       //Atributos cliente
       name_billing: this.dataUser.nombre || '',
@@ -80,6 +85,10 @@ export class PaquetesPage implements OnInit {
     }
     this.createPago( data.invoice );
     handler.open(data)
+    setTimeout(()=>{
+      this.disableBtn = false;
+      this._tools.dismisPresent();
+    }, 5000)
   }
 
   createPago( id:string ){

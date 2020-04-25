@@ -220,7 +220,7 @@
     <p>Saldo: COP ${{ ( dataPagos || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}</p>
     <p>Reembolso: COP ${{ dataUser.rembolso || 0 }}</p>
     <p>Estado Ciudad: {{ dataUser.departamento || 'Ordinario' }}</p>
-    <ion-button expand="full" color="success" (click)="registrarCuenta()"> REGISTRO EN LÍNEA </ion-button>
+    <!-- <ion-button expand="full" color="success" (click)="registrarCuenta()"> REGISTRO EN LÍNEA </ion-button> -->
     <ion-button expand="full" color="warning" (click)="OpenPaquetes()"> ABONE A SU CUENTA </ion-button>
     <ion-button expand="full" color="warning" (click)="OpenHistorialPagos()"> HISTORIAL DE MOVIMIENTOS </ion-button>
   </ion-list>
@@ -230,7 +230,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
-      <ion-segment-button mode="md" [value]="item" *ngFor="let item of listPage">
+      <ion-segment-button mode="md" class="textSegtman" [value]="item" *ngFor="let item of listPage">
         <ion-label text-capitalize> {{ item }}</ion-label>
       </ion-segment-button>
     </ion-segment>

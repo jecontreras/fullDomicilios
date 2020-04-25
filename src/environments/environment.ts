@@ -17,6 +17,7 @@ export const environment = {
     // pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg
     accessTokens: "pk.eyJ1IjoiamVjb250cmVyYXMiLCJhIjoiY2s3eHBtdnU5MDM4bjNtbWMwNzd6ZnRzNCJ9.xiO6H9iPMJh_PVQOjC2FeA"
   },
+  urlFront: "https://gpsmaster-d6ee7.firebaseapp.com/",
   vercionApp: "1.0"
 };
 

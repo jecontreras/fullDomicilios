@@ -21,6 +21,7 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
 interface RespMarcadores {
   [ key:string ]: Lugar
 };
+declare const $: any;
 
 @Component({
   selector: 'app-home',
@@ -133,6 +134,7 @@ export class HomePage implements OnInit {
     if(!this.id) { this._tools.presentToast("No hay Conexion"); return false;}
     this.getGeolocation();
     this.escucharSockets();
+    if( this.dataOrdenActiva ) this.getOfertasConductor();
     clearInterval(this.interval);
   }
 
@@ -140,6 +142,14 @@ export class HomePage implements OnInit {
     this.markersMapbox = {};
     this.lugares = {};
     this.InitApp();
+  }
+
+  getOfertasConductor(){
+    this._Ofertando.get( { where: { orden: this.dataOrdenActiva.id } } ).subscribe(( res:any )=>{
+      res = res.data;
+      if( Object.keys(res).length == 0 ) return false;
+      this.listOfertas = res;
+    });
   }
 
   llenandoData(params:any){
@@ -214,7 +224,7 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('ofreciendo-nuevo')
     .subscribe((marcador: any)=> {
-      //console.log(marcador);
+      console.log(marcador);
       if( this.dataUser.id !== marcador.orden.usuario ) return false;
       this.listOfertas.unshift( marcador );
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Ofreciendo servicio", text: `${ marcador['usuario'].nombre } Te LLevo $ ${ ( marcador['ofrece'] || 0 ).toLocaleString(1) } COP` });
@@ -273,12 +283,16 @@ export class HomePage implements OnInit {
       center: [ this.lon, this.lat],
       zoom: 16.6
     });
-    this.mapa.addControl(new Mapboxgl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true
-        },
-        trackUserLocation: true
-    }));
+    const geolocate:any = new Mapboxgl.GeolocateControl({
+      positionOptions: {
+          enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    });
+    this.mapa.addControl(geolocate)
+    setTimeout(function() {
+      geolocate._geolocateButton.click();
+    },5000);
   }
 
   agregarMarcador( marcador: Lugar) {
@@ -432,6 +446,7 @@ export class HomePage implements OnInit {
       this._tools.presentToast("Confirmada la Orden");
       this.disableBtn = false;
       this.disabled = false;
+      this.dataOrdenActiva.conductor =  res.conductor;
       this.removePactado( res );
       this.data = {};
       let accion = new OrdenActivoAction( res, 'put');
@@ -467,9 +482,9 @@ export class HomePage implements OnInit {
 
   async getOrdenActivas( obj:any ){
     return new Promise((resolve) =>{
-      this._ordenes.get( { where: { id: obj.id } }).subscribe((res:any)=>{
+      this._ordenes.get( { where: { id: obj.id, estado: 2 } }).subscribe((res:any)=>{
         res = res.data[0];
-        if(!res) resolve(false);
+        if(!res) return resolve(false);
         if(res.estado == 2) return  resolve( res );
         return resolve(false)
       });
@@ -483,13 +498,15 @@ export class HomePage implements OnInit {
     this.disabledConfirm = false;
     this.disabledOpt = 'cliente';
     this.data = {};
+    this.dataOrdenActiva = {};
     this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Servicio Finalizado", text: `Gracias Por Usar Nuestro Servicio Te veremos pronto ${ marcador.usuario.nombre }` });
     let accion = new OrdenActivoAction( marcador, 'delete');
     this._store.dispatch( accion );
     this.openCalificacion( marcador );
   }
 
-  CancelarServicio(){
+  async CancelarServicio(){
+    if( await this.validarCancelacion() ) return this.procesoCancelarService( this.dataOrdenActiva )
     let data:any = {
       id: this.dataOrdenActiva.id,
       estado: 1
@@ -497,15 +514,32 @@ export class HomePage implements OnInit {
     this.disableBtnOrdenCancelar = true;
     this._ordenes.editar(data).subscribe((res:any)=>{
       //console.log(res);
-      let accion = new OrdenActivoAction( res, 'delete');
-      this._store.dispatch( accion );
-      this.dataOrdenActiva = {};
-      this._tools.presentToast("Cancelado Servicio");
-      this.disableBtnOrdenCancelar = false;
-      this.disabled = false;
-      this.disabledOpt = "orden";
       this.wsServices.emit( 'orden-cancelada', res);
     }, ( error:any)=> { this._tools.presentToast("Error al cancelar el servicio"); this.disableBtnOrdenCancelar = false; });
+  }
+
+  procesoCancelarService( res ){
+    let accion = new OrdenActivoAction( res, 'delete');
+    this._store.dispatch( accion );
+    this.dataOrdenActiva = {};
+    this._tools.presentToast("Cancelado Servicio");
+    this.disableBtnOrdenCancelar = false;
+    this.disabled = false;
+    this.disabledOpt = "orden";
+  }
+
+  async validarCancelacion(){
+    let data:any = {
+      id: this.dataOrdenActiva.id,
+      estado: 2
+    };
+    return new Promise( resolve =>{
+      this._ordenes.get( { where: data }).subscribe(( res:any )=>{
+        res = res.data[0];
+        if(res) resolve( true );
+        else resolve( false )
+      },(error=> resolve( false ) ));
+    })
   }
 
   ocultarMenu(){
