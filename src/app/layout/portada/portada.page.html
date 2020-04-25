@@ -2,11 +2,14 @@
   <ion-slides [options]="sliderOpts">
     <ion-slide>
       <div class="ion-text-center">
-        <img src="./assets/portada.jpg">
-        <ion-button color="success" [routerLink]="['/login']">Iniciar</ion-button>
-        <ion-text color="success" (click)="ayuda()">
-          <p>¿Como funciona?</p>
-        </ion-text>
+        <!-- <img src="./assets/portada.jpg"> -->
+        <h5>LOGO</h5>
+        <ion-list lines="none">
+          <ion-item>
+            <ion-button slot="start" color="success" [routerLink]="['/login']">Iniciar sesión</ion-button>
+            <ion-button slot="end" color="success" [routerLink]="['/registro']">registrate</ion-button>
+          </ion-item>
+        </ion-list>
       </div>
     </ion-slide>
   </ion-slides>

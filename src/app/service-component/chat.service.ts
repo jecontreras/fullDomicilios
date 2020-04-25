@@ -14,6 +14,10 @@ export class ChatService {
   get(query: any){
     return this._model.querys<CHAT>('chat/querys', query, 'post');
   }
+
+  getDetallado(query: any){
+    return this._model.querys<CHAT>('chatdetallado/querys', query, 'post');
+  }
   
   editar (query: any){
     return this._model.querys<CHAT>('chat/'+query.id, query, 'put');

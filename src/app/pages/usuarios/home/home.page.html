@@ -1,98 +1,127 @@
-<!-- <ion-header>
+<ion-header *ngIf="view != 'home'">
   <ion-toolbar>
-    <ion-title>home</ion-title>
+    <ion-button slot="start" fill="clear" (click)="atras()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-text color="dark" *ngIf="view == 'perfil'">
+      <p>MI PERFIL</p>
+    </ion-text>
   </ion-toolbar>
-</ion-header> -->
+</ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <ion-toolbar *ngIf="view == 'home'">
+    <ion-toolbar>
+      <ion-text color="dark">
+        <h1>BIENVENIDO USUARIO</h1>
+      </ion-text>
+    </ion-toolbar>
+    <br><br>
+    
+    <ion-text color="dark">
+      <h4>Pasos a seguir para pedir un mandado</h4>
+    </ion-text>
+    <br><br><br><br><br><br><br>
+    <div class="ion-text-center">
+      <ion-button size="large" (click)="openSolicitar()">
+        SOLICITAR UN MANDADO
+      </ion-button>
+    </div>
+  </ion-toolbar>
 
-  <ion-buttons>
-    <ion-menu-button>
-      <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
-    </ion-menu-button>
-  </ion-buttons>
-
-  <ion-list detail class="ion-listNotificacion" *ngIf="listOfertas.length > 0">
-    <ion-list-header>
-      Notificaciones
-    </ion-list-header>
-
-    <ion-item *ngFor="let item of listOfertas; let idx=index;">
-      <ion-avatar slot="start">
-        <img [src]="item.foto || './assets/perfil.png'">
-      </ion-avatar>
-      <ion-text *ngIf="item.ofrece" (click)="btnCliente(item)" color="dark">
+  <ion-toolbar *ngIf="view == 'chat'">
+    <ion-card class="altoCars">
+      <ion-card-header class="colorTitulo">
+        <div class="ion-text-center">
+          <ion-card-title color="medium">BANDEJA DE MENSAJES</ion-card-title>
+        </div>
+      </ion-card-header>
+    </ion-card>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+      <ion-refresher-content>
+      </ion-refresher-content>
+    </ion-refresher>
+  
+    <ion-list>
+  
+      <ion-item *ngFor="let item of listRow">
+        <ion-avatar slot="start">
+          <img *ngIf="dataUser.id != item.reseptor.id" [src]="item['reseptor']?.foto || './assets/perfil.png'">
+          <img *ngIf="dataUser.id == item.reseptor.id" [src]="item['emisor']?.foto || './assets/perfil.png'">
+        </ion-avatar>
         <ion-label>
-          <p> Conductor {{ item['usuario']?.nombre | slice: 0: 20 }} </p>
-          <p> Te LLevo ${{ ( item['ofrece'] || 0 ).toLocaleString(1) }} COP </p>
+          <ion-text color="dark">
+            <h2 *ngIf="dataUser.id != item.reseptor.id">{{ item['reseptor'].nombre }}</h2>
+            <h2 *ngIf="dataUser.id == item.reseptor.id">{{ item['emisor'].nombre }}</h2>
+          </ion-text>
         </ion-label>
-      </ion-text>
-      <ion-button slot="end" fill="clear" color="danger" (click)="this.listOfertas.splice( idx, 1)">
-        <ion-icon name="close-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
-
-  <ion-button slot="fixed" id="btnRefres" fill="clear" color="dark" (click)="resetInit()" *ngIf="!disabledInfo">
-    <ion-icon name="refresh-circle-outline"></ion-icon>
-  </ion-button>
-
-  <div class="mapa" id="mapa"></div>
-
-  <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="rolUser == 'usuario'">
-    <ion-fab-button color="dark">
-      <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button color="light" (click)="solicitar('Particular')">
-        <ion-icon name="car-sport-outline"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="light" (click)="solicitar('Carga')">
-        <ion-icon name="bus-outline"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="light" (click)="solicitar('Domicilio')">
-        <ion-icon name="fast-food-outline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
-</ion-content>
-
-<ion-footer *ngIf="disabled">
-  <ion-toolbar class="ion-padding toolbarFooter" [ngClass]="{'toolbarFooterOpen': addresses.length > 0}">
-    <ion-item lines="none">
-      <ion-text color="dark" slot="start">
-        <h5>Servicio {{ data.tipo }}</h5>
-      </ion-text>
-      <ion-button slot="end" id="btnRefres" fill="clear" color="dark" (click)=" ocultarMenu() ">
-        <ion-icon name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.destino" placeholder="Destino" required type="text" (keyup)="getSearchDestinoMapbox($event)">
-    </ion-input>
-    <!-- <ion-searchbar debounce=500 (ionChange)="getSearchDestinoMapbox($event)" [value]="selectedAddress"></ion-searchbar> -->
-    <ion-list lines="none" *ngIf="addresses.length > 0">
-      <ion-item button *ngFor="let address of addresses" (click)="onSelect(address)">
-        <ion-icon name="pin"></ion-icon>
-        {{ address.place_name }}
+        <ion-button color="primary" (click)="openChat( item )" slot="end">
+          ABRIR
+        </ion-button>
       </ion-item>
     </ion-list>
-    <ion-input class="ion-color-lavel" [(ngModel)]="data.ofreces" [disabled]="disabledConfirm" placeholder="Cuanto ofreces" required type="number">
-    </ion-input>
-    <ion-textarea [(ngModel)]="data.descripcion" placeholder="Descripcion" ></ion-textarea>
-    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'orden' && id" color="primary" fill="clear" expand="full" (click)="btnOrdenar()" class="ion-padding ion-text-center">Ordenando Servicio</ion-button>
-    <ion-button [disabled]="disableBtn" *ngIf="disabledOpt == 'cliente' && id" color="primary" fill="clear" expand="full" (click)="btnConfirn()" class="ion-padding ion-text-center">Confirmar Servicio</ion-button>
-    <!-- <ion-button color="danger" fill="clear" expand="full" (click)="exitOrden()" class="ion-padding ion-text-center">Cerrar</ion-button> -->
-  </ion-toolbar>
-</ion-footer>
-
-<ion-footer *ngIf="disabledOpt == 'ordenactiva'">
-  <ion-toolbar class="ion-padding">
-    <ion-label>
-      <p>Destino {{ dataOrdenActiva.titulo }} Costo ${{ ( dataOrdenActiva.ofreceCliente || 0 ).toLocaleString(1) }} COP</p>
-      <ion-text (click)="openLlamadas()" color="primary" *ngIf="dataOrdenActiva.coductor">
-        <p>Numero de contacto +{{ dataOrdenActiva.coductor.indicativo }} {{ dataOrdenActiva.coductor.celular }}</p>
+    
+    <div class="ion-text-center" *ngIf="listRow.length == 0">
+      <ion-text colo="dark">
+        <span>Lista Vacia</span>
       </ion-text>
-    </ion-label>
-    <ion-button *ngIf="dataOrdenActiva.estado != 3 || disableRefresco && id" [disabled]="disableBtnOrdenCancelar" color="success" expand="full" (click)="CancelarServicio()" class="ion-padding ion-text-center">Cancelar servicio</ion-button>
+    </div>
+  
+    <ion-infinite-scroll threshold="150px"
+                           (ionInfinite)="loadData( $event )"
+                          >
+      <ion-infinite-scroll-content loadingSpinner="crescent"
+                                    loadingtext="Cargando data..">
+  
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-toolbar>
+
+  <ion-toolbar *ngIf="view == 'perfil'">
+    <div class="ion-text-center">
+      <p>
+        <ion-chip class="chipPerfil">
+          <ion-avatar class="avatarPerfil">
+            <img [src]="dataUser.foto || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjYzVkYmZmIiBkPSJNMCAwaDUxMnY1MTJIMHoiLz48cGF0aCBkPSJNMjU2IDMwNGM2MS42IDAgMTEyLTUwLjQgMTEyLTExMlMzMTcuNiA4MCAyNTYgODBzLTExMiA1MC40LTExMiAxMTIgNTAuNCAxMTIgMTEyIDExMnptMCA0MGMtNzQuMiAwLTIyNCAzNy44LTIyNCAxMTJ2NTZoNDQ4di01NmMwLTc0LjItMTQ5LjgtMTEyLTIyNC0xMTJ6IiBmaWxsPSIjODJhZWZmIi8+PC9zdmc+'" />
+          </ion-avatar>
+          <ion-label>{{ dataUser.nombre }}</ion-label>
+        </ion-chip>
+      </p>
+    </div>
+
+    <ion-list>
+      <ion-item>
+        <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.email" required type="text"></ion-input>
+        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.celular" required type="text"></ion-input>
+        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-textarea rows="4" class="inputColor" cols="10" [(ngModel)]="dataUser.direccion"></ion-textarea>
+        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+  </ion-toolbar>
+
+</ion-content>
+
+<ion-footer class="ion-padding">
+  <ion-toolbar *ngIf="view == 'perfil'">
+    <div class="ion-text-center">
+      <ion-button color="primary" (click)="cerrar_seccion()">
+        CERRAR SESIÓN
+      </ion-button>
+    </div>
+  </ion-toolbar>
+  <ion-segment color="tertiary" value="favorite" (ionChange)="cambioVista( $event )"> 
+    <ion-segment-button value="chat">
+      <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="perfil">
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
 </ion-footer>

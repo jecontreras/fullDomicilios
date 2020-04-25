@@ -27,7 +27,11 @@ const routes: Routes = [
         loadChildren: () => import('./carga/carga.module').then( m => m.CargaPageModule)
       }
     ]
+  },  {
+    path: 'mapa',
+    loadChildren: () => import('./mapa/mapa.module').then( m => m.MapaPageModule)
   },
+
 
 ];
 

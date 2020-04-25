@@ -8,8 +8,9 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { MenuPageModule } from 'src/app/layout/menu/menu.module';
-import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { SolicitarPageModule } from 'src/app/dialog/solicitar/solicitar.module';
+import { ChatDetalladoPageModule } from 'src/app/dialog/chat-detallado/chat-detallado.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
     IonicModule,
     HomePageRoutingModule,
     MenuPageModule,
-    CalificacionPageModule
+    SolicitarPageModule,
+    ChatDetalladoPageModule
   ],
   providers: [
     CallNumber

@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list *ngIf="vista == 'form'">
+    <ion-item>
+      <ion-label class="ion-color-lavel label" position="stacked">¿Qué diligencia haremos? <ion-text color="danger">*</ion-text></ion-label>
+      <ion-textarea rows="6" cols="20" placeholder="Danos la mayor cantidad de datos" [(ngModel)]="data.descripcion"></ion-textarea>
+    </ion-item>
+    <ion-list-header>
+      <ion-label>¿Qué lugares visitaremos?</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a recoger? <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.origentexto" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-text color="primary" (click)="openMapa('origen')">
+        <h5>Ingresa la ubicación en el mapa</h5>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a entregar? <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.destinotext" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-text color="primary" (click)="openMapa('destino')">
+        <h5>Ingresa la ubicación en el mapa</h5>
+      </ion-text>
+    </ion-item>
+  </ion-list>
+
+  <ion-slides *ngIf="vista == 'driver'" [options]="sliderOpts">
+    <ion-slide>
+      <h2>BUSCANDO UN DRIVE PARA TU ENVIO</h2>
+    </ion-slide>
+  </ion-slides>
+
+</ion-content>
+<ion-footer>
+  <ion-button expand="full" [disabled]="btnDisabled" color="primary" (click)="submitMandado()">
+    SOLICITAR UN MANDADO
+  </ion-button>
+</ion-footer>

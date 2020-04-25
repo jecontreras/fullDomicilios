@@ -49,14 +49,23 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
-  },  {
+  },
+  {
     path: 'notificaciones',
     loadChildren: () => import('./pages/notificaciones/notificaciones.module').then( m => m.NotificacionesPageModule)
   },
   {
     path: 'politicas',
     loadChildren: () => import('./layout/politicas/politicas.module').then( m => m.PoliticasPageModule)
+  },  {
+    path: 'solicitar',
+    loadChildren: () => import('./dialog/solicitar/solicitar.module').then( m => m.SolicitarPageModule)
+  },
+  {
+    path: 'chat-detallado',
+    loadChildren: () => import('./dialog/chat-detallado/chat-detallado.module').then( m => m.ChatDetalladoPageModule)
   }
+
 
 
 ];
