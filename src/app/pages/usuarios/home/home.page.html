@@ -18,7 +18,7 @@
     </ion-toolbar>
     <br><br>
     
-    <ion-text color="dark">
+    <ion-text color="dark" (click)="openInformacion()">
       <h4>Pasos a seguir para pedir un mandado</h4>
     </ion-text>
     <br><br><br><br><br><br><br>
@@ -82,7 +82,7 @@
       <p>
         <ion-chip class="chipPerfil">
           <ion-avatar class="avatarPerfil">
-            <img [src]="dataUser.foto || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjYzVkYmZmIiBkPSJNMCAwaDUxMnY1MTJIMHoiLz48cGF0aCBkPSJNMjU2IDMwNGM2MS42IDAgMTEyLTUwLjQgMTEyLTExMlMzMTcuNiA4MCAyNTYgODBzLTExMiA1MC40LTExMiAxMTIgNTAuNCAxMTIgMTEyIDExMnptMCA0MGMtNzQuMiAwLTIyNCAzNy44LTIyNCAxMTJ2NTZoNDQ4di01NmMwLTc0LjItMTQ5LjgtMTEyLTIyNC0xMTJ6IiBmaWxsPSIjODJhZWZmIi8+PC9zdmc+'" />
+            <img [src]="dataUser.foto || './assets/perfil.png'" />
           </ion-avatar>
           <ion-label>{{ dataUser.nombre }}</ion-label>
         </ion-chip>
@@ -104,6 +104,20 @@
       </ion-item>
     </ion-list>
 
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="view == 'informacion'">
+    <h3>Para solicitar un mandado nos debes de proporcionar estos datos:
+      <br>
+      1- ¿Qué diligencia haremos ?
+      2- ¿Cuáles son los lugares que visitaremos?
+      <br>
+      Una vez has llenado estos datos y mandas la solicitud un moticiclista aceptara tu mandado y se pondrá en contacto contigo.
+      <br><br><br>
+      ¿Cuánto cuesta el mandado ?
+      <br>
+      Esto depende de la distancia y el tiempo que tome hacer el mandado, sin embargo el precio normal es de $4.00 USD.
+    </h3>
   </ion-toolbar>
 
 </ion-content>

@@ -1,238 +1,189 @@
-<ion-header>
+<ion-header *ngIf="view != 'home'">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button>
-        <ion-icon class="padding_menu" size="large" name="menu"></ion-icon>
-      </ion-menu-button>
-    </ion-buttons>
-    <ion-button slot="end" id="btnRefres" fill="clear" color="dark" (click)=" openSettingUser() ">
-      <ion-icon name="settings-outline"></ion-icon>
+    <ion-button slot="start" fill="clear" (click)="atras()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
+    <ion-text color="dark" *ngIf="view == 'perfil'">
+      <p>MI PERFIL</p>
+    </ion-text>
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen *ngIf="disableView == 'SOLICITUDES'"> 
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
-    <ion-refresher-content>
-    </ion-refresher-content>
-  </ion-refresher>
-
-  <ion-list>
-
-    <ion-item *ngFor="let item of listRow">
-      <ion-avatar slot="start">
-        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
-      </ion-avatar>
-      <ion-label (click)="openMapa( item )">
-        <ion-text color="dark">
-          <h2>Destino {{ item.titulo }}</h2>
-        </ion-text>
-        <h3>Tipo de servicio: 
-          <span *ngIf="item.tipoOrden == 0">
-            Particular
-          </span>
-          <span *ngIf="item.tipoOrden == 1">
-            Carga
-          </span>
-          <span *ngIf="item.tipoOrden == 2">
-            Domicilio
-          </span>
-        </h3>
-        <h3>Costo $ {{ ( item['ofreceCliente'] ||0 ).toLocaleString(1) }} COP</h3>
-        <p>Cliente: {{ item.usuario.nombre }}</p>
-        <p>Descripcion: {{ item.descripcion }}</p>
-      </ion-label>
-      <ion-button color="success" (click)="openMapa( item )" *ngIf="item.check" slot="end">
-        Cliente Acepto
+<ion-content fullscreen class="ion-padding">
+  <br>
+  <ion-toolbar *ngIf="view == 'home'">
+    <h1 class="titulo">
+      Bienvenido
+    </h1>
+    <h1 class="titulo">
+      {{ dataUser.nombre }} {{ dataUser.apellido }}!
+    </h1>
+    <br>
+    <div class="ion-text-center tarjeta">
+      <p>
+        <ion-chip class="chipPerfil" color="light">
+          <ion-avatar class="avatarPerfil">
+            <img [src]="dataUser.foto || './assets/perfil.png'" />
+          </ion-avatar>
+          <ion-label class="colorBlanco">{{ dataUser.nombre }}</ion-label>
+        </ion-chip>
+      </p>
+      <p>Tu estado actual</p>
+      <h4 class="barraEstado">
+        <span *ngIf="dataUser.estadoCuenta" class="colorVerde">ACTIVO</span>
+        <span *ngIf="!dataUser.estadoCuenta" class="colorRojo">INACTIVO</span>
+      </h4>
+      <ion-button color="primary" (click)="cambiarEstado()" [disabled]="disableEstado">
+        <span *ngIf="!dataUser.estadoCuenta">ACTIVARME</span>
+        <span *ngIf="dataUser.estadoCuenta">DESACTIVARME</span>
       </ion-button>
-    </ion-item>
-  </ion-list>
-  
-  <div class="ion-text-center" *ngIf="listRow.length == 0">
-    <ion-text colo="dark">
-      <span>Lista Vacia</span>
-    </ion-text>
-  </div>
-
-  <ion-infinite-scroll threshold="150px"
-                         (ionInfinite)="loadData( $event )"
-                        >
-    <ion-infinite-scroll-content loadingSpinner="crescent"
-                                  loadingtext="Cargando data..">
-
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-
-</ion-content>
-
-<ion-content fullscreen *ngIf="disableView == 'INGRESOS'"> 
-
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
-    <ion-refresher-content>
-    </ion-refresher-content>
-  </ion-refresher>
-
-  <ion-list>
-
-    <ion-item *ngFor="let item of listRow2">
-      <ion-avatar slot="start">
-        <img [src]="item['conductor']?.foto || './assets/perfil.png'">
-      </ion-avatar>
-      <ion-label>
-        <h2>Destino {{ item.titulo }}</h2>
-        <h3>Costo $ {{ ( item['idOfertando']?.ofrece ||0 ).toLocaleString(1) }} COP</h3>
-        <p>Conductor: {{ item.coductor.nombre }}</p>
-        <p>{{ item.descripcion }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-
-  <div class="ion-text-center" *ngIf="listRow2.length == 0">
-    <ion-text colo="dark">
-      <span>Lista Vacia</span>
-    </ion-text>
-  </div>
-  
-  <ion-infinite-scroll threshold="150px"
-                         (ionInfinite)="loadData( $event )"
-                        >
-    <ion-infinite-scroll-content loadingSpinner="crescent"
-                                  loadingtext="Cargando data..">
-
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-
-</ion-content>
-
-<ion-content fullscreen *ngIf="disableView == 'CLASIFICACIÓN'"> 
-
-  <ion-grid>
-    <ion-row>
-
-      <ion-col size="12">
-        <div class="ion-text-center">
-          <h3>Clasificación <ion-icon color="success" name="help-circle-outline"></ion-icon></h3>
-          {{ dataUser.calificacionName || 'Normal'}}
-        </div>
-      </ion-col>
-
-      <ion-col size="6">
-        <ion-label>
-          <ion-progress-bar [value]="dataUser.nameResenaCount"></ion-progress-bar>
-          <span>Reseña: {{ dataUser.nameResena || 'regular'}}</span>
-        </ion-label>
-      </ion-col>
-
-      <ion-col size="6">
-        <ion-label>
-          <ion-progress-bar [value]="dataUser.nameOperacionCount"></ion-progress-bar>
-          <span>Frecuencia de operación: {{ dataUser.nameOperacion || 'muy baja'}}</span>
-        </ion-label>
-      </ion-col>
-
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col size="4">
-        {{ dataUser.nameOperacionTotal || 0 }}
-        <ion-text color="dark">
-          <span>Viajes</span>
-        </ion-text>
-      </ion-col>
-      <ion-col size="4">
-        {{ dataUser.nameResenaTotal || 0 }}
-        <ion-text color="dark">
-          <span>Reseñas</span>
-        </ion-text>
-      </ion-col>
-      <ion-col size="4">
-        ${{ ( dataPagos || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}
-        <ion-text color="dark">
-          <span>saldo</span>
-        </ion-text>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        <ion-list>
-          <ion-item *ngFor="let item of lisComentario">
-            <ion-avatar slot="start">
-              <img [src]="item.creador.foto || './assets/perfil.png'">
-            </ion-avatar>
-            <ion-label>
-              <h2>{{ item.creador.nombre }}</h2>
-              <ion-text color="dark">
-                <p>{{ item.descripcion }}</p>
-              </ion-text>
-              <p class="clasificacion">
-                <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="item.valoracion"><!--
-                --><label class="label" [ngClass]="{'checkcolor':item.valoracion >=5}" for="radio1" >★</label><!--
-                --><input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="item.califica"><!--
-                --><label class="label" [ngClass]="{'checkcolor':item.valoracion >=4}" for="radio2">★</label><!--
-                --><input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="item.valoracion"><!--
-                --><label class="label" [ngClass]="{'checkcolor':item.valoracion >=3}" for="radio3">★</label><!--
-                --><input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="item.valoracion"><!--
-                --><label class="label" [ngClass]="{'checkcolor':item.valoracion >=2}" for="radio4">★</label><!--
-                --><input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="item.valoracion"><!--
-                --><label class="label"  [ngClass]="{'checkcolor':item.valoracion >=1}"for="radio5">★</label>
-              </p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <div class="ion-text-center" *ngIf="lisComentario.length == 10">
-        <ion-button (click)="openComentarios()">Ver Todos los comentarios</ion-button>
-      </div>
-      <div class="ion-text-center" *ngIf="lisComentario.length == 0">
-        <ion-text colo="dark">
-          <span>Lista Vacia</span>
-        </ion-text>
-      </div>
-      <!-- <ion-col size="12">
-        <ion-infinite-scroll threshold="150px"
-                         (ionInfinite)="loadData1( $event )"
-        >
-          <ion-infinite-scroll-content loadingSpinner="crescent"
-                                        loadingtext="Cargando data..">
-
-          </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </ion-col> -->
-    </ion-row>
-  </ion-grid>
-
-</ion-content>
-
-<ion-content fullscreen *ngIf="disableView == 'PAGO'" class="ion-padding">  
-
-  <ion-list>
-    <ion-item>
-      <ion-text color="primary">
-        Se agregó un pago ${{ dataUser.porPago || '9.5%' }}.
-      </ion-text>
-    </ion-item>
-    <p>Cuenta personal: {{ dataUser.id }}</p>
-    <p>Saldo: COP ${{ ( dataPagos || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'COP' }) }}</p>
-    <p>Reembolso: COP ${{ dataUser.rembolso || 0 }}</p>
-    <p>Estado Ciudad: {{ dataUser.departamento || 'Ordinario' }}</p>
-    <!-- <ion-button expand="full" color="success" (click)="registrarCuenta()"> REGISTRO EN LÍNEA </ion-button> -->
-    <ion-button expand="full" color="warning" (click)="OpenPaquetes()"> ABONE A SU CUENTA </ion-button>
-    <ion-button expand="full" color="warning" (click)="OpenHistorialPagos()"> HISTORIAL DE MOVIMIENTOS </ion-button>
-  </ion-list>
-  
-</ion-content>
-
-<ion-footer>
-  <ion-toolbar>
-    <ion-segment scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
-      <ion-segment-button mode="md" class="textSegtman" [value]="item" *ngFor="let item of listPage">
-        <ion-label text-capitalize> {{ item }}</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+      <br>
+    </div>
+    <div class="ion-text-center">
+      <br>
+      <ion-button color="primary" *ngIf="dataUser.estadoCuenta" (click)="verMandados()">
+        MANDADOS DISPONIBLES
+      </ion-button>
+    </div>
   </ion-toolbar>
+
+  <ion-toolbar *ngIf="view == 'mandados'">
+    <ion-card class="altoCars">
+      <ion-card-header class="colorTitulo">
+        <div class="ion-text-center">
+          <ion-card-title color="medium">MANDADOS DISPONIBLES</ion-card-title>
+        </div>
+      </ion-card-header>
+    </ion-card>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+      <ion-refresher-content>
+      </ion-refresher-content>
+    </ion-refresher>
+  
+    <ion-list>
+  
+      <ion-item *ngFor="let item of listRow">
+        <ion-label>
+          <ion-text color="dark">
+            <h2>MANDADO DE</h2>
+            <h2>{{ item['usuario'].nombre }}</h2>
+          </ion-text>
+        </ion-label>
+        <ion-button color="primary" (click)="openMapa( item )" slot="end">
+          VER
+        </ion-button>
+      </ion-item>
+    </ion-list>
+    
+    <div class="ion-text-center" *ngIf="listRow.length == 0">
+      <ion-text colo="dark">
+        <span>Lista Vacia</span>
+      </ion-text>
+    </div>
+  
+    <ion-infinite-scroll threshold="150px"
+                           (ionInfinite)="loadData( $event )"
+                          >
+      <ion-infinite-scroll-content loadingSpinner="crescent"
+                                    loadingtext="Cargando data..">
+  
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="view == 'chat'">
+    <ion-card class="altoCars">
+      <ion-card-header class="colorTitulo">
+        <div class="ion-text-center">
+          <ion-card-title color="medium">BANDEJA DE MENSAJES</ion-card-title>
+        </div>
+      </ion-card-header>
+    </ion-card>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+      <ion-refresher-content>
+      </ion-refresher-content>
+    </ion-refresher>
+  
+    <ion-list>
+  
+      <ion-item *ngFor="let item of listRow2">
+        <ion-avatar slot="start">
+          <img *ngIf="dataUser.id != item.reseptor.id" [src]="item['reseptor']?.foto || './assets/perfil.png'">
+          <img *ngIf="dataUser.id == item.reseptor.id" [src]="item['emisor']?.foto || './assets/perfil.png'">
+        </ion-avatar>
+        <ion-label>
+          <ion-text color="dark">
+            <h2 *ngIf="dataUser.id != item.reseptor.id">{{ item['reseptor'].nombre }}</h2>
+            <h2 *ngIf="dataUser.id == item.reseptor.id">{{ item['emisor'].nombre }}</h2>
+          </ion-text>
+        </ion-label>
+        <ion-button color="primary" (click)="openChat( item )" slot="end">
+          ABRIR
+        </ion-button>
+      </ion-item>
+    </ion-list>
+    
+    <div class="ion-text-center" *ngIf="listRow.length == 0">
+      <ion-text colo="dark">
+        <span>Lista Vacia</span>
+      </ion-text>
+    </div>
+  
+    <ion-infinite-scroll threshold="150px"
+                           (ionInfinite)="loadData( $event )"
+                          >
+      <ion-infinite-scroll-content loadingSpinner="crescent"
+                                    loadingtext="Cargando data..">
+  
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="view == 'perfil'">
+    <div class="ion-text-center">
+      <p>
+        <ion-chip class="chipPerfil">
+          <ion-avatar class="avatarPerfil">
+            <img [src]="dataUser.foto || './assets/perfil.png'" />
+          </ion-avatar>
+          <ion-label>{{ dataUser.nombre }}</ion-label>
+        </ion-chip>
+      </p>
+    </div>
+
+    <ion-list>
+      <ion-item>
+        <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.email" required type="text"></ion-input>
+        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.celular" required type="text"></ion-input>
+        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-textarea rows="4" class="inputColor" cols="10" [(ngModel)]="dataUser.direccion"></ion-textarea>
+        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+  </ion-toolbar>
+
+</ion-content>
+
+<ion-footer class="ion-padding">
+  <ion-toolbar *ngIf="view == 'perfil'">
+    <div class="ion-text-center">
+      <ion-button color="primary" (click)="cerrar_seccion()">
+        CERRAR SESIÓN
+      </ion-button>
+    </div>
+  </ion-toolbar>
+  <ion-segment color="tertiary" value="favorite" (ionChange)="cambioVista( $event )"> 
+    <ion-segment-button value="chat">
+      <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button value="perfil">
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
 </ion-footer>

@@ -9,17 +9,13 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { WebsocketService } from 'src/app/services/websocket.services';
 import { Lugar } from 'src/app/interfas/interfaces';
 import { ModalController, IonSegment } from '@ionic/angular';
-import { MapaPage } from '../mapa/mapa.page';
 import { UserService } from 'src/app/services/user.service';
-import { PersonaAction, OrdenActivoAction, ServicioActivoAction } from 'src/app/redux/app.actions';
-import { PerfilSettingsPage } from 'src/app/dialog/perfil-settings/perfil-settings.page';
-import { ResenaService } from 'src/app/service-component/resena.service';
+import { PersonaAction, ServicioActivoAction } from 'src/app/redux/app.actions';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
-import { PaquetesPage } from 'src/app/dialog/paquetes/paquetes.page';
-import { PaqueteService } from 'src/app/service-component/paquete.service';
-import { HistorialPagosPage } from 'src/app/dialog/historial-pagos/historial-pagos.page';
 import { environment } from 'src/environments/environment';
-import { CalificacionPage } from 'src/app/dialog/calificacion/calificacion.page';
+import { Router } from '@angular/router';
+import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
+import { ChatService } from 'src/app/service-component/chat.service';
 
 
 const URLACTIVACION =  environment.urlActivacion;
@@ -40,17 +36,14 @@ export class HomePage implements OnInit {
     skip: 0
   };
 
-  query3:any = {
+  query2:any = {
     where:{
       estado: 0
     },
-    sort: "createdAt DESC",
-    skip: 0,
-    limit: 10
+    sort: 'createdAt DESC',
+    skip: 0
   };
-
-  listPage:any = ["SOLICITUDES","INGRESOS","CLASIFICACIÓN","PAGO"];
-  disableView:string = "SOLICITUDES";
+  
   @ViewChild(IonSegment, {static: false}) segment: IonSegment;
 
   public ev:any = {};
@@ -64,21 +57,14 @@ export class HomePage implements OnInit {
   lat:number;
   lon:number;
   ordenActiva:any = {};
-  
-  listRow2:any = [];
-  query2:any = {
-    where:{
-      estado: 2 
-    },
-    skip: 0
-  };
-  lisComentario:any = [];
   titulo:string = "Ocupado";
   estado:boolean = true;
-  cargaBolena: boolean = false;
-  dataPagos:number;
-  disabledComentarios: boolean = false;
   interval:any;
+
+  view:string = "home";
+  disableEstado:boolean = false;
+
+  listRow2:any = [];
 
   constructor(
     private _tools: ToolsService,
@@ -88,13 +74,14 @@ export class HomePage implements OnInit {
     private wsServices: WebsocketService,
     private modalCtrl: ModalController,
     private _user: UserService,
-    private _resena: ResenaService,
     private mapboxService: MapboxService,
-    private _paquete: PaqueteService
+    private _mensajes: ChatService,
+    private router: Router
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
         this.dataUser = store.persona;
+        console.log(store);
         if( !store.servicioActivo ) store.servicioActivo = [];
         if( Object.keys( store.servicioActivo ).length > 0 ) this.ordenActiva = store.servicioActivo[0] || {};
         this.validanQueryUser();
@@ -103,17 +90,13 @@ export class HomePage implements OnInit {
 
   validanQueryUser(){
     if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
-    this.query = { where:{ estado: 0, tipoOrden: 0 }, skip: 0 };
-    if( this.dataUser.carga ) this.query.where.tipoOrden = [ 0, 1 ];
-    if( this.dataUser.domicilio ) this.query.where.tipoOrden = [ 0, 1, 2 ];
-    this.dataUser.estadoDisponible == true ? this.estado = true : this.estado = false;
-    this.dataUser.carga === true ? this.cargaBolena =  true : this.cargaBolena = false;
+    this.query = { where:{ estado: 0 }, skip: 0 };
   }
 
   ngOnInit(): void {
     this.InitApp();
     var intervalID = window.setTimeout(()=>{
-      this.segment.value = "SOLICITUDES";
+      this.segment.value = "home";
     }, 200);
   }
 
@@ -132,11 +115,10 @@ export class HomePage implements OnInit {
   InitProceso( ){
     this.id = this.wsServices.idSocket;
     if(!this.id) {this._tools.presentToast("No hay Conexion"); return false;}
-    this.query3.where.usuario = this.dataUser.id;
-    if( this.dataUser.estadoDisponible ) { this.getList();}
+    if( this.dataUser.estadoCuenta ) { this.getList();}
     this.getGeolocation();
     this.escucharSockets();
-    this.getMisOrdenesActivar()
+    //this.getMisOrdenesActivar()
     clearInterval(this.interval);
   }
 
@@ -144,14 +126,6 @@ export class HomePage implements OnInit {
     this.mapboxService
       .search_wordLngLat(`${ this.lon },${ this.lat }`)
       .subscribe((features: Feature[]) => { });
-  }
-
-  cambioView(ev:any){
-    // console.log(ev);
-    this.disableView = ev.detail.value;
-    if( this.disableView == 'INGRESOS' ) this.getList2();
-    if( this.disableView == 'CLASIFICACIÓN' ) { this.informacionResena(); this.getListComentario(); }
-    if( this.disableView == 'PAGO') this.informacionCuenta();
   }
 
   getGeolocation(){
@@ -197,7 +171,7 @@ export class HomePage implements OnInit {
       //validar tipo de servicio si es normal o de carga
       if( marcador.tipoOrden == 1 ) if( !this.dataUser.carga ) return false;
       if( marcador.tipoOrden == 2 ) if( !this.dataUser.domicilio ) return false;
-      if( !( this.RangoOrden( marcador) ) ) return false;
+      // if( !( this.RangoOrden( marcador) ) ) return false;
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
     });
@@ -243,8 +217,6 @@ export class HomePage implements OnInit {
     console.log( result );
     if( result <= 10000 ) return true;
     return false;
-    // if( this.dataUser.departamento == orden.usuario.departamento ) return true;
-    // else return false;
   }
 
   audioNotificando(obj:any, mensaje:any){
@@ -258,12 +230,11 @@ export class HomePage implements OnInit {
   doRefresh(ev){
     this.ev = ev;
     this.disable_list = false;
-    if(this.disableView == 'SOLICITUDES'){
+    if( this.view == 'home' ) {
       this.listRow = [];
       this.getList();
-      if(Object.keys(this.ordenActiva).length > 0) this.openMapa({});
     }
-    if(this.disableView == 'INGRESOS'){
+    if( this.view == 'chat' ){
       this.listRow2 = [];
       this.getList2();
     }
@@ -272,11 +243,11 @@ export class HomePage implements OnInit {
   loadData(ev){
     //console.log(ev);
     this.evScroll = ev;
-    if(this.disableView == 'SOLICITUDES'){
+    if( this.view == 'home' ){
       this.query.skip++;
       this.getList();
     }
-    if(this.disableView == 'INGRESOS'){
+    if( this.view == 'chat' ){
       this.query2.skip++;
       this.getList2();
     }
@@ -294,10 +265,10 @@ export class HomePage implements OnInit {
 
   getList(){
     this._tools.presentLoading();
-    this.query.where.createdAt = {
-      ">=": moment().add(-60, 'minutes'),
-      "<=": moment().add(5, 'minutes')
-    }
+    // this.query.where.createdAt = {
+    //   ">=": moment().add(-60, 'minutes'),
+    //   "<=": moment().add(5, 'minutes')
+    // }
     this._orden.get(this.query).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList(res);
@@ -307,13 +278,13 @@ export class HomePage implements OnInit {
 
   dataFormaList(res:any){
     let formatiada = [];
-    for(let row of res.data){
-      if( !( this.RangoOrden(row) ) ) continue;
-      formatiada.push( row );
-    }
-    this.listRow.push(...formatiada );
+    // for(let row of res.data){
+    //   if( !( this.RangoOrden(row) ) ) continue;
+    //   formatiada.push( row );
+    // }
+    this.listRow.push(...res.data );
     // console.log(this.listRow)
-    this.listRow =_.unionBy(this.listRow || [], formatiada, 'id');
+    this.listRow =_.unionBy(this.listRow || [], res.data, 'id');
     if( this.evScroll.target ){
       this.evScroll.target.complete()
     }
@@ -327,12 +298,9 @@ export class HomePage implements OnInit {
   }
 
   getList2(){
-    this.query2.where.createdAt = {
-      ">=": moment().add(-1, 'days'),
-      "<=": moment().add(1, 'days')
-    }
+    this.query.where.estadoOrden = 0;
     this._tools.presentLoading();
-    this._orden.get(this.query2).subscribe((res:any)=>{
+    this._mensajes.get(this.query2).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList2(res);
       this._tools.dismisPresent();
@@ -341,23 +309,20 @@ export class HomePage implements OnInit {
 
   dataFormaList2(res:any){
     this.listRow2.push(...res.data );
-    // console.log(this.listRow2)
-    this.listRow2 =_.unionBy(this.listRow2 || [], res.data, 'id');
-    if( this.evScroll.target ){
-      this.evScroll.target.complete()
-    }
+    this.listRow2 =_.unionBy(this.listRow2 || [], this.listRow2, 'id');
+    if( this.evScroll.target ) this.evScroll.target.complete()
     if(this.ev){
       this.disable_list = true;
       if(this.ev.target){
         this.ev.target.complete();
       }
     }
-    this._tools.dismisPresent();
   }
 
   openMapa( item:any ){
+    item.vista = "detalles";
     this.modalCtrl.create({
-      component: MapaPage,
+      component: SolicitarPage,
       componentProps: {
         obj: item
       }
@@ -371,95 +336,42 @@ export class HomePage implements OnInit {
     });
   }
 
-  async openSettingUser( ){
-    this.modalCtrl.create({
-      component: PerfilSettingsPage,
-      componentProps: {
-        obj: this.dataUser
-      }
-    }).then( async (modal)=>{
-      modal.present()
-      const { data } = await modal.onWillDismiss();
-      this.getList();
-    });
+  cambioVista( event:any ){
+    this.view = event.detail.value;
+    if( this.view == 'chat' ) this.getList2();
   }
 
-  informacionResena(){
+  verMandados(){
+    this.view = "mandados";
+  }
+
+  atras(){
+    this.view = "home";
+    this.segment.value = "home"
+  }
+
+  cerrar_seccion(){
+    let accion = new PersonaAction({}, 'delete');
+    this._store.dispatch(accion);
+    localStorage.removeItem('user');
+    localStorage.removeItem('APP');
+    location.reload();
+    this.router.navigate(['/portada']);
+  }
+
+
+  cambiarEstado(){
+    let estado:any = !this.dataUser.estadoCuenta
     let data:any = {
-      user: this.dataUser.id
+      id: this.dataUser.id,
+      estadoCuenta: estado
     };
-    this._resena.getResena( data ).subscribe((res:any)=>{
-      if( res.data == 0 ) return false;
-      this.dataUser.nameResena = res.data.nameResena;
-      this.dataUser.nameOperacion = res.data.nameOperacion;
-      this.dataUser.nameResenaCount = res.data.nameResenaCount / 100;
-      this.dataUser.nameOperacionCount = res.data.nameOperacionCount / 100;
-      this.dataUser.nameResenaTotal = res.data.totalResena;
-      this.dataUser.nameOperacionTotal = res.data.nameOperacionCount;
-    }, () => this._tools.presentToast("Error de servidor") );
-    this.informacionCuenta();
-  }
-
-  OpenPaquetes(){
-    this.modalCtrl.create({
-      component: PaquetesPage,
-      componentProps: {}
-    }).then(modal=>modal.present());
-  }
-
-  OpenHistorialPagos(){
-    this.modalCtrl.create({
-      component: HistorialPagosPage,
-      componentProps: {}
-    }).then(modal=>modal.present());
-  }
-
-  registrarCuenta(){
-    window.open( URLACTIVACION );
-  }
-
-  informacionCuenta(){
-    this._paquete.getUser( { where:{ usuario: this.dataUser.id, estado: 0 } } ).subscribe(( res:any )=>{
-      res = res.data;
-      this.dataPagos = ( _.sumBy( res, ( row:any ) => row.pago.x_amount ) ) - ( _.sumBy( res, ( row:any ) => row.acomuladoCostoServicio ) );
-    });
-  }
-
-  getListComentario(){
-    this._tools.presentLoading();
-    this._resena.get( this.query3 ).subscribe((res:any)=>{
-      this.dataFormaListComentario(res);
-      this._tools.dismisPresent();
-    },(error)=> this._tools.dismisPresent());
-  }
-
-  dataFormaListComentario(res:any){
-    this.lisComentario.push(...res.data );
-    this.lisComentario =_.unionBy(this.lisComentario || [], res.data, 'id');
-    if( this.evScroll.target ){
-      this.evScroll.target.complete()
-    }
-    if(this.ev){
-      this.disable_list = true;
-      if(this.ev.target){
-        this.ev.target.complete();
-      }
-    }
-    this._tools.dismisPresent();
-  }
-
-  openComentarios(){
-    this.disabledComentarios = true;
-    this._orden.get({ where: { coductor: this.dataUser.id }, limit: 1  }).subscribe((res:any)=>{
-      if(!res.data[0]) return this._tools.presentToast( "Lo sentimos no tienes Comentarios!");
-      this.disabledComentarios = false;
-      this.modalCtrl.create({
-        component: CalificacionPage,
-        componentProps: {
-          obj: res.data[0]
-        }
-      }).then(modal=>modal.present());
-    });
+    this.disableEstado = true;
+    this._user.update(data).subscribe((res:any)=>{
+      let accion = new PersonaAction( res, 'put');
+      this._store.dispatch( accion );
+      this.disableEstado = false;
+    },(error)=> { console.error(error); this._tools.presentToast("Error de servidor"); this.disableEstado = false;})
   }
   
 }

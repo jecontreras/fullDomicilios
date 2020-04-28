@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { MapaPage } from 'src/app/pages/usuarios/mapa/mapa.page';
+import { ModalController, NavParams } from '@ionic/angular';
+import { MapaPage } from 'src/app/pages/mapa/mapa.page';
 import { ToolsService } from 'src/app/services/tools.service';
 import { STORAGES } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
@@ -24,7 +24,8 @@ export class SolicitarPage implements OnInit {
   sliderOpts = {
     allowSlidePrev: false,
     allowSlideNext: false
-  }
+  };
+  paramsData:any = {};
   
   constructor(
     private modalCtrl: ModalController,
@@ -32,6 +33,7 @@ export class SolicitarPage implements OnInit {
     private _store: Store<STORAGES>,
     private _orden : OrdenesService,
     private wsServices: WebsocketService,
+    private navparams: NavParams,
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
@@ -41,13 +43,18 @@ export class SolicitarPage implements OnInit {
 
   ngOnInit() {
     this.data.usuario = this.dataUser.id;
+    this.paramsData = this.navparams.get('obj');
+    console.log(this.paramsData)
+    if(this.paramsData.vista == "detalles") this.vista = "detalles";
   }
 
 
   openMapa(opt){
     this.modalCtrl.create({
       component: MapaPage,
-      componentProps: {}
+      componentProps: {
+        obj: { vista: "origen" }
+      }
     }).then( async (modal)=>{
       modal.present();
       const { data } = await modal.onWillDismiss();
@@ -86,6 +93,10 @@ export class SolicitarPage implements OnInit {
     setTimeout(()=>{
       this.exit();
     }, 5000)
+  }
+
+  aceptarOrden(){
+
   }
 
   exit(){

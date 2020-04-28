@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="mapa" id="mapa"></div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="ion-text-center">
+      <ion-button color="primary" (click)="agregarMarkerBtn()" *ngIf="vista == 'origen'">
+        MI UBICACIÓN
+      </ion-button>
+      <br>
+      <ion-button color="primary" (click)="submitDireccion()" *ngIf="vista == 'origen'">
+        COMPLETADO
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

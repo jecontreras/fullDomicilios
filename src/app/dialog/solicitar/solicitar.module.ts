@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SolicitarPageRoutingModule } from './solicitar-routing.module';
 
 import { SolicitarPage } from './solicitar.page';
-import { MapaPageModule } from 'src/app/pages/usuarios/mapa/mapa.module';
+import { MapaPageModule } from 'src/app/pages/mapa/mapa.module';
 
 @NgModule({
   imports: [

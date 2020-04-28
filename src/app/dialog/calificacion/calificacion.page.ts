@@ -12,21 +12,13 @@ import * as _ from 'lodash';
   styleUrls: ['./calificacion.page.scss'],
 })
 export class CalificacionPage implements OnInit {
-  dataUser:any = {};
-  listRow:any = [];
-  query:any = {
-    where:{
-      estado: 0
-    },
-    skip: 0
-  };
 
-  public ev:any = {};
-  public disable_list:boolean = true;
-  public evScroll:any = {};
-  dataComentario:any = {};
+  dataUser:any = {};
   btndisableComentario:boolean = false;
   data:any = {};
+  dataForm:any = {
+    valoracion: 5
+  };
 
   constructor(
     private modalCtrl: ModalController,
@@ -45,55 +37,16 @@ export class CalificacionPage implements OnInit {
 
   ngOnInit() {
     this.data = this.navparams.get('obj');
-    this.query.where.usuario = this.data.coductor.id;
-    this.getList();
-  }
-
-  doRefresh(ev){
-    this.ev = ev;
-    this.disable_list = false;
-    this.listRow = [];
-    this.getList();
-  }
-
-  loadData(ev){
-    //console.log(ev);
-    this.evScroll = ev;
-    this.query.skip++;
-    this.getList();
-  }
-
-  getList(){
-    this._tools.presentLoading();
-    this._resena.get( this.query ).subscribe((res:any)=>{
-      this.dataFormaList(res);
-      this._tools.dismisPresent();
-    });
-  }
-
-  dataFormaList(res:any){
-    this.listRow.push(...res.data );
-    this.listRow =_.unionBy(this.listRow || [], res.data, 'id');
-    if( this.evScroll.target ){
-      this.evScroll.target.complete()
-    }
-    if(this.ev){
-      this.disable_list = true;
-      if(this.ev.target){
-        this.ev.target.complete();
-      }
-    }
-    this._tools.dismisPresent();
   }
 
   submitComentario(){
-    let data = this.dataComentario;
+    let data = this.dataForm;
     data.creador = this.dataUser.id;
-    data.usuario = this.data.coductor.id;
+    data.usuario = this.data.chatDe.id;
     this.btndisableComentario = true;
     this._resena.saved( data ).subscribe((res:any)=>{
       this._tools.presentToast( "Comentario Agregado" );
-      this.dataComentario = {};
+      this.dataForm = { valoracion: 5 };
       this.btndisableComentario = false;
       this.exit();
     },(error:any) => { this._tools.presentToast(" Error de Servidor "); this.btndisableComentario = false; });

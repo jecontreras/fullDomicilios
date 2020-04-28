@@ -7,7 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { ChatDetalladoPageRoutingModule } from './chat-detallado-routing.module';
 
 import { ChatDetalladoPage } from './chat-detallado.page';
-import { MapaPageModule } from 'src/app/pages/usuarios/mapa/mapa.module';
+import { MapaPageModule } from 'src/app/pages/mapa/mapa.module';
+import { CalificacionPageModule } from '../calificacion/calificacion.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { MapaPageModule } from 'src/app/pages/usuarios/mapa/mapa.module';
     FormsModule,
     IonicModule,
     MapaPageModule,
-    ChatDetalladoPageRoutingModule
+    ChatDetalladoPageRoutingModule,
+    CalificacionPageModule
   ],
   declarations: [ChatDetalladoPage]
 })

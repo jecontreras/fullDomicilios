@@ -1,39 +1,74 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-button slot="start" fill="clear" (click)="exit()">
-      <ion-icon name="arrow-back-outline"></ion-icon>
-    </ion-button>
+  <ion-toolbar color="primary">
+    <ion-toolbar color="primary">
+      <ion-button slot="start" fill="clear" (click)="exit()" color="light">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+      <div class="ion-text-center" *ngIf="vista == 'detalles'">
+        <h5>COORDINACION DE DETALLES</h5>
+        <h5>CON EL CLIENTE:</h5>
+      </div>
+    </ion-toolbar>
+    <ion-toolbar *ngIf="vista == 'detalles'" color="primary">
+      <div class="ion-text-center">
+        <p>
+          <ion-chip class="chipPerfil">
+            <ion-avatar class="avatarPerfil">
+              <img
+                [src]="paramsData.usuario.foto || './assets/perfil.png'" />
+            </ion-avatar>
+            <ion-text color="light">
+              <h5 colorBlanco>{{ paramsData.usuario.nombre }}</h5>
+            </ion-text>
+          </ion-chip>
+        </p>
+      </div>
+    </ion-toolbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list *ngIf="vista == 'form'">
-    <ion-item>
-      <ion-label class="ion-color-lavel label" position="stacked">¿Qué diligencia haremos? <ion-text color="danger">*</ion-text></ion-label>
-      <ion-textarea rows="6" cols="20" placeholder="Danos la mayor cantidad de datos" [(ngModel)]="data.descripcion"></ion-textarea>
-    </ion-item>
-    <ion-list-header>
-      <ion-label>¿Qué lugares visitaremos?</ion-label>
-    </ion-list-header>
-    <ion-item>
-      <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a recoger? <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.origentexto" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-text color="primary" (click)="openMapa('origen')">
-        <h5>Ingresa la ubicación en el mapa</h5>
-      </ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a entregar? <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input class="ion-color-lavel" [(ngModel)]="data.destinotext" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-text color="primary" (click)="openMapa('destino')">
-        <h5>Ingresa la ubicación en el mapa</h5>
-      </ion-text>
-    </ion-item>
-  </ion-list>
+  <ion-grid *ngIf="vista == 'form'">
+    <ion-row>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-label class="ion-color-lavel label" position="stacked">¿Qué diligencia haremos? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-textarea rows="6" cols="20" placeholder="Danos la mayor cantidad de datos" [(ngModel)]="data.descripcion"></ion-textarea>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <h4>¿Qué lugares visitaremos?</h4>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a recoger? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input class="ion-color-lavel" [(ngModel)]="data.origentexto" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-button color="primary" (click)="openMapa('origen')">
+            Ingresa la ubicación en el mapa
+          </ion-button>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a entregar? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input class="ion-color-lavel" [(ngModel)]="data.destinotext" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-button color="primary" (click)="openMapa('destino')">
+            Ingresa la ubicación en el mapa
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-slides *ngIf="vista == 'driver'" [options]="sliderOpts">
     <ion-slide>
@@ -41,8 +76,61 @@
     </ion-slide>
   </ion-slides>
 
+  <div class="fondoCard">
+    <ion-grid *ngIf="vista == 'detalles'">
+      <ion-row>
+        <ion-col size="12">
+          <ion-text color="dark">
+            <strong>Mandado:</strong>
+          </ion-text>
+          <ion-text color="medium">
+            <p>{{ paramsData.descripcion }}</p>
+          </ion-text>
+        </ion-col>
+        <ion-col size="12">
+          <ion-text color="dark">
+            <strong>Dirección donde iremos a recoger: </strong>
+          </ion-text>
+          <ion-text color="medium">
+            <p>{{ paramsData.origentexto }}</p>
+          </ion-text>
+        </ion-col>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-button color="primary" (click)="openMapa()">
+              VER UBICACION
+            </ion-button>
+          </div>
+        </ion-col>
+        <ion-col size="12">
+          <ion-text color="dark">
+            <strong>Dirección donde iremos a entregar: </strong>
+          </ion-text>
+          <ion-text color="medium">
+            <p>{{ paramsData.destinotext }}</p>
+          </ion-text>
+        </ion-col>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-button color="primary" (click)="openMapa()">
+              VER UBICACION
+            </ion-button>
+          </div>
+        </ion-col>
+        <ion-col>
+          <br><br><br>
+          <div class="ion-text-center">
+            <ion-button color="primary" (click)="aceptarOrden()">
+              ACEPTAR Y COORDINAR
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
 </ion-content>
-<ion-footer>
+<ion-footer *ngIf="vista == 'form'">
   <ion-button expand="full" [disabled]="btnDisabled" color="primary" (click)="submitMandado()">
     SOLICITAR UN MANDADO
   </ion-button>

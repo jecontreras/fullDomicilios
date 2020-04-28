@@ -19,10 +19,27 @@
 .chipPerfil{
     height: 55px !important;
     width: 59% !important;
+    background-color: #3880ff;
 }
 
 .avatarPerfil{
-    height: 50px !important;
-    width: 25% !important;
+    height: 47px !important;
+    width: 22% !important;
     margin-left: 6px !important;
+}
+
+.colorGrend{
+  color: green;
+}
+.colorRed {
+  color: red;
+}
+.colorYellow{
+  color: yellow;
+}
+
+.border{
+  border-radius: 5px;
+  height: 6pc;
+  padding: 10px;
 }

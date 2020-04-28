@@ -1,44 +1,55 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-toolbar>
-      <ion-button slot="start" fill="clear" (click)="exit()">
+    <ion-toolbar color="primary">
+      <ion-button slot="start" fill="clear" (click)="exit()" color="light">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
       <div>
-        <div class="ion-text-center">
+        <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
           <p>EJECUTANDO MANDADO</p>
+        </div>
+        <div class="ion-text-center" *ngIf="data.ordenes.estado == 0">
+          <p>COORDINANDO DE DETALLES CON EL DRIVER:</p>
         </div>
       </div>
     </ion-toolbar>
-    <ion-toolbar>
-      <div class="ion-text-center">
-        <p>
-          <ion-chip class="chipPerfil">
-            <ion-avatar class="avatarPerfil">
-              <img
-                [src]="chatDe.foto || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjYzVkYmZmIiBkPSJNMCAwaDUxMnY1MTJIMHoiLz48cGF0aCBkPSJNMjU2IDMwNGM2MS42IDAgMTEyLTUwLjQgMTEyLTExMlMzMTcuNiA4MCAyNTYgODBzLTExMiA1MC40LTExMiAxMTIgNTAuNCAxMTIgMTEyIDExMnptMCA0MGMtNzQuMiAwLTIyNCAzNy44LTIyNCAxMTJ2NTZoNDQ4di01NmMwLTc0LjItMTQ5LjgtMTEyLTIyNC0xMTJ6IiBmaWxsPSIjODJhZWZmIi8+PC9zdmc+'" />
-            </ion-avatar>
-            <ion-label>{{ chatDe.nombre }}</ion-label>
-          </ion-chip>
-        </p>
-      </div>
-    </ion-toolbar>
+    <div class="ion-text-center">
+      <p>
+        <ion-chip class="chipPerfil">
+          <ion-avatar class="avatarPerfil">
+            <img
+              [src]="chatDe.foto || './assets/perfil.png'" />
+          </ion-avatar>
+          <ion-text color="light">
+            <h5>{{ chatDe.nombre }}</h5>
+          </ion-text>
+        </ion-chip>
+      </p>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-toolbar>
+  <div class="ion-text-center colorTitulo border" *ngIf="data.ordenes.estado == 0">
+    <ion-text color="light">
+      <span>ESTATUS DEL ENVIO</span>
+    </ion-text>
+    <ion-text class="colorRed" (click)="confirmar()">
+      <h4>PENDIENTE DE ACEPTACION</h4>
+    </ion-text>
+  </div>
+  <ion-toolbar *ngIf="data.ordenes.estado != 0">
     <div class="ion-text-center">
-      <h5>ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 0">PROCESO</span> <span
-          *ngIf="data.ordenes.estado == 1">FINALIZADO</span>
+      <h5>ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 3" class="colorYellow">PROCESO</span> 
+        <span *ngIf="data.ordenes.estado == 2" class="colorGrend">FINALIZADO</span>
       </h5>
-      <ion-button color="primary" (click)="confirmar()" [disabled]="disableBtnConfirmar">
+      <ion-button color="primary" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
         CONFIRMAR Y FINALIZAR
       </ion-button>
     </div>
   </ion-toolbar>
   <br>
-  <div class="ion-text-center">
+  <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
     <ion-button color="primary" (click)="openMapaDrive()">
       VER HUBICACION DE DRIVER
     </ion-button>

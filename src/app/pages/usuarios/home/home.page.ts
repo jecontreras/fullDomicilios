@@ -12,6 +12,8 @@ import * as _ from 'lodash'
 import { PersonaAction } from 'src/app/redux/app.actions';
 import { Router } from '@angular/router';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
+import { Lugar } from 'src/app/interfas/interfaces';
 
 @Component({
   selector: 'app-home',
@@ -40,6 +42,12 @@ export class HomePage implements OnInit {
 
   @ViewChild(IonSegment, {static: false}) segment: IonSegment;
 
+  seconds:any = 0;
+  lat:number;
+  lon:number;
+
+  public rolUser:string;
+
 
   constructor(
     private wsServices: WebsocketService,
@@ -47,6 +55,7 @@ export class HomePage implements OnInit {
     private _tools: ToolsService,
     private modalCtrl: ModalController,
     private _mensajes: ChatService,
+    private geolocation: Geolocation,
     private router: Router
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
@@ -54,6 +63,7 @@ export class HomePage implements OnInit {
         store = store.name;
         this.dataUser = store.persona;
         if( this.dataUser ) this.dataUser.celular = this.dataUser.indicativo+this.dataUser.celular;
+        if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
     });
   }
 
@@ -82,6 +92,7 @@ export class HomePage implements OnInit {
     this.id = this.wsServices.idSocket;
     if(!this.id) { this._tools.presentToast("No hay Conexion"); return false;}
     this.escucharSockets();
+    this.getGeolocation();
     clearInterval(this.interval);
   }
 
@@ -91,6 +102,36 @@ export class HomePage implements OnInit {
     // .subscribe((marcador: Lugar)=> {
     //   // console.log(marcador)
     // });
+  }
+
+  getGeolocation(){
+    let vandera:boolean = true;
+    setInterval(()=>{ 
+      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+        if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
+        this.lat = geoposition.coords.latitude;
+        this.lon = geoposition.coords.longitude;
+        if(vandera){ this.crearMarcador();}
+        this.seconds = 5000;
+      },this.seconds);
+    });
+  }
+
+  crearMarcador(){
+    //this.id = new Date().toISOString();
+    if(!this.id) return false;
+    const customMarker: Lugar = {
+      id: this.id,
+      userID: this.dataUser.id,
+      rol: this.dataUser.rol.rol,
+      estado: true,
+      lng: this.lon,//-75.75512993582937,
+      lat: this.lat,//45.349977429009954,
+      nombre: `${ this.rolUser } ${ this.dataUser.nombre }`,
+      color: '#' + Math.floor(Math.random()*16777215).toString(16)
+    };
+    //emitiendo evento marcador nuevo
+    this.wsServices.emit( 'marcador-nuevo', customMarker);
   }
 
   cambioVista( event:any ){
@@ -119,6 +160,7 @@ export class HomePage implements OnInit {
   }
 
   getList(){
+    this.query.where.estadoOrden = 0;
     this._tools.presentLoading();
     this._mensajes.get(this.query).subscribe((res:any)=>{
       // console.log(res);
@@ -159,6 +201,11 @@ export class HomePage implements OnInit {
       modal.present();
     });
   }
+
+  openInformacion(){
+    this.view = 'informacion';
+  }
+
   cerrar_seccion(){
     let accion = new PersonaAction({}, 'delete');
     this._store.dispatch(accion);

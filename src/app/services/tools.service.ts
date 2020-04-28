@@ -52,11 +52,11 @@ export class ToolsService {
   async presentAlertConfirm( mensaje:any ) {
     return new Promise( async ( resolve )=>{
       const alert = await this.alertController.create({
-        header: mensaje.header || 'Confirmar!',
+        header: mensaje.header,
         message: mensaje.mensaje ||'Message <strong>text</strong>!!!',
         buttons: [
           {
-            text: 'Cancel',
+            text: mensaje.cancel || 'Cancel',
             role: 'cancel',
             cssClass: 'secondary',
             handler: (blah) => {
@@ -64,7 +64,7 @@ export class ToolsService {
               return false;
             }
           }, {
-            text: 'Confirmar',
+            text: mensaje.confirm || 'Confirmar',
             handler: () => {
               resolve(true)
               return true;

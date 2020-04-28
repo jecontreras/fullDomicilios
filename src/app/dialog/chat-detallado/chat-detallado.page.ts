@@ -6,7 +6,8 @@ import * as _ from 'lodash';
 import { STORAGES } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
-import { MapaPage } from 'src/app/pages/usuarios/mapa/mapa.page';
+import { MapaPage } from 'src/app/pages/mapa/mapa.page';
+import { CalificacionPage } from '../calificacion/calificacion.page';
 
 @Component({
   selector: 'app-chat-detallado',
@@ -61,6 +62,8 @@ export class ChatDetalladoPage implements OnInit {
   validandoChat(){
     if(this.dataUser.id == this.data.emisor.id) this.chatDe = this.data.reseptor;
     else this.chatDe = this.data.emisor;
+    this.data.chatDe = this.chatDe;
+    console.log( this.chatDe )
   }
 
   doRefresh(ev){
@@ -100,25 +103,71 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   openMapaDrive(){
+    this.data.vista = "ver_drive";
     this.modalCtrl.create({
       component: MapaPage,
       componentProps: {
-        obj: this.chatDe
+        obj: this.data
       }
     }).then( async (modal)=>{
       modal.present();
     });
   }
 
-  confirmar(){
+  async confirmar(){
+    let result:any = await this._tools.presentAlertConfirm({ header: "", mensaje: `<h4>${ this.chatDe.nombre } ${ this.chatDe.apellido } ha aceptado el mandado el cobro total por el mandado es de: </br> <span class="colorPrecio">${ ( this.data.ofertando.ofrece || 0 ).toLocaleString(1) } USD</span> </h4>`, confirm: "ACEPTAR", cancel: "CANCELAR" });
+    if(!result) return false;
     let data:any = {
-
+      id: this.data.ordenes.id,
+      estado: 3,
+      origenConductorlat: this.chatDe.latitud,
+      origenConductorlon: this.chatDe.longitud,
+      ofreceCliente: this.data.ofertando.ofrece,
+      ofreceConductor: this.data.ordenes.ofreceCliente,
+      coductor: this.chatDe.id,
+      idOfertando: this.data.ofertando.id,
     };
     this.disableBtnConfirmar = true;
     this._orden.editar(data).subscribe((res:any)=>{
       this.disableBtnConfirmar = false;
-      this._tools.presentToast("Exitos orden Confirmada");
+      this.data.ordenes = res;
+      this._tools.presentToast("Exitos mandado Confirmada");
     },(error)=> { this._tools.presentToast("Error de servidor"); this.disableBtnConfirmar = false; } );
+  }
+
+  async FinalizarOrden(){
+    let result:any = await this._tools.presentAlertConfirm({ header: "Estas seguro de finalizar mandado", mensaje: `al finalizar mandado se da por mandado finalizado!`});
+    if(!result) return false;
+    let data:any = {
+      id: this.data.ordenes.id,
+      estado: 2,
+    };
+    this.disableBtnConfirmar = true;
+    this._orden.editar(data).subscribe((res:any)=>{
+      this.disableBtnConfirmar = false;
+      this._tools.presentToast("Exitos mandodado finalizado");
+      this.cambiarEstadoChat();
+      this.openCalifacion( res );
+    },(error)=> { this._tools.presentToast("Error de servidor"); this.disableBtnConfirmar = false; } );
+  }
+
+  cambiarEstadoChat(){
+    let data:any ={
+      id: this.data.id,
+      estadoOrden: 1
+    };
+    this._chat.editar(data).subscribe((res:any)=>console.log(res));
+  }
+
+  openCalifacion( res:any ){
+    this.modalCtrl.create({
+      component: CalificacionPage,
+      componentProps: {
+        obj: this.data
+      }
+    }).then( async (modal)=>{
+      modal.present();
+    });
   }
 
   submitChat(){

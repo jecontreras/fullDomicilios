@@ -8,11 +8,11 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { MenuPageModule } from 'src/app/layout/menu/menu.module';
-import { MapaPageModule } from '../mapa/mapa.module';
 import { PerfilSettingsPageModule } from 'src/app/dialog/perfil-settings/perfil-settings.module';
 import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
 import { HistorialPagosPageModule } from 'src/app/dialog/historial-pagos/historial-pagos.module';
 import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
+import { SolicitarPageModule } from 'src/app/dialog/solicitar/solicitar.module';
 
 @NgModule({
   imports: [
@@ -21,7 +21,7 @@ import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion
     IonicModule,
     HomePageRoutingModule,
     MenuPageModule,
-    MapaPageModule,
+    SolicitarPageModule,
     PerfilSettingsPageModule,
     PaquetesPageModule,
     HistorialPagosPageModule,
