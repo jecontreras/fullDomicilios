@@ -4,12 +4,17 @@
       <ion-button slot="start" fill="clear" (click)="exit()" color="light">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
-      <div>
+      <div *ngIf="vista == 'cliente'">
         <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
           <p>EJECUTANDO MANDADO</p>
         </div>
         <div class="ion-text-center" *ngIf="data.ordenes.estado == 0">
           <p>COORDINANDO DE DETALLES CON EL DRIVER:</p>
+        </div>
+      </div>
+      <div *ngIf="vista == 'drive'">
+        <div class="ion-text-center">
+          <p>COORDINANDO DE DETALLES CON EL CLIENTE:</p>
         </div>
       </div>
     </ion-toolbar>
@@ -21,7 +26,7 @@
               [src]="chatDe.foto || './assets/perfil.png'" />
           </ion-avatar>
           <ion-text color="light">
-            <h5>{{ chatDe.nombre }}</h5>
+            <h5>{{ chatDe.nombre }} {{ chatDe.apellido }}</h5>
           </ion-text>
         </ion-chip>
       </p>
@@ -30,29 +35,60 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="ion-text-center colorTitulo border" *ngIf="data.ordenes.estado == 0">
-    <ion-text color="light">
-      <span>ESTATUS DEL ENVIO</span>
-    </ion-text>
-    <ion-text class="colorRed" (click)="confirmar()">
-      <h4>PENDIENTE DE ACEPTACION</h4>
-    </ion-text>
-  </div>
-  <ion-toolbar *ngIf="data.ordenes.estado != 0">
-    <div class="ion-text-center">
-      <h5>ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 3" class="colorYellow">PROCESO</span> 
-        <span *ngIf="data.ordenes.estado == 2" class="colorGrend">FINALIZADO</span>
-      </h5>
-      <ion-button color="primary" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
-        CONFIRMAR Y FINALIZAR
+  <div *ngIf="vista == 'cliente'">
+    <div class="ion-text-center colorTitulo border" *ngIf="data.ordenes.estado == 0">
+      <ion-text color="light">
+        <span>ESTATUS DEL ENVIO</span>
+      </ion-text>
+      <ion-text class="colorRed" (click)="confirmar()">
+        <h4>PENDIENTE DE ACEPTACION</h4>
+      </ion-text>
+    </div>
+    <ion-toolbar *ngIf="data.ordenes.estado != 0">
+      <div class="ion-text-center">
+        <h5>ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 3" class="colorYellow">PROCESO</span> 
+          <span *ngIf="data.ordenes.estado == 2" class="colorGrend">FINALIZADO</span>
+        </h5>
+        <ion-button color="primary" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
+          CONFIRMAR Y FINALIZAR
+        </ion-button>
+      </div>
+    </ion-toolbar>
+    <br>
+    <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
+      <ion-button color="primary" (click)="openMapaDrive()">
+        VER HUBICACION DE DRIVER
       </ion-button>
     </div>
-  </ion-toolbar>
-  <br>
-  <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
-    <ion-button color="primary" (click)="openMapaDrive()">
-      VER HUBICACION DE DRIVER
-    </ion-button>
+  </div>
+  <div *ngIf="vista == 'drive'">
+    <div class="ion-text-center colorTitulo border">
+      <ion-text color="light">
+        <span>ESTATUS DEL MANDADO</span>
+      </ion-text>
+      <ion-text class="colorRed" *ngIf="data.ordenes.estado == 0">
+        <h4>PENDIENTE DE ACEPTACION</h4>
+      </ion-text>
+      <ion-text class="colorRed" *ngIf="data.ordenes.estado == 1">
+        <h4>ELIMINADO</h4>
+      </ion-text>
+      <ion-text class="colorGrend" *ngIf="data.ordenes.estado == 2">
+        <h4>COMPLETADO</h4>
+      </ion-text>
+      <ion-text class="colorYellow" *ngIf="data.ordenes.estado == 3"> 
+        <h4>ENPROCESO</h4>
+      </ion-text>
+      <ion-text color="success" *ngIf="listOfertando">
+        <h4>OFERTASTE: {{ ( listOfertando.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
+      </ion-text>
+    </div>
+    <ion-toolbar *ngIf="data.estado == 0 && ( data.ordenes.estado != 3 && data.ordenes.estado != 2 && data.ordenes.estado != 1)">
+      <div class="ion-text-center">
+        <ion-button color="primary" (click)="ofertandoCliente()" [disabled]="disableBtnConfirmar">
+          CONFIRMAR PRECIO
+        </ion-button>
+      </div>
+    </ion-toolbar>
   </div>
   <br>
   <ion-card class="altoCars has-card-footer">

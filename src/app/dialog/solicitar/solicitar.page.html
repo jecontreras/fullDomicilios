@@ -5,8 +5,12 @@
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
       <div class="ion-text-center" *ngIf="vista == 'detalles'">
-        <h5>COORDINACION DE DETALLES</h5>
-        <h5>CON EL CLIENTE:</h5>
+        <ion-text>
+          <h5>
+            <span>COORDINACION DE DETALLES</span>
+            <ion-label>CON EL CLIENTE:</ion-label>
+          </h5>
+        </ion-text>
       </div>
     </ion-toolbar>
     <ion-toolbar *ngIf="vista == 'detalles'" color="primary">
@@ -49,7 +53,7 @@
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-button color="primary" (click)="openMapa('origen')">
+          <ion-button color="primary" (click)="openMapa('origen', true)">
             Ingresa la ubicación en el mapa
           </ion-button>
         </div>
@@ -62,7 +66,7 @@
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-button color="primary" (click)="openMapa('destino')">
+          <ion-button color="primary" (click)="openMapa('destino', true)">
             Ingresa la ubicación en el mapa
           </ion-button>
         </div>
@@ -76,7 +80,7 @@
     </ion-slide>
   </ion-slides>
 
-  <div class="fondoCard">
+  <div class="fondoCard" *ngIf="vista == 'detalles'">
     <ion-grid *ngIf="vista == 'detalles'">
       <ion-row>
         <ion-col size="12">
@@ -97,7 +101,7 @@
         </ion-col>
         <ion-col size="12">
           <div class="ion-text-center">
-            <ion-button color="primary" (click)="openMapa()">
+            <ion-button color="primary" (click)="openMapa('origen_detalle', false)">
               VER UBICACION
             </ion-button>
           </div>
@@ -112,7 +116,7 @@
         </ion-col>
         <ion-col size="12">
           <div class="ion-text-center">
-            <ion-button color="primary" (click)="openMapa()">
+            <ion-button color="primary" (click)="openMapa('destino_detalle', false)">
               VER UBICACION
             </ion-button>
           </div>
@@ -132,6 +136,7 @@
 </ion-content>
 <ion-footer *ngIf="vista == 'form'">
   <ion-button expand="full" [disabled]="btnDisabled" color="primary" (click)="submitMandado()">
-    SOLICITAR UN MANDADO
+    <span *ngIf="!data.id">SOLICITAR UN MANDADO</span>
+    <span *ngIf="data.id">ACTUALIZAR MANDADO</span>
   </ion-button>
 </ion-footer>

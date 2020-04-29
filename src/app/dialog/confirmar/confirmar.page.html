@@ -1,0 +1,48 @@
+<ion-content>
+  <ion-button fill="clear" (click)="tipoMandado('home', false)" color="dark" *ngIf="opcion == 'mandado_largo' || opcion == 'normal'">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <div class="ion-text-center" *ngIf="opcion == 'home'">
+    <ion-text>
+      <h5>Selecciona una opción</h5>
+    </ion-text>
+    <br><br>
+    <div>
+      <ion-button color="light" (click)="tipoMandado('normal', false)" class="textButton">
+        MANDADO NORMAL
+      </ion-button>
+      <br>
+      <ion-button color="light" (click)="tipoMandado('mandado_largo', false)" class="textButton">
+        MANDADO LARGO
+      </ion-button>
+    </div>
+  </div>
+  <div class="ion-text-center" *ngIf="opcion == 'normal'">
+    <br>
+    <ion-text color="dark">
+      <p>Estas apunto de confirmar el mandado 
+        <br>
+        al cliente, has seleccionado mandado
+        <br>
+        nomal, es decir que el cobro será 
+        <br>
+        de $ {{ ( data.precio ).toLocaleString('de-DE', { style: 'currency', currency: 'USD' }) }} USD
+      </p>
+    </ion-text>
+    <ion-button color="success" fill="clear" (click)="confirmar()" [disabled]="btnDisabled">
+      CONFIRMAR
+    </ion-button>
+    <ion-button color="danger" fill="clear" (click)="tipoMandado('home', false)">
+      CANCELAR
+    </ion-button>
+  </div>
+  <div class="ion-text-center" *ngIf="opcion == 'mandado_largo'">
+    <ion-text color="dark">
+      <p>Ingresa el precio que le cobras al cliente.</p>
+    </ion-text>
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.precio" required type="text"></ion-input>
+    <ion-button (click)="tipoMandado('normal', true)" color="light">
+      ENVIAR PRECIO
+    </ion-button>
+  </div>
+</ion-content>

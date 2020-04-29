@@ -8,6 +8,7 @@ import { SolicitarPageRoutingModule } from './solicitar-routing.module';
 
 import { SolicitarPage } from './solicitar.page';
 import { MapaPageModule } from 'src/app/pages/mapa/mapa.module';
+import { ChatDetalladoPageModule } from '../chat-detallado/chat-detallado.module';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { MapaPageModule } from 'src/app/pages/mapa/mapa.module';
     FormsModule,
     IonicModule,
     SolicitarPageRoutingModule,
+    ChatDetalladoPageModule,
     MapaPageModule
   ],
   declarations: [SolicitarPage]

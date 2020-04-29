@@ -9,6 +9,7 @@ import { ChatDetalladoPageRoutingModule } from './chat-detallado-routing.module'
 import { ChatDetalladoPage } from './chat-detallado.page';
 import { MapaPageModule } from 'src/app/pages/mapa/mapa.module';
 import { CalificacionPageModule } from '../calificacion/calificacion.module';
+import { ConfirmarPageModule } from '../confirmar/confirmar.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { CalificacionPageModule } from '../calificacion/calificacion.module';
     IonicModule,
     MapaPageModule,
     ChatDetalladoPageRoutingModule,
-    CalificacionPageModule
+    CalificacionPageModule,
+    ConfirmarPageModule
   ],
   declarations: [ChatDetalladoPage]
 })

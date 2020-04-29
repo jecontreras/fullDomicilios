@@ -45,6 +45,8 @@ export class MapaPage implements OnInit {
   marcadorLon:any;
   vista:any;
 
+  noActivar:boolean = true;
+
   constructor(
     private http: HttpClient,
     private wsServices: WebsocketService,
@@ -89,6 +91,12 @@ export class MapaPage implements OnInit {
     this.escucharSockets();
     this.getGeolocation();
     if(this.vista == "ver_drive") this.llenandoData( { id: this.paramsData.chatDe.idSockets } );
+    let interval:any = setInterval(()=>{
+      if(!this.mapa) return false;
+      if(this.vista == "origen_detalle") { this.noActivar = false; this.armarDataOrigenConductorDetalle(); }
+      if(this.vista == "destino_detalle") { this.noActivar = false; this.armarDataDestinoOrdenDetalle(); }
+      clearInterval( interval );
+    },3000 )
     clearInterval(this.interval);
   }
 
@@ -249,6 +257,34 @@ export class MapaPage implements OnInit {
         }
      }
     );
+  }
+  //esta funcion viene es de solicitar el opt origen_detalle
+  armarDataOrigenConductorDetalle( ){
+    let data:any = {
+      origenlat: this.lat,
+      origenlon: this.lon,
+      destinolon: this.paramsData.origenLon,
+      destinolat: this.paramsData.origenLat,
+      startLon: this.lat,
+      startLat: this.lon,
+      destinoLon: this.paramsData.origenLon,
+      destinoLat: this.paramsData.origenLat
+    };
+    this.getLatLongCliente( data );
+  }
+  //esta funcion viene es de solicitar el opt destino_detalle
+  armarDataDestinoOrdenDetalle(){
+    let data:any = {
+      origenlat: this.lat,
+      origenlon: this.lon,
+      destinolon: this.paramsData.destinoLon,
+      destinolat: this.paramsData.destinolat,
+      startLon: this.lon,
+      startLat: this.lat,
+      destinoLon: this.paramsData.destinoLon,
+      destinoLat: this.paramsData.destinolat
+    };
+    this.getLatLongConductor( data );
   }
 
   armarDataOrigenConductor( lugar:any ){

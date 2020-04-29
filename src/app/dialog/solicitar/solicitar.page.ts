@@ -7,6 +7,8 @@ import { Store } from '@ngrx/store';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { WebsocketService } from 'src/app/services/websocket.services';
 import { ServicioActivoAction } from 'src/app/redux/app.actions';
+import { ChatDetalladoPage } from '../chat-detallado/chat-detallado.page';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-solicitar',
@@ -46,14 +48,20 @@ export class SolicitarPage implements OnInit {
     this.paramsData = this.navparams.get('obj');
     console.log(this.paramsData)
     if(this.paramsData.vista == "detalles") this.vista = "detalles";
+    if( this.paramsData.vista == 'form') if( this.paramsData.id ) this.data = this.paramsData;
   }
 
 
-  openMapa(opt){
+  openMapa( opt, desicion ){
+    let params:any = { vista: "origen" };
+    if(!desicion) {
+      params = this.paramsData;
+      params.vista = opt;
+    }
     this.modalCtrl.create({
       component: MapaPage,
       componentProps: {
-        obj: { vista: "origen" }
+        obj: params
       }
     }).then( async (modal)=>{
       modal.present();
@@ -77,6 +85,11 @@ export class SolicitarPage implements OnInit {
     console.log(this.data);
     this.btnDisabled = true;
     this._tools.presentLoading();
+    if(this.data.id) this.updateMandados();
+    else this.guardarMandado();
+  }
+
+  guardarMandado(){
     this._orden.saved(this.data).subscribe((res:any)=>{
       this._tools.dismisPresent();
       this.btnDisabled = false;
@@ -84,10 +97,20 @@ export class SolicitarPage implements OnInit {
     },(error)=>{ this._tools.presentToast("Error de servidor"); this.btnDisabled = false; this._tools.dismisPresent(); });
   }
 
+  updateMandados(){
+    this.data = _.omit( this.data, [ 'usuario', 'coductor']);
+    this._orden.editar(this.data).subscribe((res:any)=>{
+      this._tools.dismisPresent();
+      this.btnDisabled = false;
+      this.wsServices.emit("orden-actualizada", res);
+      this._tools.presentToast("Mandado Actualizado");
+    },(error)=>{ this._tools.presentToast("Error de servidor"); this.btnDisabled = false; this._tools.dismisPresent(); });
+  }
+
   procesoMandado( res:any ){
     this.wsServices.emit("orden-nuevo", res);
-    let accion:any = new ServicioActivoAction( res, 'post' );
-    this._store.dispatch( accion );
+    // let accion:any = new ServicioActivoAction( res, 'post' );
+    // this._store.dispatch( accion );
     this._tools.presentToast("Mandado Solicitando");
     this.vista = 'driver';
     setTimeout(()=>{
@@ -95,8 +118,19 @@ export class SolicitarPage implements OnInit {
     }, 5000)
   }
 
-  aceptarOrden(){
-
+  aceptarOrden( ){
+    this.paramsData.chatDe = this.paramsData.usuario;
+    this.paramsData.vista = "drive";
+    this.paramsData.opt = true;
+    this.paramsData.ordenes = this.paramsData;
+    this.modalCtrl.create({
+      component: ChatDetalladoPage,
+      componentProps: {
+        obj: this.paramsData
+      }
+    }).then( async (modal)=>{
+      modal.present();
+    });
   }
 
   exit(){

@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
 import { ChatService } from 'src/app/service-component/chat.service';
+import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
 
 
 const URLACTIVACION =  environment.urlActivacion;
@@ -30,15 +31,16 @@ export class HomePage implements OnInit {
   listRow:any = [];
   query:any = {
     where:{
-      estado: 0,
-      tipoOrden: 0
+      estado: [0, 3]
     },
+    sort: 'createdAt DESC',
     skip: 0
   };
 
   query2:any = {
     where:{
-      estado: 0
+      estado: 0,
+      estadoOrden: [ 0, 3]
     },
     sort: 'createdAt DESC',
     skip: 0
@@ -90,7 +92,11 @@ export class HomePage implements OnInit {
 
   validanQueryUser(){
     if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
-    this.query = { where:{ estado: 0 }, skip: 0 };
+    this.query2.where.or = [
+      { emisor: this.dataUser.id },
+      { reseptor: this.dataUser.id }
+    ]
+    //this.query = { where:{ estado: 0 }, skip: 0 };
   }
 
   ngOnInit(): void {
@@ -165,21 +171,21 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-nuevo')
     .subscribe((marcador: any)=> {
+      console.log(marcador);
       if( this.rolUser === 'usuario' ) return false;
       // Validando estado si esta disponible 
-      if( !this.dataUser.estadoDisponible ) return false;
-      //validar tipo de servicio si es normal o de carga
-      if( marcador.tipoOrden == 1 ) if( !this.dataUser.carga ) return false;
-      if( marcador.tipoOrden == 2 ) if( !this.dataUser.domicilio ) return false;
+      if( !this.dataUser.estadoCuenta ) return false;
       // if( !( this.RangoOrden( marcador) ) ) return false;
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
     });
+    
     this.wsServices.listen('orden-confirmada')
     .subscribe((marcador: any)=> {
       //console.log(this.listRow, marcador);
       this.procesoOrdenConfirmada( marcador );
     });
+    
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
       //console.log(marcador);
@@ -270,7 +276,6 @@ export class HomePage implements OnInit {
     //   "<=": moment().add(5, 'minutes')
     // }
     this._orden.get(this.query).subscribe((res:any)=>{
-      // console.log(res);
       this.dataFormaList(res);
       this._tools.dismisPresent();
     },(error)=> { this._tools.presentToast( "Error de conexion"); this._tools.dismisPresent(); });
@@ -321,6 +326,7 @@ export class HomePage implements OnInit {
 
   openMapa( item:any ){
     item.vista = "detalles";
+    console.log(item);
     this.modalCtrl.create({
       component: SolicitarPage,
       componentProps: {
@@ -333,6 +339,19 @@ export class HomePage implements OnInit {
       this.query.skip = 0;
       this.validanQueryUser();
       this.getList();
+    });
+  }
+
+  openChat( item:any ){
+    if(!item) return false;
+    item.vista = "drive";
+    this.modalCtrl.create({
+      component: ChatDetalladoPage,
+      componentProps: {
+        obj: item
+      }
+    }).then( async (modal)=>{
+      modal.present();
     });
   }
 

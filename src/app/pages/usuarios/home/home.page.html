@@ -23,10 +23,45 @@
     </ion-text>
     <br><br><br><br><br><br><br>
     <div class="ion-text-center">
-      <ion-button size="large" (click)="openSolicitar()">
+      <ion-button size="large" (click)="openSolicitar( false )">
         SOLICITAR UN MANDADO
       </ion-button>
+      <ion-button size="large" (click)="openMandadosActivos()">
+        VER MIS MANDADOS ACTIVOS
+      </ion-button>
     </div>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="view == 'mandados'">
+    <ion-card class="altoCars">
+      <ion-card-header class="colorTitulo">
+        <div class="ion-text-center">
+          <ion-card-title color="medium">MIS MANDADOS ACTIVOS</ion-card-title>
+        </div>
+      </ion-card-header>
+    </ion-card>
+  
+    <ion-list>
+  
+      <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivos: item.estado == 3}">
+        <ion-label>
+          <ion-text color="dark">
+            <h2>MANDADO DE</h2>
+            <h2>{{ item['usuario'].nombre }}</h2>
+          </ion-text>
+        </ion-label>
+        <ion-button color="primary" (click)="openSolicitar( item )" slot="end">
+          VER
+        </ion-button>
+      </ion-item>
+    </ion-list>
+    
+    <div class="ion-text-center" *ngIf="listRow.length == 0">
+      <ion-text colo="dark">
+        <span>Lista Vacia</span>
+      </ion-text>
+    </div>
+
   </ion-toolbar>
 
   <ion-toolbar *ngIf="view == 'chat'">

@@ -8,6 +8,9 @@ import { Store } from '@ngrx/store';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { MapaPage } from 'src/app/pages/mapa/mapa.page';
 import { CalificacionPage } from '../calificacion/calificacion.page';
+import { OfertandoService } from 'src/app/service-component/ofertando.service';
+import { ConfirmarPage } from '../confirmar/confirmar.page';
+import { WebsocketService } from 'src/app/services/websocket.services';
 
 @Component({
   selector: 'app-chat-detallado',
@@ -36,6 +39,8 @@ export class ChatDetalladoPage implements OnInit {
   mensajeTxt:string;
 
   disableBtnChat:boolean = false;
+  vista:string;
+  listOfertando:any = {};
 
   constructor(
     private modalCtrl: ModalController,
@@ -43,20 +48,57 @@ export class ChatDetalladoPage implements OnInit {
     private _chat: ChatService,
     private _tools: ToolsService,
     private _store: Store<STORAGES>,
-    private _orden: OrdenesService
+    private _orden: OrdenesService,
+    private _ofertando: OfertandoService,
+    private wsServices: WebsocketService,
   ) { 
     this._store.subscribe((store:any)=>{
       store = store.name;
       this.dataUser = store.persona;
       if( this.dataUser ) this.dataUser.celular = this.dataUser.indicativo+this.dataUser.celular;
-  });
+    });
   }
 
   ngOnInit() {
     this.data = this.navparams.get('obj');
+    this.vista = this.data.vista;
     console.log(this.data);
-    this.validandoChat();
-    if(this.data.id) this.getChatDetallado();
+    this.escucharSockets();
+    this.procesoInicial();
+  }
+
+  procesoInicial(){
+    if( this.vista == 'cliente') { this.validandoChat(); if( this.data.id ) { this.query.where.chat = this.data.id; this.getChatDetallado(); }}
+    if( this.vista == 'drive') { 
+      if( this.data.chatDe ) { this.chatDe = this.data.chatDe } else this.validandoChat(); 
+      //this.data.ordenes = this.data.ordenes;
+      if(this.data.opt) this.getChatInit();
+      else { this.query.where.chat = this.data.id; this.getChatDetallado();}
+      this.getOfertando();
+    }
+  } 
+
+  escucharSockets(){
+    // orden-nueva
+
+    this.wsServices.listen('chat-nuevo')
+    .subscribe((chat: any)=> {
+      // console.log("**", chat);
+      if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
+      this.listRow.push( chat );
+    });
+    this.wsServices.listen('orden-confirmada')
+    .subscribe((ordenes: any)=> {
+      console.log("**", ordenes, this.data);
+      if( this.data.ordenes.id != ordenes.id ) return false;
+      this.procesandoOrdenConfirmada( ordenes );
+    });
+  }
+
+  procesandoOrdenConfirmada( ordenes:any ){
+    this.data.ordenes = ordenes;
+    this.data.chatDe = ordenes.usuario;
+    this.chatDe = ordenes.usuario;
   }
 
   validandoChat(){
@@ -81,8 +123,23 @@ export class ChatDetalladoPage implements OnInit {
     this.getChatDetallado();
   }
 
+  getOfertando(){
+    this._ofertando.get( { where:{ orden: this.data.id, usuario: this.dataUser.id }, sort: "createdAt DESC", limit: 1 } ).subscribe((res:any)=>{
+      this.listOfertando = res.data[0];
+    });
+  }
+
+  getChatInit(){
+    this._chat.get( { where: { ordenes: this.data.id, emisor: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
+      console.log( res );
+      res = res.data[0];
+      if(!res) return false;
+      this.query.where.chat = res.id; 
+      this.getChatDetallado();
+    });
+  }
+
   getChatDetallado(){
-    this.query.where.chat = this.data.id;
     this._tools.presentLoading();
     this._chat.getDetallado( this.query ).subscribe((res:any)=>{
       this.dataFormaList( res );
@@ -115,7 +172,7 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   async confirmar(){
-    let result:any = await this._tools.presentAlertConfirm({ header: "", mensaje: `<h4>${ this.chatDe.nombre } ${ this.chatDe.apellido } ha aceptado el mandado el cobro total por el mandado es de: </br> <span class="colorPrecio">${ ( this.data.ofertando.ofrece || 0 ).toLocaleString(1) } USD</span> </h4>`, confirm: "ACEPTAR", cancel: "CANCELAR" });
+    let result:any = await this._tools.presentAlertConfirm({ header: "", mensaje: `<h4>${ this.chatDe.nombre } ${ this.chatDe.apellido } ha aceptado el mandado el cobro total por el mandado es de: </br> <span class="colorPrecio">${ ( this.data.ofertando.ofrece || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'USD' }) } </span> </h4>`, confirm: "ACEPTAR", cancel: "CANCELAR" });
     if(!result) return false;
     let data:any = {
       id: this.data.ordenes.id,
@@ -132,7 +189,21 @@ export class ChatDetalladoPage implements OnInit {
       this.disableBtnConfirmar = false;
       this.data.ordenes = res;
       this._tools.presentToast("Exitos mandado Confirmada");
+      this.wsServices.emit("orden-confirmada", res);
     },(error)=> { this._tools.presentToast("Error de servidor"); this.disableBtnConfirmar = false; } );
+  }
+
+  async ofertandoCliente(){
+    const modal:any = await this.modalCtrl.create({
+      component: ConfirmarPage,
+      componentProps: {
+        obj: this.data
+      },
+      cssClass: 'my-custom-modal-css'
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    this.procesoInicial();
   }
 
   async FinalizarOrden(){
@@ -154,20 +225,21 @@ export class ChatDetalladoPage implements OnInit {
   cambiarEstadoChat(){
     let data:any ={
       id: this.data.id,
-      estadoOrden: 1
+      estadoOrden: 2
     };
     this._chat.editar(data).subscribe((res:any)=>console.log(res));
   }
 
-  openCalifacion( res:any ){
-    this.modalCtrl.create({
+  async openCalifacion( res:any ){
+    let modal:any = await this.modalCtrl.create({
       component: CalificacionPage,
       componentProps: {
         obj: this.data
       }
-    }).then( async (modal)=>{
-      modal.present();
     });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    this.procesoInicial();
   }
 
   submitChat(){
@@ -177,6 +249,7 @@ export class ChatDetalladoPage implements OnInit {
       reseptor: this.chatDe.id,
       ordenes: this.data.ordenes.id
     };
+    console.log( data );
     if( !data.emisor || !data.reseptor || !data.ordenes ) return this._tools.presentToast("Ay algo mal Por Favor Reiniciar");
     if( this.disableBtnChat ) return false;
     this.disableBtnChat = true;
@@ -184,6 +257,7 @@ export class ChatDetalladoPage implements OnInit {
       this.disableBtnChat = false;
       this.mensajeTxt = "";
       this.listRow.push(res.data);
+      this.wsServices.emit( 'chat-nuevo', res.data);
     },(error)=> { this._tools.presentToast("Error de servidor mensaje no enviado"); this.disableBtnChat = false; });
   }
 

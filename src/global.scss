@@ -64,3 +64,87 @@ html, body {
 .colorPrecio{
   color: green;
 }
+
+.my-custom-modal-css {
+  --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+  --max-width: 382px !important;
+  padding-top: 226px !important;
+  --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+  font-size: 14px !important;
+  padding-bottom: 392px !important;
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-height: 420px) {
+  .my-custom-modal-css {
+    --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+    --max-width: 382px !important;
+    padding-top: 226px !important;
+    --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+    font-size: 14px !important;
+    padding-bottom: 150px !important;
+  }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-height: 320px) {
+  .my-custom-modal-css {
+    --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+    --max-width: 382px !important;
+    padding-top: 226px !important;
+    --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+    font-size: 14px !important;
+    padding-bottom: 150px !important;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-height: 600px) {
+  .my-custom-modal-css {
+    --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+    --max-width: 382px !important;
+    padding-top: 226px !important;
+    --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+    font-size: 14px !important;
+    padding-bottom: 203px !important;
+  }
+}
+
+@media only screen and (min-height: 700px) {
+  .my-custom-modal-css {
+    --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+    --max-width: 382px !important;
+    padding-top: 226px !important;
+    --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+    font-size: 14px !important;
+    padding-bottom: 292px !important;
+  }
+}
+
+@media only screen and (min-height: 800px) {
+  .my-custom-modal-css {
+    --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+    --max-width: 382px !important;
+    padding-top: 226px !important;
+    --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+    font-size: 14px !important;
+    padding-bottom: 392px !important;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-height: 992px) {
+  .my-custom-modal-css {
+    --background: var(--ion-overlay-background-color,var(--ion-background-color,#fff)) !important;
+    --max-width: 382px !important;
+    padding-top: 226px !important;
+    --backdrop-opacity: var(--ion-backdrop-opacity,0.32) !important;
+    font-size: 14px !important;
+    padding-bottom: 395px !important;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-height: 1200px) {
+
+}

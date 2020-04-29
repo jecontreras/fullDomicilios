@@ -64,6 +64,10 @@ const routes: Routes = [
   {
     path: 'chat-detallado',
     loadChildren: () => import('./dialog/chat-detallado/chat-detallado.module').then( m => m.ChatDetalladoPageModule)
+  },
+  {
+    path: 'confirmar',
+    loadChildren: () => import('./dialog/confirmar/confirmar.module').then( m => m.ConfirmarPageModule)
   }
 
 

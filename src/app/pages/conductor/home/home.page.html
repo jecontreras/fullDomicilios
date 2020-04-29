@@ -62,7 +62,7 @@
   
     <ion-list>
   
-      <ion-item *ngFor="let item of listRow">
+      <ion-item *ngFor="let item of listRow" [ngClass]="{colorActivos: item.estado == 3}">
         <ion-label>
           <ion-text color="dark">
             <h2>MANDADO DE</h2>

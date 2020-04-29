@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Lugar } from 'src/app/interfas/interfaces';
+import { OrdenesService } from 'src/app/service-component/ordenes.service';
 
 @Component({
   selector: 'app-home',
@@ -48,6 +49,7 @@ export class HomePage implements OnInit {
 
   public rolUser:string;
 
+  listMandadosActivos:any = [];
 
   constructor(
     private wsServices: WebsocketService,
@@ -56,7 +58,8 @@ export class HomePage implements OnInit {
     private modalCtrl: ModalController,
     private _mensajes: ChatService,
     private geolocation: Geolocation,
-    private router: Router
+    private router: Router,
+    private _ordenes: OrdenesService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store.subscribe((store:any)=>{
@@ -97,11 +100,13 @@ export class HomePage implements OnInit {
   }
 
   escucharSockets(){
-    // marcador-nuevo
-    // this.wsServices.listen('marcador-nuevo')
-    // .subscribe((marcador: Lugar)=> {
-    //   // console.log(marcador)
-    // });
+    this.wsServices.listen('chat-nuevo')
+    .subscribe((marcador: any)=> {
+      console.log("**", marcador);
+      if(marcador.reseptor.id !== this.dataUser.id ) return false;
+      this.listRow.push( marcador );
+      this.listRow = _.unionBy( this.listRow || [], marcador, 'id');
+    });
   }
 
   getGeolocation(){
@@ -181,17 +186,33 @@ export class HomePage implements OnInit {
     }
   }
 
-  openSolicitar(){
+  openSolicitar( item:any ){
+    let data:any = {
+      vista: "form"
+    };
+    if(item) { data = item; data.vista = "form"; }
     this.modalCtrl.create({
       component: SolicitarPage,
-      componentProps: {}
+      componentProps: { 
+        obj: data
+      }
     }).then( async (modal)=>{
       modal.present();
     });
   }
 
+  openMandadosActivos(){
+    this.view = "mandados";
+    this._tools.presentLoading();
+    this._ordenes.get( { where: { estado: [0, 3] } } ).subscribe((res:any)=>{ 
+      this.listMandadosActivos = res.data
+      this._tools.dismisPresent();
+    }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
+  }
+
   openChat( item:any ){
     if(!item) return false;
+    item.vista = "cliente";
     this.modalCtrl.create({
       component: ChatDetalladoPage,
       componentProps: {

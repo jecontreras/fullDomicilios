@@ -10,7 +10,7 @@
   <div class="mapa" id="mapa"></div>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="noActivar">
   <ion-toolbar>
     <div class="ion-text-center">
       <ion-button color="primary" (click)="agregarMarkerBtn()" *ngIf="vista == 'origen'">

@@ -13,6 +13,7 @@ import { PaquetesPageModule } from 'src/app/dialog/paquetes/paquetes.module';
 import { HistorialPagosPageModule } from 'src/app/dialog/historial-pagos/historial-pagos.module';
 import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
 import { SolicitarPageModule } from 'src/app/dialog/solicitar/solicitar.module';
+import { ChatDetalladoPageModule } from 'src/app/dialog/chat-detallado/chat-detallado.module';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { SolicitarPageModule } from 'src/app/dialog/solicitar/solicitar.module';
     PaquetesPageModule,
     HistorialPagosPageModule,
     CalificacionPageModule,
+    ChatDetalladoPageModule
   ],
   declarations: [HomePage]
 })
