@@ -43,13 +43,19 @@
       <ion-text class="colorRed" (click)="confirmar()">
         <h4>PENDIENTE DE ACEPTACION</h4>
       </ion-text>
+      <ion-text color="success" *ngIf="listOfertando">
+        <h4>DRIVE OFERTA: {{ ( data['ofertando']?.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
+      </ion-text>
     </div>
     <ion-toolbar *ngIf="data.ordenes.estado != 0">
       <div class="ion-text-center">
         <h5>ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 3" class="colorYellow">PROCESO</span> 
           <span *ngIf="data.ordenes.estado == 2" class="colorGrend">FINALIZADO</span>
         </h5>
-        <ion-button color="primary" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
+        <ion-text color="success" *ngIf="listOfertando">
+          <h4>DRIVE OFERTA: {{ ( data['ofertando']?.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
+        </ion-text>
+        <ion-button color="primary" *ngIf="data.ordenes.estado != 2" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
           CONFIRMAR Y FINALIZAR
         </ion-button>
       </div>
@@ -104,19 +110,19 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-list>
+  <div>
+    <ion-list>
 
-    <ion-item *ngFor="let item of listRow">
-      <ion-avatar slot="start">
-        <img [src]="item['emisor']?.foto || './assets/perfil.png'">
-      </ion-avatar>
-      <ion-label>
+      <ion-item *ngFor="let item of listRow">
+        <ion-avatar slot="start">
+          <img [src]="item['emisor']?.foto || './assets/perfil.png'">
+        </ion-avatar>
         <ion-text color="dark">
-          <p>{{ item['text'] }}</p>
+          <h5>{{ item['text'] }}</h5>
         </ion-text>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+      </ion-item>
+    </ion-list>
+  </div>
 
   <div class="ion-text-center" *ngIf="listRow.length == 0">
     <ion-text colo="dark">

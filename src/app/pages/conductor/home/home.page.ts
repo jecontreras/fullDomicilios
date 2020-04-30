@@ -179,9 +179,20 @@ export class HomePage implements OnInit {
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
     });
-    
-    this.wsServices.listen('orden-confirmada')
+
+    this.wsServices.listen('orden-actualizada')
     .subscribe((marcador: any)=> {
+      // console.log(">>>>>>>>>>>",marcador, this.listRow);
+      if( !marcador ) return false;
+      let filtro = this.listRow.findIndex( (row:any)=> row.id == marcador.id );
+      if(filtro <= -1) return false;
+      this.listRow[filtro] = marcador;
+    });
+
+    this.wsServices.listen('orden-confirmada')  
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      if( !marcador.coductor ) return false;
       //console.log(this.listRow, marcador);
       this.procesoOrdenConfirmada( marcador );
     });
@@ -204,10 +215,14 @@ export class HomePage implements OnInit {
 
   procesoOrdenConfirmada( marcador:any ){
     if(marcador.coductor.id == this.dataUser.id){
-      let item = this.listRow.find( (row:any)=> row.id == marcador.id );
+      let item:any = this.listRow.find( (row:any)=> row.id == marcador.id );
+      item = marcador;
       item.check = true;
     }else{
       if(marcador.id) this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
+    }
+    for( let row of this.listRow2 ){
+      if( row.ordenes == marcador.id ) row.ordenes = marcador;
     }
   }
 
@@ -236,7 +251,7 @@ export class HomePage implements OnInit {
   doRefresh(ev){
     this.ev = ev;
     this.disable_list = false;
-    if( this.view == 'home' ) {
+    if( this.view == 'mandados' ) {
       this.listRow = [];
       this.getList();
     }
@@ -249,7 +264,7 @@ export class HomePage implements OnInit {
   loadData(ev){
     //console.log(ev);
     this.evScroll = ev;
-    if( this.view == 'home' ){
+    if( this.view == 'mandados' ){
       this.query.skip++;
       this.getList();
     }
@@ -270,6 +285,11 @@ export class HomePage implements OnInit {
   }
 
   getList(){
+    delete this.query.where.estadoOrden;
+    this.query.where.or = [
+      { coductor: null},
+      { coductor: this.dataUser.id }
+    ];
     this._tools.presentLoading();
     // this.query.where.createdAt = {
     //   ">=": moment().add(-60, 'minutes'),
@@ -283,10 +303,6 @@ export class HomePage implements OnInit {
 
   dataFormaList(res:any){
     let formatiada = [];
-    // for(let row of res.data){
-    //   if( !( this.RangoOrden(row) ) ) continue;
-    //   formatiada.push( row );
-    // }
     this.listRow.push(...res.data );
     // console.log(this.listRow)
     this.listRow =_.unionBy(this.listRow || [], res.data, 'id');
@@ -326,7 +342,6 @@ export class HomePage implements OnInit {
 
   openMapa( item:any ){
     item.vista = "detalles";
-    console.log(item);
     this.modalCtrl.create({
       component: SolicitarPage,
       componentProps: {

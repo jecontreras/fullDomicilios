@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="vista !== 'driver'">
   <ion-toolbar color="primary">
     <ion-toolbar color="primary">
       <ion-button slot="start" fill="clear" (click)="exit()" color="light">
@@ -124,8 +124,11 @@
         <ion-col>
           <br><br><br>
           <div class="ion-text-center">
-            <ion-button color="primary" (click)="aceptarOrden()">
+            <ion-button color="primary" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal'"> 
               ACEPTAR Y COORDINAR
+            </ion-button>
+            <ion-button color="primary" *ngIf="estadoButton == 'ORDEN YA CONFIRMADA POR OTRO DRIVE'" [disabled]="true"> 
+              {{ estadoButton }}
             </ion-button>
           </div>
         </ion-col>

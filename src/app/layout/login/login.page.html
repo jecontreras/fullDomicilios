@@ -1,4 +1,4 @@
-<ion-content>
+<!-- <ion-content>
   <ion-toolbar>
     <div class="ion-text-center">
       <h4>Ingrese su número de teléfono para iniciar sesión</h4>
@@ -41,4 +41,28 @@
     <p>Al pulsar siguiente acepta los <a class="pointer" (click)="openPoliticas()">Términos y Condiciones y la politica de
       privacidad</a></p>
   </div>
-</ion-toolbar>
+</ion-toolbar> -->
+
+<ion-content>
+  <ion-slides [options]="sliderOpts">
+    <ion-slide>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <div class="ion-text-center">
+              <ion-button slot="start" color="primary" expand="full" (click)="openView('facebook')">INICIAR SESIÓN CON FACEBOOK</ion-button><br>
+              <ion-button slot="end" color="primary" expand="full" (click)="openView('correo')">INICIAR SESIÓN CON TU CORREO</ion-button>
+              <ion-item *ngIf="showUser">
+                <ion-avatar item-left>
+                  <img [src]="user.picture.data.url" alt="">
+                </ion-avatar>
+                <h2>{{user.name}}</h2>
+                <p>{{user.email}}</p>
+              </ion-item>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

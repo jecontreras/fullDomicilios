@@ -28,6 +28,7 @@ export class SolicitarPage implements OnInit {
     allowSlideNext: false
   };
   paramsData:any = {};
+  estadoButton:string = "normal";
   
   constructor(
     private modalCtrl: ModalController,
@@ -49,9 +50,25 @@ export class SolicitarPage implements OnInit {
     console.log(this.paramsData)
     if(this.paramsData.vista == "detalles") this.vista = "detalles";
     if( this.paramsData.vista == 'form') if( this.paramsData.id ) this.data = this.paramsData;
+    this.escucharSockets();
   }
 
+  escucharSockets(){
+    this.wsServices.listen('orden-actualizada')
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      if( this.paramsData.id == marcador.id ) this.paramsData = marcador;
+    });
 
+    this.wsServices.listen('orden-confirmada')
+    .subscribe((marcador: any)=> {
+      console.log( marcador, this.paramsData );
+      if( !marcador ) return false;
+      if( !marcador.coductor ) return false;
+      if( marcador.id == this.paramsData.id && ( this.dataUser.id != marcador.coductor.id ) ) { this.estadoButton = "ORDEN YA CONFIRMADA POR OTRO DRIVE"; this.exit(); }
+    });
+
+  }
   openMapa( opt, desicion ){
     let params:any = { vista: "origen" };
     if(!desicion) {
@@ -98,7 +115,11 @@ export class SolicitarPage implements OnInit {
   }
 
   updateMandados(){
-    this.data = _.omit( this.data, [ 'usuario', 'coductor']);
+    this.data = _.omit( this.data, [ 'usuario', 'coductor', 'idOfertando']);
+    if(this.data.estado == 3 || this.data.estado == 2) { 
+      setTimeout(()=>{this._tools.dismisPresent(); }, 2000);
+      this.btnDisabled = false; 
+      return this._tools.presentToast("Este mandado ya no se puede editar por que ya esta en proceso");}
     this._orden.editar(this.data).subscribe((res:any)=>{
       this._tools.dismisPresent();
       this.btnDisabled = false;

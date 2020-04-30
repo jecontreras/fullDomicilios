@@ -9,152 +9,148 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-toolbar *ngIf="view == 'home'">
-    <ion-toolbar>
-      <ion-text color="dark">
-        <h1>BIENVENIDO USUARIO</h1>
-      </ion-text>
-    </ion-toolbar>
-    <br><br>
-    
-    <ion-text color="dark" (click)="openInformacion()">
-      <h4>Pasos a seguir para pedir un mandado</h4>
+<ion-content class="ion-padding" *ngIf="view == 'home'">
+  <ion-toolbar>
+    <ion-text color="dark">
+      <h1>BIENVENIDO USUARIO</h1>
     </ion-text>
-    <br><br><br><br><br><br><br>
-    <div class="ion-text-center">
-      <ion-button size="large" (click)="openSolicitar( false )">
-        SOLICITAR UN MANDADO
-      </ion-button>
-      <ion-button size="large" (click)="openMandadosActivos()">
-        VER MIS MANDADOS ACTIVOS
-      </ion-button>
-    </div>
   </ion-toolbar>
+  <br><br>
+  
+  <ion-text color="dark" (click)="openInformacion()">
+    <h4>Pasos a seguir para pedir un mandado</h4>
+  </ion-text>
+  <br><br><br><br><br><br><br>
+  <div class="ion-text-center">
+    <ion-button size="large" color="primary" (click)="openSolicitar( false )">
+      SOLICITAR UN MANDADO
+    </ion-button>
+    <ion-button color="primary" (click)="openMandadosActivos()">
+      VER MIS MANDADOS ACTIVOS
+    </ion-button>
+  </div>
 
-  <ion-toolbar *ngIf="view == 'mandados'">
-    <ion-card class="altoCars">
-      <ion-card-header class="colorTitulo">
-        <div class="ion-text-center">
-          <ion-card-title color="medium">MIS MANDADOS ACTIVOS</ion-card-title>
-        </div>
-      </ion-card-header>
-    </ion-card>
-  
-    <ion-list>
-  
-      <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivos: item.estado == 3}">
-        <ion-label>
-          <ion-text color="dark">
-            <h2>MANDADO DE</h2>
-            <h2>{{ item['usuario'].nombre }}</h2>
-          </ion-text>
-        </ion-label>
-        <ion-button color="primary" (click)="openSolicitar( item )" slot="end">
-          VER
-        </ion-button>
-      </ion-item>
-    </ion-list>
-    
-    <div class="ion-text-center" *ngIf="listRow.length == 0">
-      <ion-text colo="dark">
-        <span>Lista Vacia</span>
-      </ion-text>
-    </div>
+</ion-content>
 
-  </ion-toolbar>
+<ion-content class="ion-padding" *ngIf="view == 'mandados'">
+  <ion-card class="altoCars">
+    <ion-card-header class="colorTitulo">
+      <div class="ion-text-center">
+        <ion-card-title color="medium">MIS MANDADOS ACTIVOS</ion-card-title>
+      </div>
+    </ion-card-header>
+  </ion-card>
 
-  <ion-toolbar *ngIf="view == 'chat'">
-    <ion-card class="altoCars">
-      <ion-card-header class="colorTitulo">
-        <div class="ion-text-center">
-          <ion-card-title color="medium">BANDEJA DE MENSAJES</ion-card-title>
-        </div>
-      </ion-card-header>
-    </ion-card>
-    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
-      <ion-refresher-content>
-      </ion-refresher-content>
-    </ion-refresher>
+  <ion-list>
+
+    <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivos: item.estado == 3}">
+      <ion-label>
+        <ion-text color="dark">
+          <h2>MANDADO DE</h2>
+          <h2>{{ item['usuario'].nombre }} {{ item['usuario'].apellido }}</h2>
+        </ion-text>
+      </ion-label>
+      <ion-button color="primary" (click)="openSolicitar( item )" slot="end">
+        VER
+      </ion-button>
+    </ion-item>
+  </ion-list>
   
-    <ion-list>
+  <div class="ion-text-center" *ngIf="listRow.length == 0">
+    <ion-text colo="dark">
+      <span>Lista Vacia</span>
+    </ion-text>
+  </div>
+</ion-content>
+
+<ion-content class="ion-padding" *ngIf="view == 'chat'">
+  <ion-card class="altoCars">
+    <ion-card-header class="colorTitulo">
+      <div class="ion-text-center">
+        <ion-card-title color="medium">BANDEJA DE MENSAJES</ion-card-title>
+      </div>
+    </ion-card-header>
+  </ion-card>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+
+    <ion-item *ngFor="let item of listRow">
+      <ion-avatar slot="start">
+        <img *ngIf="dataUser.id != item.reseptor.id" [src]="item['reseptor']?.foto || './assets/perfil.png'">
+        <img *ngIf="dataUser.id == item.reseptor.id" [src]="item['emisor']?.foto || './assets/perfil.png'">
+      </ion-avatar>
+      <ion-label>
+        <ion-text color="dark">
+          <h2 *ngIf="dataUser.id != item.reseptor.id">{{ item['reseptor'].nombre }}</h2>
+          <h2 *ngIf="dataUser.id == item.reseptor.id">{{ item['emisor'].nombre }}</h2>
+        </ion-text>
+      </ion-label>
+      <ion-button color="primary" (click)="openChat( item )" slot="end">
+        ABRIR
+      </ion-button>
+    </ion-item>
+  </ion-list>
   
-      <ion-item *ngFor="let item of listRow">
-        <ion-avatar slot="start">
-          <img *ngIf="dataUser.id != item.reseptor.id" [src]="item['reseptor']?.foto || './assets/perfil.png'">
-          <img *ngIf="dataUser.id == item.reseptor.id" [src]="item['emisor']?.foto || './assets/perfil.png'">
+  <div class="ion-text-center" *ngIf="listRow.length == 0">
+    <ion-text colo="dark">
+      <span>Lista Vacia</span>
+    </ion-text>
+  </div>
+
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+
+<ion-content class="ion-padding" *ngIf="view == 'perfil'">
+  <div class="ion-text-center">
+    <p>
+      <ion-chip class="chipPerfil">
+        <ion-avatar class="avatarPerfil">
+          <img [src]="dataUser.foto || './assets/perfil.png'" />
         </ion-avatar>
-        <ion-label>
-          <ion-text color="dark">
-            <h2 *ngIf="dataUser.id != item.reseptor.id">{{ item['reseptor'].nombre }}</h2>
-            <h2 *ngIf="dataUser.id == item.reseptor.id">{{ item['emisor'].nombre }}</h2>
-          </ion-text>
-        </ion-label>
-        <ion-button color="primary" (click)="openChat( item )" slot="end">
-          ABRIR
-        </ion-button>
-      </ion-item>
-    </ion-list>
-    
-    <div class="ion-text-center" *ngIf="listRow.length == 0">
-      <ion-text colo="dark">
-        <span>Lista Vacia</span>
-      </ion-text>
-    </div>
-  
-    <ion-infinite-scroll threshold="150px"
-                           (ionInfinite)="loadData( $event )"
-                          >
-      <ion-infinite-scroll-content loadingSpinner="crescent"
-                                    loadingtext="Cargando data..">
-  
-      </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ion-toolbar>
+        <ion-label>{{ dataUser.nombre }}</ion-label>
+      </ion-chip>
+    </p>
+  </div>
 
-  <ion-toolbar *ngIf="view == 'perfil'">
-    <div class="ion-text-center">
-      <p>
-        <ion-chip class="chipPerfil">
-          <ion-avatar class="avatarPerfil">
-            <img [src]="dataUser.foto || './assets/perfil.png'" />
-          </ion-avatar>
-          <ion-label>{{ dataUser.nombre }}</ion-label>
-        </ion-chip>
-      </p>
-    </div>
+  <ion-list>
+    <ion-item>
+      <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.email" required type="text"></ion-input>
+      <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.celular" required type="text"></ion-input>
+      <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-textarea rows="4" class="inputColor" cols="10" [(ngModel)]="dataUser.direccion"></ion-textarea>
+      <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>
 
-    <ion-list>
-      <ion-item>
-        <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.email" required type="text"></ion-input>
-        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
-      </ion-item>
-      <ion-item>
-        <ion-input class="ion-color-lavel inputColor" [(ngModel)]="dataUser.celular" required type="text"></ion-input>
-        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
-      </ion-item>
-      <ion-item>
-        <ion-textarea rows="4" class="inputColor" cols="10" [(ngModel)]="dataUser.direccion"></ion-textarea>
-        <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
-      </ion-item>
-    </ion-list>
-
-  </ion-toolbar>
-
-  <ion-toolbar *ngIf="view == 'informacion'">
-    <h3>Para solicitar un mandado nos debes de proporcionar estos datos:
-      <br>
-      1- ¿Qué diligencia haremos ?
-      2- ¿Cuáles son los lugares que visitaremos?
-      <br>
-      Una vez has llenado estos datos y mandas la solicitud un moticiclista aceptara tu mandado y se pondrá en contacto contigo.
-      <br><br><br>
-      ¿Cuánto cuesta el mandado ?
-      <br>
-      Esto depende de la distancia y el tiempo que tome hacer el mandado, sin embargo el precio normal es de $4.00 USD.
-    </h3>
-  </ion-toolbar>
-
+<ion-content class="ion-padding" *ngIf="view == 'informacion'">
+  <h3>Para solicitar un mandado nos debes de proporcionar estos datos:
+    <br>
+    1- ¿Qué diligencia haremos ?
+    2- ¿Cuáles son los lugares que visitaremos?
+    <br>
+    Una vez has llenado estos datos y mandas la solicitud un moticiclista aceptara tu mandado y se pondrá en contacto contigo.
+    <br><br><br>
+    ¿Cuánto cuesta el mandado ?
+    <br>
+    Esto depende de la distancia y el tiempo que tome hacer el mandado, sin embargo el precio normal es de $4.00 USD.
+  </h3>
 </ion-content>
 
 <ion-footer class="ion-padding">

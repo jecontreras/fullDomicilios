@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "Gps",
+  "appId": "com.manda2.app",
+  "appName": "Manda2",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

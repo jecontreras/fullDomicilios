@@ -65,6 +65,18 @@ export class ChatDetalladoPage implements OnInit {
     console.log(this.data);
     this.escucharSockets();
     this.procesoInicial();
+    this.getValidacionOrden();
+  }
+
+  getValidacionOrden(){
+    return new Promise( resolve =>{
+      this._orden.get({ where:{ id: this.data.ordenes.id }, limit: 1 }).subscribe(( res:any )=>{
+        res = res.data[0];
+        if(!res) return resolve(res);
+         this.data.ordenes = res;
+        resolve(res);
+      });
+    });
   }
 
   procesoInicial(){
@@ -81,24 +93,38 @@ export class ChatDetalladoPage implements OnInit {
   escucharSockets(){
     // orden-nueva
 
+    this.wsServices.listen('orden-actualizada')
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      if( this.data.ordenes.id == marcador.id ) this.data.ordenes = marcador;
+    });
+
     this.wsServices.listen('chat-nuevo')
     .subscribe((chat: any)=> {
       // console.log("**", chat);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
       this.listRow.push( chat );
     });
+    
     this.wsServices.listen('orden-confirmada')
     .subscribe((ordenes: any)=> {
-      console.log("**", ordenes, this.data);
       if( this.data.ordenes.id != ordenes.id ) return false;
       this.procesandoOrdenConfirmada( ordenes );
     });
+
+    this.wsServices.listen('orden-finalizada')
+    .subscribe((marcador: any)=> {
+      console.log(marcador, this.data);
+      if( this.data.ordenes.id == marcador.id ) this.data.ordenes.estado = marcador.estado;
+    });
+
   }
 
   procesandoOrdenConfirmada( ordenes:any ){
     this.data.ordenes = ordenes;
     this.data.chatDe = ordenes.usuario;
     this.chatDe = ordenes.usuario;
+    if( ordenes.id == this.data.id) if( this.dataUser.id !== ordenes.coductor.id ) this.exit();
   }
 
   validandoChat(){
@@ -172,7 +198,7 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   async confirmar(){
-    let result:any = await this._tools.presentAlertConfirm({ header: "", mensaje: `<h4>${ this.chatDe.nombre } ${ this.chatDe.apellido } ha aceptado el mandado el cobro total por el mandado es de: </br> <span class="colorPrecio">${ ( this.data.ofertando.ofrece || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'USD' }) } </span> </h4>`, confirm: "ACEPTAR", cancel: "CANCELAR" });
+    let result:any = await this._tools.presentAlertConfirm({ header: "", mensaje: `<h4>${ this.chatDe.nombre } ${ this.chatDe.apellido } ha aceptado el mandado el cobro total por el mandado es de: </br> <span class="colorPrecio">${ ( this.data.ofertando.ofrece || 0 ).toLocaleString('de-DE', { style: 'currency', currency: 'USD' }) } USD</span> </h4>`, confirm: "ACEPTAR", cancel: "CANCELAR" });
     if(!result) return false;
     let data:any = {
       id: this.data.ordenes.id,
@@ -194,6 +220,8 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   async ofertandoCliente(){
+    await this.getValidacionOrden();
+    if( this.data.ordenes.estado == 3) return this._tools.presentToast("Lo sentimos !Esta orden ya esta en proceso con otro drive!");
     const modal:any = await this.modalCtrl.create({
       component: ConfirmarPage,
       componentProps: {
@@ -217,8 +245,10 @@ export class ChatDetalladoPage implements OnInit {
     this._orden.editar(data).subscribe((res:any)=>{
       this.disableBtnConfirmar = false;
       this._tools.presentToast("Exitos mandodado finalizado");
+      this.wsServices.emit( "orden-finalizada", res);
       this.cambiarEstadoChat();
       this.openCalifacion( res );
+      this.data.ordenes = res;
     },(error)=> { this._tools.presentToast("Error de servidor"); this.disableBtnConfirmar = false; } );
   }
 

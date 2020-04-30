@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Indicativo } from 'src/app/JSON/indicativo';
 import { ModalController } from '@ionic/angular';
 import { PoliticasPage } from '../politicas/politicas.page';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 
 const indicativos = Indicativo;
 
@@ -29,6 +30,8 @@ export class LoginPage implements OnInit {
     // indicativo: 57
   };
   disablePass:boolean = false;
+  user: any = {};
+  showUser: boolean = false;
 
   constructor(
     private _user: UserService,
@@ -36,6 +39,7 @@ export class LoginPage implements OnInit {
     private _store: Store<PERSONA>,
     private _router: Router,
     private modalCtrl: ModalController,
+    private facebook: Facebook
   ) { 
     
     // if (this._authSrvice.isLoggedIn()) {
@@ -45,6 +49,37 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
+
+  loginFacebook(){
+    this.facebook.login(['public_profile', 'email'])
+    .then(rta => {
+      console.log(rta.status);
+      if(rta.status == 'connected'){
+        this.getInfo();
+      };
+    })
+    .catch(error =>{
+      console.error( error );
+    });
+  }
+
+  getInfo(){
+    this.facebook.api('/me?fields=id,name,email,first_name,picture,last_name,gender',['public_profile','email'])
+    .then(data=>{
+      console.log(data);
+      this.showUser = true; 
+      this.user = data;
+    })
+    .catch(error =>{
+      console.error( error );
+    });
+  }
+
+  openView(opt:string){
+    console.log(opt);
+    if(opt == "facebook") this.loginFacebook();
+  }
+  
   validarDocumento(){
     if(!this.data.celular || !this.data.indicativo || this.data.celular == "") return this._tools.presentToast("Error llenar formulario correcto");
     this._user.get({where:{celular: this.data.celular, indicativo: this.data.indicativo}}).subscribe((res:any)=>{

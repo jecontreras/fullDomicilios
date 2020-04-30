@@ -23,6 +23,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { VercionPageModule } from './dialog/vercion/vercion.module';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -49,7 +51,8 @@ import { VercionPageModule } from './dialog/vercion/vercion.module';
     SplashScreen, 
     ImagePicker,
     FileTransfer,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Facebook
   ],
   bootstrap: [AppComponent]
 })

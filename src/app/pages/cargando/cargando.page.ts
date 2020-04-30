@@ -39,10 +39,10 @@ export class CargandoPage implements OnInit {
     this._tools.presentLoading();
     setTimeout(()=>{ 
       console.log(this.rolUser);
+      this._tools.dismisPresent();
       if(!this.rolUser) return this.clearLogin();
       if(this.rolUser == 'usuario') this._router.navigate(['/usuarios/home']);
       if(this.rolUser == 'conductor') this._router.navigate(['/conductor/home']);
-      this._tools.dismisPresent();
     }, 3000);
   }
 

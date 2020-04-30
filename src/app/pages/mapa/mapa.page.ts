@@ -275,12 +275,12 @@ export class MapaPage implements OnInit {
   //esta funcion viene es de solicitar el opt destino_detalle
   armarDataDestinoOrdenDetalle(){
     let data:any = {
-      origenlat: this.lat,
-      origenlon: this.lon,
+      origenlat: this.paramsData.origenLat,
+      origenlon: this.paramsData.origenLon,
       destinolon: this.paramsData.destinoLon,
       destinolat: this.paramsData.destinolat,
-      startLon: this.lon,
-      startLat: this.lat,
+      startLon: this.paramsData.origenLon,
+      startLat: this.paramsData.origenLat,
       destinoLon: this.paramsData.destinoLon,
       destinoLat: this.paramsData.destinolat
     };

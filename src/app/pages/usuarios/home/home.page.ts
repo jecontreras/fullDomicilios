@@ -102,7 +102,7 @@ export class HomePage implements OnInit {
   escucharSockets(){
     this.wsServices.listen('chat-nuevo')
     .subscribe((marcador: any)=> {
-      console.log("**", marcador);
+      // console.log("**", marcador);
       if(marcador.reseptor.id !== this.dataUser.id ) return false;
       this.listRow.push( marcador );
       this.listRow = _.unionBy( this.listRow || [], marcador, 'id');
