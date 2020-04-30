@@ -33,6 +33,8 @@ export class LoginPage implements OnInit {
   user: any = {};
   showUser: boolean = false;
 
+  vista:string = "home";
+
   constructor(
     private _user: UserService,
     private _tools: ToolsService,
@@ -60,6 +62,7 @@ export class LoginPage implements OnInit {
     })
     .catch(error =>{
       console.error( error );
+      this.vista = "home";
     });
   }
 
@@ -69,49 +72,64 @@ export class LoginPage implements OnInit {
       console.log(data);
       this.showUser = true; 
       this.user = data;
+      this.getUserData();
     })
     .catch(error =>{
       console.error( error );
+      this.vista = "home";
     });
+  }
+
+  getUserData(){
+    this._user.get({ where: { idFacebook: this.user.id }}).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) return this.procesoCrearUser();
+      this.ProcesoStorages( res );
+    },(error)=> { this._tools.presentToast("Error de conexion"); })
+  }
+
+  procesoCrearUser(){
+    let data:any = {
+      rol: "usuario",
+      email: this.user.email,
+      password: 98090871986,
+      confirpassword: 98090871986,
+      nombre: this.user.name,
+      foto: this.user.picture.data.url
+    };
+    this._user.register(data).subscribe((res:any)=>{
+      console.log(res);
+      if(res.status == 200) this.ProcesoStorages( res ); 
+      else this._tools.presentToast(res.data);
+    },(error)=>this._tools.presentToast("Lo sentimos intente mas tarde"));
+  }
+
+  ProcesoStorages( res:any ){
+    let accion:any = new PersonaAction(res.data, 'post');
+    this._store.dispatch(accion);
+    this._router.navigate(['/cargando']);
   }
 
   openView(opt:string){
     console.log(opt);
     if(opt == "facebook") this.loginFacebook();
+    this.vista = opt;
   }
-  
-  validarDocumento(){
-    if(!this.data.celular || !this.data.indicativo || this.data.celular == "") return this._tools.presentToast("Error llenar formulario correcto");
-    this._user.get({where:{celular: this.data.celular, indicativo: this.data.indicativo}}).subscribe((res:any)=>{
-      if(res.data[0]){this.disablePass = true;}
-      else {this._tools.presentToast("Usuario no encontrado")} 
+
+  iniciar(){
+    this._tools.presentLoading();
+    this._user.login(this.data).subscribe((res:any)=>{
       this._tools.dismisPresent();
-    },error=>{ 
-      this._tools.presentToast("Error de documento");
+      if(res.success){
+        this.ProcesoStorages( res );
+      }else{
+        this.data.password = "";
+        this._tools.presentToast("Error de Password");
+      }
+    },(error)=>{
+      this._tools.presentToast("Error de servidor")
       this._tools.dismisPresent();
     });
-  }
-  iniciar(){
-    if( !this.data.indicativo ) return this._tools.presentToast("Por favor colocar Indicativo de tu pais");
-    if( !this.data.celular ) return this._tools.presentToast("Por favor colocar numero celular");
-    this._tools.presentLoading();
-    if(this.data.celular && !this.data.password)return this.validarDocumento();
-    else{
-      this._user.login(this.data).subscribe((res:any)=>{
-        this._tools.dismisPresent();
-        if(res.success){
-          let accion:any = new PersonaAction(res.data, 'post');
-          this._store.dispatch(accion);
-          this._router.navigate(['/cargando']);
-        }else{
-          this.data.password = "";
-          this._tools.presentToast("Error de Password");
-        }
-      },(error)=>{
-        this._tools.presentToast("Error de servidor")
-        this._tools.dismisPresent();
-      });
-    }
   }
 
   openPoliticas(){
