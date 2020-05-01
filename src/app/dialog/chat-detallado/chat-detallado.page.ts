@@ -80,13 +80,13 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   procesoInicial(){
-    if( this.vista == 'cliente') { this.validandoChat(); if( this.data.id ) { this.query.where.chat = this.data.id; this.getChatDetallado(); }}
+    if( this.vista == 'cliente') { this.validandoChat(); if( this.data.id ) { this.query.where.chat = this.data.id; this.getChatDetallado(); this.getOfertando({ orden: this.data.ordenes.id, usuario: this.data.emisor.id }); }}
     if( this.vista == 'drive') { 
       if( this.data.chatDe ) { this.chatDe = this.data.chatDe } else this.validandoChat(); 
       //this.data.ordenes = this.data.ordenes;
       if(this.data.opt) this.getChatInit();
       else { this.query.where.chat = this.data.id; this.getChatDetallado();}
-      this.getOfertando();
+      this.getOfertando({ orden: this.data.id, usuario: this.dataUser.id });
     }
   } 
 
@@ -149,15 +149,16 @@ export class ChatDetalladoPage implements OnInit {
     this.getChatDetallado();
   }
 
-  getOfertando(){
-    this._ofertando.get( { where:{ orden: this.data.id, usuario: this.dataUser.id }, sort: "createdAt DESC", limit: 1 } ).subscribe((res:any)=>{
-      this.listOfertando = res.data[0];
-    });
+  getOfertando(data:any){
+    this._ofertando.get( { where: data, sort: "createdAt DESC", limit: 1 } ).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) return false;
+      this.listOfertando = res;
+    },(error)=> this._tools.presentToast("Error de conexion"));
   }
 
   getChatInit(){
     this._chat.get( { where: { ordenes: this.data.id, emisor: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
-      console.log( res );
       res = res.data[0];
       if(!res) return false;
       this.query.where.chat = res.id; 
@@ -166,10 +167,10 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   getChatDetallado(){
-    this._tools.presentLoading();
+    // this._tools.presentLoading();
     this._chat.getDetallado( this.query ).subscribe((res:any)=>{
       this.dataFormaList( res );
-      this._tools.dismisPresent();
+      // this._tools.dismisPresent();
     },(error)=> this._tools.presentToast("Error de servidor"));
   }
 
@@ -206,9 +207,9 @@ export class ChatDetalladoPage implements OnInit {
       origenConductorlat: this.chatDe.latitud,
       origenConductorlon: this.chatDe.longitud,
       ofreceCliente: this.data.ofertando.ofrece,
-      ofreceConductor: this.data.ordenes.ofreceCliente,
+      ofreceConductor: this.listOfertando.ofrece,
       coductor: this.chatDe.id,
-      idOfertando: this.data.ofertando.id,
+      idOfertando: this.listOfertando.id,
     };
     this.disableBtnConfirmar = true;
     this._orden.editar(data).subscribe((res:any)=>{
@@ -220,8 +221,9 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   async ofertandoCliente(){
+    this.disableBtnConfirmar = true;
     await this.getValidacionOrden();
-    if( this.data.ordenes.estado == 3) return this._tools.presentToast("Lo sentimos !Esta orden ya esta en proceso con otro drive!");
+    if( this.data.ordenes.estado == 3) { this.disableBtnConfirmar = false; return this._tools.presentToast("Lo sentimos !Esta orden ya esta en proceso con otro drive!"); }
     const modal:any = await this.modalCtrl.create({
       component: ConfirmarPage,
       componentProps: {
@@ -232,6 +234,7 @@ export class ChatDetalladoPage implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     this.procesoInicial();
+    this.disableBtnConfirmar = false;
   }
 
   async FinalizarOrden(){

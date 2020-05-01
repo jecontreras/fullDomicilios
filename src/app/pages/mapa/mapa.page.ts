@@ -71,6 +71,7 @@ export class MapaPage implements OnInit {
     this.vista = this.paramsData.vista;
     console.log(this.paramsData);
     this.InitApp();
+    this._tools.presentLoading();
   }
 
   InitApp() {
@@ -90,9 +91,9 @@ export class MapaPage implements OnInit {
     if (!this.id) { this._tools.presentToast("No hay Conexion"); return false; }
     this.escucharSockets();
     this.getGeolocation();
-    if(this.vista == "ver_drive") this.llenandoData( { id: this.paramsData.chatDe.idSockets } );
     let interval:any = setInterval(()=>{
       if(!this.mapa) return false;
+      if(this.vista == "ver_drive") this.llenandoData( { id: this.paramsData.chatDe.idSockets } );
       if(this.vista == "origen_detalle") { this.noActivar = false; this.armarDataOrigenConductorDetalle(); }
       if(this.vista == "destino_detalle") { this.noActivar = false; this.armarDataDestinoOrdenDetalle(); }
       clearInterval( interval );
@@ -170,8 +171,9 @@ export class MapaPage implements OnInit {
       trackUserLocation: true
     });
     this.mapa.addControl(geolocate)
-    setTimeout(function () {
+    setTimeout(()=>{
       geolocate._geolocateButton.click();
+      this._tools.dismisPresent();
     }, 3000);
   }
 
@@ -240,7 +242,6 @@ export class MapaPage implements OnInit {
       color: '#' + Math.floor(Math.random() * 16777215).toString(16)
     };
     //this.agregarMarcador(customMarker);
-    console.log(this.markersMapbox);
     //emitiendo evento marcador nuevo
     this.wsServices.emit('marcador-nuevo', customMarker);
   }
@@ -290,8 +291,17 @@ export class MapaPage implements OnInit {
   armarDataOrigenConductor( lugar:any ){
     console.log(lugar);
     let valores:any = Object.values(lugar);
-    if(!valores[0]) return this._tools.presentToast("El drive no esta conectado");
-    valores = valores[0];
+    if(!valores[0]) { 
+      this._tools.presentToast("El drive no esta conectado");
+      valores = {
+        lat: this.paramsData.ordenes.origenConductorlat,
+        lng: this.paramsData.ordenes.origenConductorlon,
+        nombre: this.paramsData.ordenes.coductor.nombre,
+        color: "#3171e0",
+        id: this.paramsData.ordenes.coductor.idSockets
+      };
+      this.agregarMarcador(valores)
+    }else valores = valores[0];
     let data:any = {
       origenlat: valores.lat,
       origenlon: valores.lng,
@@ -493,6 +503,8 @@ export class MapaPage implements OnInit {
       nombre: `${this.rolUser} ${this.dataUser.nombre}`,
       color: '#' + Math.floor(Math.random() * 16777215).toString(16)
     };
+    this.marcadorLat = this.lat;
+    this.marcadorLon = this.lon;
     this.agregarMarcador( customMarker );
   }
 

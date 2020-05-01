@@ -84,7 +84,7 @@ export class LoginPage implements OnInit {
     this._user.get({ where: { idFacebook: this.user.id }}).subscribe((res:any)=>{
       res = res.data[0];
       if(!res) return this.procesoCrearUser();
-      this.ProcesoStorages( res );
+      this.ProcesoStorages( { data: res } );
     },(error)=> { this._tools.presentToast("Error de conexion"); })
   }
 
@@ -95,7 +95,8 @@ export class LoginPage implements OnInit {
       password: 98090871986,
       confirpassword: 98090871986,
       nombre: this.user.name,
-      foto: this.user.picture.data.url
+      foto: this.user.picture.data.url,
+      idFacebook: this.user.id
     };
     this._user.register(data).subscribe((res:any)=>{
       console.log(res);

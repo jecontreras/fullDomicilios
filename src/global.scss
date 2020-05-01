@@ -31,6 +31,57 @@
 .logo {
     height: 73px !important;
 }
+ion-content{
+  --background: rgba(41,184,229,1) !important;
+  --background: -moz-linear-gradient(top, rgba(41,184,229,1) 0%, rgba(41,184,229,1) 1%, rgba(176,234,255,1) 61%, rgba(176,234,255,1) 100%) !important;
+  --background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(41,184,229,1)), color-stop(1%, rgba(41,184,229,1)), color-stop(61%, rgba(176,234,255,1)), color-stop(100%, rgba(176,234,255,1))) !important;
+  --background: -webkit-linear-gradient(top, rgba(41,184,229,1) 0%, rgba(41,184,229,1) 1%, rgba(176,234,255,1) 61%, rgba(176,234,255,1) 100%) !important;
+  --background: -o-linear-gradient(top, rgba(41,184,229,1) 0%, rgba(41,184,229,1) 1%, rgba(176,234,255,1) 61%, rgba(176,234,255,1) 100%) !important;
+  --background: -ms-linear-gradient(top, rgba(41,184,229,1) 0%, rgba(41,184,229,1) 1%, rgba(176,234,255,1) 61%, rgba(176,234,255,1) 100%) !important;
+  --background: linear-gradient(to bottom, rgba(41,184,229,1) 0%, rgba(41,184,229,1) 1%, rgba(176,234,255,1) 61%, rgba(176,234,255,1) 100%) !important;
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#29b8e5', endColorstr='#b0eaff', GradientType=0 )
+}
+
+.ionFooter {
+  background: #5ac6f5 !important;
+}
+
+.ionButton {
+  --background: #36a6d9 !important;
+}
+
+.ionToolbar {
+  --background: #35bce7 !important;
+}
+
+.ionToolbarHeader {
+  --background: #29b8e5 !important;
+}
+.ionToolbarHeaderChat{
+  --background: #0b354b !important;
+  --color: white  !important;
+}
+.ionColorInput {
+  background: white !important;
+  border-radius: 6px !important;
+}
+
+.ionToolbarGris {
+  --background: #c2c1c1;
+}
+
+ion-list{
+  border-radius: 12px !important;
+}
+
+.ion-chipsHeader{
+  background: #0b354b !important;
+  color: white !important;
+}
+
+.ionToolbarFooter {
+  --background: #5ac6f5 !important;
+}
 
 .itemDivider {
     padding: 0 !important;

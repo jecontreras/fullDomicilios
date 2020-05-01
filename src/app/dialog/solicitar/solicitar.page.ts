@@ -100,6 +100,7 @@ export class SolicitarPage implements OnInit {
   submitMandado(){
     if( !this.data.origenLat || !this.data.origenLon ) return this._tools.presentToast("origen o destino indefinido");
     console.log(this.data);
+    this.data.ofreceCliente = "4.00";
     this.btnDisabled = true;
     this._tools.presentLoading();
     if(this.data.id) this.updateMandados();

@@ -32,7 +32,7 @@ export class CargandoPage implements OnInit {
         this.rolUser = ( this.data['rol'].rol );
       }
     });
-    if(Object.keys(this.data).length === 0) this._router.navigate(['/login']);
+    if(Object.keys(this.data).length === 0) this._router.navigate(['/portada']);
    }
 
   ngOnInit() {
@@ -50,7 +50,7 @@ export class CargandoPage implements OnInit {
     this._tools.presentToast("Error de Login");
     let accion = new PersonaAction({},'drop');
     this._store.dispatch(accion);
-    this._router.navigate(['/login']);
+    this._router.navigate(['/portada']);
     //location.reload();
   }
 

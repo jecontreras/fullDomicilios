@@ -14,18 +14,26 @@
     <ion-text color="dark">
       <p>¿Cómo calificas a {{ data.chatDe.nombre }} {{ data.chatDe.apellido }}?</p>
     </ion-text>
-    <p class="clasificacion">
-      <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="dataForm.valoracion">
-      <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=5}" for="radio1">★</label>
-      <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="dataForm.valoracion">
-      <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=4}" for="radio2">★</label>
-      <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="dataForm.valoracion">
-      <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=3}" for="radio3">★</label>
-      <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="dataForm.valoracion">
-      <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=2}" for="radio4">★</label>
-      <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="dataForm.valoracion">
-      <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=1}" for="radio5">★</label>
-    </p>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="clasificacion">
+            <div class="ion-text-center">
+              <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="dataForm.valoracion">
+              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=5}" for="radio1">★</label>
+              <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="dataForm.valoracion">
+              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=4}" for="radio2">★</label>
+              <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="dataForm.valoracion">
+              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=3}" for="radio3">★</label>
+              <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="dataForm.valoracion">
+              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=2}" for="radio4">★</label>
+              <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="dataForm.valoracion">
+              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=1}" for="radio5">★</label>
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <ion-text color="dark">
       <p>Envíanos comentarios <br> (esto no lo verá el driver) <br> Tu opinion es muy importante para nosotros </p>
     </ion-text>

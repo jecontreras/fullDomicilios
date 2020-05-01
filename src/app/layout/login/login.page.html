@@ -1,47 +1,10 @@
-<!-- <ion-content>
-  <ion-toolbar>
-    <div class="ion-text-center">
-      <h4>Ingrese su número de teléfono para iniciar sesión</h4>
-    </div>
+<ion-header *ngIf="vista != 'home'" class="ionToolbarHeader">
+  <ion-toolbar class="ionToolbarHeader">
+    <ion-button slot="start" fill="clear" (click)="openView('home')">
+      <ion-icon color="light" name="arrow-back-outline"></ion-icon>
+    </ion-button>
   </ion-toolbar>
-  <ion-slides [options]="sliderOpts">
-    <ion-slide>
-      <div class="divPrincipal">
-        <br>
-        <div class="ion-text-center">
-          <img src="./assets/login.jpg">
-        </div>
-        <br>
-        <br>
-        <ion-select *ngIf="!disablePass" interface="action-sheet" [(ngModel)]="data.indicativo" class="anchos" placeholder="indicativo">
-          <ion-select-option [value]="item.phone_code" *ngFor="let item of listIndicativos">{{ item.nombre }}
-            +{{ item.phone_code }}</ion-select-option>
-        </ion-select>
-        <ion-input *ngIf="!disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.celular"
-          placeholder="Numero de celular" required type="text" (change)="iniciar()"></ion-input>
-        <ion-input *ngIf="disablePass" class="ion-color-lavel inputemail" [(ngModel)]="data.password"
-          placeholder="Contraseña" required type="password" (change)="iniciar()"></ion-input>
-        <br>
-        <br>
-      </div>
-    </ion-slide>
-  </ion-slides>
-
-</ion-content>
-
-<ion-toolbar>
-  <div class="ion-text-center">
-    <ion-button color="success" (click)="iniciar()" fill="clear">
-      <span *ngIf="!disablePass">Comprobar Sesión</span>
-      <span *ngIf="disablePass">Iniciar sesión</span>
-    </ion-button>
-    <ion-button color="success" [routerLink]="['/registro']">
-      Registrarse
-    </ion-button>
-    <p>Al pulsar siguiente acepta los <a class="pointer" (click)="openPoliticas()">Términos y Condiciones y la politica de
-      privacidad</a></p>
-  </div>
-</ion-toolbar> -->
+</ion-header>
 
 <ion-content>
   <ion-slides [options]="sliderOpts" *ngIf="vista == 'home'">
@@ -50,15 +13,8 @@
         <ion-row>
           <ion-col size="12">
             <div class="ion-text-center">
-              <ion-button slot="start" color="primary" expand="full" (click)="openView('facebook')">INICIAR SESIÓN CON FACEBOOK</ion-button><br>
-              <ion-button slot="end" color="primary" expand="full" (click)="openView('correo')">INICIAR SESIÓN CON TU CORREO</ion-button>
-              <!-- <ion-item *ngIf="showUser">
-                <ion-avatar item-left>
-                  <img [src]="user.picture.data.url" alt="">
-                </ion-avatar>
-                <h2>{{user.name}}</h2>
-                <p>{{user.email}}</p>
-              </ion-item> -->
+              <ion-button slot="start" class="ionButton" expand="full" (click)="openView('facebook')">INICIAR SESIÓN CON FACEBOOK</ion-button><br>
+              <ion-button slot="end" class="ionButton" expand="full" (click)="openView('correo')">INICIAR SESIÓN CON TU CORREO</ion-button>
             </div>
           </ion-col>
         </ion-row>
@@ -86,12 +42,12 @@
                 </ion-text>
               </ion-label>
               <ion-input class="ion-color-lavel" [(ngModel)]="data.password" placeholder="Contraseña"
-                required type="password"></ion-input>
+                required type="password" (change)="iniciar()"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="12">
             <div class="ion-text-center">
-              <ion-button expand="full" color="success" (click)="iniciar()">
+              <ion-button expand="full" class="ionButton" (click)="iniciar()">
                 INICIAR SESIÓN
               </ion-button>
             </div>

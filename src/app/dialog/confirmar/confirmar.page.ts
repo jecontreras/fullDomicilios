@@ -81,7 +81,7 @@ export class ConfirmarPage implements OnInit {
     this._chat.get({ where: { id: res.chat.id }, limit: 1}).subscribe((res:any)=>{
       res = res.data[0];
       if(!res) return false;
-      this.wsServices.emit( 'chat-nuevo', res);
+      this.wsServices.emit( 'chat-principal', res);
     });
   }
 

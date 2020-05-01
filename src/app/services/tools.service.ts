@@ -36,9 +36,7 @@ export class ToolsService {
   }
   async dismisPresent(){
     if(this.loading) this.loading.dismiss();
-    else{
-      let interval:any = setInterval(()=>{ if(this.loading) { this.loading.dismiss(); clearInterval( interval ); } },2000)
-    }
+    let interval:any = setInterval(()=>{ if(this.loading) { this.loading.dismiss(); clearInterval( interval ); } },2000)
   }
 
   async presentNotificacion(mensaje:any){

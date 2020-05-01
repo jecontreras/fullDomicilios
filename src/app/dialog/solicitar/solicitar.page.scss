@@ -20,7 +20,8 @@ ion-slides, ion-slide {
 }
 
 .fondoCard {
-    border: 1px solid black;
-    border-radius: 21px;
-    padding-bottom: 16px;
+    border: 1px solid black !important;
+    border-radius: 21px !important;
+    padding-bottom: 16px !important;
+    background: white !important;
 }

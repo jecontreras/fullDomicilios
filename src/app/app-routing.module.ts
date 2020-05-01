@@ -19,28 +19,12 @@ const routes: Routes = [
     loadChildren: () => import('./layout/registro/registro.module').then( m => m.RegistroPageModule)
   },
   {
-    path: 'seguridad',
-    loadChildren: () => import('./pages/seguridad/seguridad.module').then( m => m.SeguridadPageModule)
-  },
-  {
-    path: 'configuraciones',
-    loadChildren: () => import('./pages/configuraciones/configuraciones.module').then( m => m.ConfiguracionesPageModule)
-  },
-  {
-    path: 'soporte',
-    loadChildren: () => import('./pages/soporte/soporte.module').then( m => m.SoportePageModule)
-  },
-  {
     path: 'ayuda',
     loadChildren: () => import('./pages/ayuda/ayuda.module').then( m => m.AyudaPageModule)
   },
   {
     path: 'cargando',
     loadChildren: () => import('./pages/cargando/cargando.module').then( m => m.CargandoPageModule)
-  },
-  {
-    path: 'perfil',
-    loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
   },
   {
     path: 'usuarios',
@@ -57,7 +41,8 @@ const routes: Routes = [
   {
     path: 'politicas',
     loadChildren: () => import('./layout/politicas/politicas.module').then( m => m.PoliticasPageModule)
-  },  {
+  },
+  {
     path: 'solicitar',
     loadChildren: () => import('./dialog/solicitar/solicitar.module').then( m => m.SolicitarPageModule)
   },

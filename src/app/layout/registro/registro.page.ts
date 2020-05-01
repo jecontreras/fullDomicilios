@@ -25,7 +25,9 @@ export class RegistroPage implements OnInit {
     allowSlideNext: false
   };
 
-  data:any = {};
+  data:any = {
+    rol: "usuario"
+  };
   disablePass:boolean = false;
 
   constructor(

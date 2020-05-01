@@ -12,14 +12,10 @@ import { ModalController, IonSegment } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { PersonaAction, ServicioActivoAction } from 'src/app/redux/app.actions';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
-import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
 import { ChatService } from 'src/app/service-component/chat.service';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
-
-
-const URLACTIVACION =  environment.urlActivacion;
 
 @Component({
   selector: 'app-home',
@@ -40,7 +36,7 @@ export class HomePage implements OnInit {
   query2:any = {
     where:{
       estado: 0,
-      estadoOrden: [ 0, 3]
+      // estadoOrden: [ 0, 3]
     },
     sort: 'createdAt DESC',
     skip: 0
@@ -171,13 +167,13 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-nuevo')
     .subscribe((marcador: any)=> {
-      console.log(marcador);
+      //console.log(marcador);
       if( this.rolUser === 'usuario' ) return false;
       // Validando estado si esta disponible 
       if( !this.dataUser.estadoCuenta ) return false;
       // if( !( this.RangoOrden( marcador) ) ) return false;
       this.listRow.unshift(marcador);
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud servicio", text: `${ marcador['usuario'].nombre } Destino ${ marcador['titulo']} Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } COP` });
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud de Mandados", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     });
 
     this.wsServices.listen('orden-actualizada')

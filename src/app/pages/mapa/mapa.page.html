@@ -1,7 +1,7 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ionToolbarHeaderChat">
+  <ion-toolbar class="ionToolbarHeaderChat">
     <ion-button slot="start" fill="clear" (click)="exit()">
-      <ion-icon name="arrow-back-outline"></ion-icon>
+      <ion-icon color="light" name="arrow-back-outline"></ion-icon>
     </ion-button>
   </ion-toolbar>
 </ion-header>
@@ -10,14 +10,14 @@
   <div class="mapa" id="mapa"></div>
 </ion-content>
 
-<ion-footer *ngIf="noActivar">
+<ion-footer *ngIf="( vista != 'ver_drive' && vista !== 'origen_detalle' ) && mapa">
   <ion-toolbar>
     <div class="ion-text-center">
-      <ion-button color="primary" (click)="agregarMarkerBtn()" *ngIf="vista == 'origen'">
+      <ion-button class="ionButton" (click)="agregarMarkerBtn()" *ngIf="vista == 'origen'">
         MI UBICACIÓN
       </ion-button>
       <br>
-      <ion-button color="primary" (click)="submitDireccion()" *ngIf="vista == 'origen'">
+      <ion-button class="ionButton" (click)="submitDireccion()" *ngIf="vista == 'origen'">
         COMPLETADO
       </ion-button>
     </div>

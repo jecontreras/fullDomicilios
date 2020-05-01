@@ -1,6 +1,6 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-toolbar color="primary">
+<ion-header class="ionToolbarHeaderChat">
+  <ion-toolbar class="ionToolbarHeaderChat">
+    <ion-toolbar class="ionToolbarHeaderChat">
       <ion-button slot="start" fill="clear" (click)="exit()" color="light">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
@@ -20,7 +20,7 @@
     </ion-toolbar>
     <div class="ion-text-center">
       <p>
-        <ion-chip class="chipPerfil">
+        <ion-chip class="chipPerfil ion-chipsHeader">
           <ion-avatar class="avatarPerfil">
             <img
               [src]="chatDe.foto || './assets/perfil.png'" />
@@ -43,26 +43,26 @@
       <ion-text class="colorRed" (click)="confirmar()">
         <h4>PENDIENTE DE ACEPTACION</h4>
       </ion-text>
-      <ion-text color="success" *ngIf="listOfertando">
+      <ion-text color="success" *ngIf="listOfertando.id">
         <h4>DRIVE OFERTA: {{ ( data['ofertando']?.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
       </ion-text>
     </div>
-    <ion-toolbar *ngIf="data.ordenes.estado != 0">
+    <ion-toolbar *ngIf="data.ordenes.estado != 0" class="ionToolbarGris">
       <div class="ion-text-center">
-        <h5>ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 3" class="colorYellow">PROCESO</span> 
+        <h5 class="colorBlanco" >ESTATUS DEL ENVIO <span *ngIf="data.ordenes.estado == 3" class="colorYellow">PROCESO</span> 
           <span *ngIf="data.ordenes.estado == 2" class="colorGrend">FINALIZADO</span>
         </h5>
-        <ion-text color="success" *ngIf="listOfertando">
+        <ion-text color="success" *ngIf="listOfertando.id">
           <h4>DRIVE OFERTA: {{ ( data['ofertando']?.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
         </ion-text>
-        <ion-button color="primary" *ngIf="data.ordenes.estado != 2" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
+        <ion-button class="ionButton" *ngIf="data.ordenes.estado != 2" (click)="FinalizarOrden()" [disabled]="disableBtnConfirmar">
           CONFIRMAR Y FINALIZAR
         </ion-button>
       </div>
     </ion-toolbar>
     <br>
     <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
-      <ion-button color="primary" (click)="openMapaDrive()">
+      <ion-button class="ionButton" (click)="openMapaDrive()">
         VER HUBICACION DE DRIVER
       </ion-button>
     </div>
@@ -84,13 +84,13 @@
       <ion-text class="colorYellow" *ngIf="data.ordenes.estado == 3"> 
         <h4>ENPROCESO</h4>
       </ion-text>
-      <ion-text color="success" *ngIf="listOfertando">
+      <ion-text color="success" *ngIf="listOfertando.id">
         <h4>OFERTASTE: {{ ( listOfertando.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
       </ion-text>
     </div>
     <ion-toolbar *ngIf="data.estado == 0 && ( data.ordenes.estado != 3 && data.ordenes.estado != 2 && data.ordenes.estado != 1)">
       <div class="ion-text-center">
-        <ion-button color="primary" (click)="ofertandoCliente()" [disabled]="disableBtnConfirmar">
+        <ion-button class="ionButton" (click)="ofertandoCliente()" [disabled]="disableBtnConfirmar">
           CONFIRMAR PRECIO
         </ion-button>
       </div>

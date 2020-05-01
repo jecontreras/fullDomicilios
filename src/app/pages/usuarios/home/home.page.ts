@@ -100,13 +100,22 @@ export class HomePage implements OnInit {
   }
 
   escucharSockets(){
-    this.wsServices.listen('chat-nuevo')
+    this.wsServices.listen('chat-principal')
     .subscribe((marcador: any)=> {
-      // console.log("**", marcador);
+      //console.log("**", marcador);
       if(marcador.reseptor.id !== this.dataUser.id ) return false;
       this.listRow.push( marcador );
       this.listRow = _.unionBy( this.listRow || [], marcador, 'id');
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ marcador['emisor'].nombre } ${ marcador['emisor'].apellido } Ofrece $ ${ ( marcador['ofertando'].ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) } ` });
     });
+  }
+
+  audioNotificando(obj:any, mensaje:any){
+    let sonido = new Audio();
+    sonido.src = obj;
+    sonido.load();
+    sonido.play();
+    this._tools.presentNotificacion(mensaje);
   }
 
   getGeolocation(){
@@ -165,7 +174,7 @@ export class HomePage implements OnInit {
   }
 
   getList(){
-    this.query.where.estadoOrden = 0;
+    // this.query.where.estadoOrden = 0;
     this._tools.presentLoading();
     this._mensajes.get(this.query).subscribe((res:any)=>{
       // console.log(res);

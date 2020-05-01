@@ -3,15 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 import { SocketIoConfig } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'https://e0de6ec5.ngrok.io', options: {} };
+const config: SocketIoConfig = { url: 'https://socketsmanda2.herokuapp.com', options: {} };
 
 export const environment = {
   production: false,
   socketConfig: config,
-  url: "https://e0487ec7.ngrok.io",
+  url: "https://backendmanda2.herokuapp.com",
   //url: "https://apigps.herokuapp.com",
   // url: "https://17114203.ngrok.io",
-  urlServer: "https://e0de6ec5.ngrok.io",
+  urlServer: "https://socketsmanda2.herokuapp.com",
   urlActivacion: "https://www.google.com",
   mapbox: {
     // pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg
