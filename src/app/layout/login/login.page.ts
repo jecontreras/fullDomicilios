@@ -35,6 +35,8 @@ export class LoginPage implements OnInit {
 
   vista:string = "home";
 
+  btnDisabled:boolean = false;
+
   constructor(
     private _user: UserService,
     private _tools: ToolsService,
@@ -118,9 +120,11 @@ export class LoginPage implements OnInit {
   }
 
   iniciar(){
-    this._tools.presentLoading();
+    //this._tools.presentLoading();
+    this.btnDisabled = true;
     this._user.login(this.data).subscribe((res:any)=>{
-      this._tools.dismisPresent();
+      //this._tools.dismisPresent();
+      this.btnDisabled = false;
       if(res.success){
         this.ProcesoStorages( res );
       }else{
@@ -129,7 +133,7 @@ export class LoginPage implements OnInit {
       }
     },(error)=>{
       this._tools.presentToast("Error de servidor")
-      this._tools.dismisPresent();
+      this.btnDisabled = false;
     });
   }
 

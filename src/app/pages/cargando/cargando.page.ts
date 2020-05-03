@@ -26,19 +26,17 @@ export class CargandoPage implements OnInit {
   ) {
     this._store.subscribe((store:any)=>{
       store = store.name;
-      console.log(store);
       this.data = store.persona || {};
       if(this.data['rol']){
         this.rolUser = ( this.data['rol'].rol );
       }
     });
-    if(Object.keys(this.data).length === 0) this._router.navigate(['/portada']);
-   }
-
+  }
+  
   ngOnInit() {
-    this._tools.presentLoading();
+    if(Object.keys(this.data).length === 0) { this._router.navigate(['/portada']); return false;}
+     this._tools.presentLoading();
     setTimeout(()=>{ 
-      console.log(this.rolUser);
       this._tools.dismisPresent();
       if(!this.rolUser) return this.clearLogin();
       if(this.rolUser == 'usuario') this._router.navigate(['/usuarios/home']);

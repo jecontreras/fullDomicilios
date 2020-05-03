@@ -103,9 +103,10 @@ export class HomePage implements OnInit {
   }
 
   InitApp(){
+    this._tools.dismisPresent();
     this.id = this.wsServices.idSocket;
-    this.InitProceso();
     if(!this.id ) this.contador();
+    else this.InitProceso();
   }
 
   contador(){

@@ -5,7 +5,7 @@ const config: SocketIoConfig = { url: 'https://socketsmanda2.herokuapp.com', opt
 export const environment = {
   production: true,
   socketConfig: config,
-  url: "https://backendmanda2.herokuapp.com",
+  url: "https://backendmanda.herokuapp.com",
   urlServer: "https://socketsmanda2.herokuapp.com",
   urlActivacion: "https://www.google.com",
   mapbox: {

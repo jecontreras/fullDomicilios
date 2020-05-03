@@ -30,6 +30,8 @@ export class RegistroPage implements OnInit {
   };
   disablePass:boolean = false;
 
+  btnDisabled:boolean = true;
+
   constructor(
     private _user: UserService,
     private _tools: ToolsService,
@@ -42,8 +44,9 @@ export class RegistroPage implements OnInit {
   }
 
   iniciar(){
-    this._tools.presentLoading();
+    this.btnDisabled = true;
     this._user.register(this.data).subscribe((res)=>{
+      this.btnDisabled = false;
       if(res.status == 200){
         let accion:any = new PersonaAction(res.data, 'post');
         this._store.dispatch(accion);
@@ -51,7 +54,7 @@ export class RegistroPage implements OnInit {
       }else{
         this._tools.presentToast(res.data);
       }
-      this._tools.dismisPresent();
+      this.btnDisabled = false;
     }, error=>{ this._tools.presentToast("Error de Servidor") });
   }
 
