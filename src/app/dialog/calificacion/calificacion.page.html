@@ -1,6 +1,6 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-button slot="start" fill="clear" (click)="exit()">
+<ion-header class="ionToolbarHeaderChat">
+  <ion-toolbar class="ionToolbarHeaderChat">
+    <ion-button slot="start" fill="clear" (click)="exit()" color="light">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
   </ion-toolbar>
@@ -37,7 +37,7 @@
     <ion-text color="dark">
       <p>Envíanos comentarios <br> (esto no lo verá el driver) <br> Tu opinion es muy importante para nosotros </p>
     </ion-text>
-    <ion-item>
+    <ion-item class="ion-padding">
       <ion-textarea rows="6" cols="20" placeholder="Escriba un mensaje" [(ngModel)]="dataForm.descripcion">
       </ion-textarea>
     </ion-item>
@@ -45,10 +45,10 @@
 
 </ion-content>
 
-<ion-footer>
-  <ion-toolbar>
+<ion-footer class="ionToolbarHeaderChat">
+  <ion-toolbar class="ionToolbarHeaderChat">
     <div class="ion-text-center">
-      <ion-button color="success" (click)="submitComentario()" [disabled]="btndisableComentario">
+      <ion-button class="ionButton" (click)="submitComentario()" [disabled]="btndisableComentario">
         Enviar
       </ion-button>
     </div>

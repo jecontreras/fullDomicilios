@@ -53,6 +53,9 @@
       <ion-button class="ionButton" (click)="openSolicitar( item )" slot="end">
         VER
       </ion-button>
+      <ion-button color="danger" [disabled]="btnDisabled" (click)="cancelarMandado( item )" slot="end">
+        CANCELAR
+      </ion-button>
     </ion-item>
   </ion-list>
   

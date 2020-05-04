@@ -18,6 +18,7 @@ export class CargandoPage implements OnInit {
   };
   data:any = {};
   rolUser:string;
+  bandera:boolean = false;
 
   constructor(
     private _tools: ToolsService,
@@ -32,16 +33,43 @@ export class CargandoPage implements OnInit {
       }
     });
   }
-  
+   ionViewWillEnter(){
+     console.log(1, this.bandera)
+     if(this.bandera){
+      this.validandoLogin();
+      this.InitApp();
+     }
+   }
+  //  ionViewDidEnter(){
+  //    console.log(2)
+  //  }
+  //  ionViewWillLeave(){
+  //    console.log(3)
+  //  }
+  // ionViewDidLeave(){
+  //   console.log(4)
+  // }
+  //  ngOnDestroy(){
+  //    console.log(5)
+  //  }
   ngOnInit() {
-    if(Object.keys(this.data).length === 0) { this._router.navigate(['/portada']); return false;}
+     this.validandoLogin();
      this._tools.presentLoading();
     setTimeout(()=>{ 
-      this._tools.dismisPresent();
-      if(!this.rolUser) return this.clearLogin();
-      if(this.rolUser == 'usuario') this._router.navigate(['/usuarios/home']);
-      if(this.rolUser == 'conductor') this._router.navigate(['/conductor/home']);
+      this.InitApp();
     }, 3000);
+  }
+
+  validandoLogin(){
+    if(Object.keys(this.data).length === 0) { this._router.navigate(['/portada']); return false;}
+  }
+
+  InitApp(){
+    this._tools.dismisPresent();
+    this.bandera = true;
+    if(!this.rolUser) return this.clearLogin();
+    if(this.rolUser == 'usuario') this._router.navigate(['/usuarios/home']);
+    if(this.rolUser == 'conductor') this._router.navigate(['/conductor/home']);
   }
 
   clearLogin(){

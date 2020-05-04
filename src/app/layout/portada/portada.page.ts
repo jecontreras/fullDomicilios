@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-portada',
@@ -12,7 +14,14 @@ export class PortadaPage implements OnInit {
     allowSlideNext: false
   };
 
-  constructor() { }
+  constructor(
+    private _authSrvice: AuthService,
+    private _router: Router
+  ) {
+    if (this._authSrvice.isLoggedIn()) {
+      this._router.navigate(['/cargando']);
+    }
+   }
 
   ngOnInit() {
     //location.reload();

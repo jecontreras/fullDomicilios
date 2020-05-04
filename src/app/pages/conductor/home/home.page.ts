@@ -198,6 +198,7 @@ export class HomePage implements OnInit {
     .subscribe((marcador: any)=> {
       //console.log(marcador);
       this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Finalizado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     });
     //Orden cancelada
 
@@ -206,6 +207,7 @@ export class HomePage implements OnInit {
       //console.log( marcador , this.listRow );
       if( !marcador.id ) return false;
       this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Cancelado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     });
 
   }
@@ -215,8 +217,10 @@ export class HomePage implements OnInit {
       let item:any = this.listRow.find( (row:any)=> row.id == marcador.id );
       item = marcador;
       item.check = true;
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Aceptado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     }else{
       if(marcador.id) this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado no Acepatado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     }
     for( let row of this.listRow2 ){
       if( row.ordenes == marcador.id ) row.ordenes = marcador;

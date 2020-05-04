@@ -46,7 +46,7 @@ export class AuthService implements CanActivate {
     }
 
     public isLoggedIn() {
-      if (!localStorage.getItem('user')) {
+      if (Object.keys(this.dataUser).length == 0) {
         return false;
       } else {
         return true;

@@ -224,6 +224,7 @@ export class ChatDetalladoPage implements OnInit {
     this.disableBtnConfirmar = true;
     await this.getValidacionOrden();
     if( this.data.ordenes.estado == 3) { this.disableBtnConfirmar = false; return this._tools.presentToast("Lo sentimos !Esta orden ya esta en proceso con otro drive!"); }
+    if( this.data.ordenes.estado == 1) { this.disableBtnConfirmar = false; return this._tools.presentToast("Lo sentimos !Esta orden fue cancelada por el usuario!"); }
     const modal:any = await this.modalCtrl.create({
       component: ConfirmarPage,
       componentProps: {

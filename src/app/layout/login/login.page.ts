@@ -43,12 +43,13 @@ export class LoginPage implements OnInit {
     private _store: Store<PERSONA>,
     private _router: Router,
     private modalCtrl: ModalController,
-    private facebook: Facebook
+    private facebook: Facebook,
+    private _authSrvice: AuthService
   ) { 
     
-    // if (this._authSrvice.isLoggedIn()) {
-    //   this._router.navigate(['/cargando']);
-    // }
+    if (this._authSrvice.isLoggedIn()) {
+      this._router.navigate(['/cargando']);
+    }
   }
 
   ngOnInit() {

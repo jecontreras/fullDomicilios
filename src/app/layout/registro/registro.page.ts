@@ -30,7 +30,7 @@ export class RegistroPage implements OnInit {
   };
   disablePass:boolean = false;
 
-  btnDisabled:boolean = true;
+  btnDisabled:boolean = false;
 
   constructor(
     private _user: UserService,

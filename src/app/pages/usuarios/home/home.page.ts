@@ -34,7 +34,7 @@ export class HomePage implements OnInit {
     where:{
       estado: 0
     },
-    sort: 'createdAt DESC',
+    sort: 'createdAt desc',
     skip: 0
   };
   public ev:any = {};
@@ -50,6 +50,7 @@ export class HomePage implements OnInit {
   public rolUser:string;
 
   listMandadosActivos:any = [];
+  btnDisabled:boolean = false;
 
   constructor(
     private wsServices: WebsocketService,
@@ -177,6 +178,10 @@ export class HomePage implements OnInit {
   getList(){
     // this.query.where.estadoOrden = 0;
     this._tools.presentLoading();
+    this.query.where.or = [
+      { emisor: this.dataUser.id },
+      { reseptor: this.dataUser.id }
+    ];
     this._mensajes.get(this.query).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList(res);
@@ -214,7 +219,7 @@ export class HomePage implements OnInit {
   openMandadosActivos(){
     this.view = "mandados";
     this._tools.presentLoading();
-    this._ordenes.get( { where: { estado: [0, 3] } } ).subscribe((res:any)=>{ 
+    this._ordenes.get( { where: { estado: [0, 3], usuario: this.dataUser.id } } ).subscribe((res:any)=>{ 
       this.listMandadosActivos = res.data
       this._tools.dismisPresent();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
@@ -235,6 +240,21 @@ export class HomePage implements OnInit {
 
   openInformacion(){
     this.view = 'informacion';
+  }
+
+  cancelarMandado(obj:any){
+    let data:any = {
+      id: obj.id,
+      estado: 1
+    };
+    if(!data.id) return this._tools.presentToast("Error el item no encontrado");
+    this.btnDisabled = true;
+    this._ordenes.editar( data ).subscribe((res:any)=>{
+      this._tools.presentToast("Mandado Cancelado");
+      this.btnDisabled = false;
+      this.listMandadosActivos = this.listMandadosActivos.filter((row:any)=> row.id != obj.id );
+      this.wsServices.emit("orden-cancelada", res);
+    },(error)=> { this._tools.presentToast("Error al cancelar intentelo mas tarde"); this.btnDisabled = false; } )
   }
 
   cerrar_seccion(){
