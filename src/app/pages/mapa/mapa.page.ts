@@ -46,6 +46,7 @@ export class MapaPage implements OnInit {
   vista:any;
 
   noActivar:boolean = true;
+  markerdisabled:boolean = true;
 
   constructor(
     private http: HttpClient,
@@ -493,6 +494,8 @@ export class MapaPage implements OnInit {
   }
 
   agregarMarkerBtn(){
+    if(!this.markerdisabled) return false;
+    this.markerdisabled = false;
     const customMarker: Lugar = {
       id: new Date().toISOString(),
       userID: this.dataUser.id,
@@ -509,6 +512,7 @@ export class MapaPage implements OnInit {
   }
 
   exit(){
+    this.markerdisabled = true;
     this.modalCtrl.dismiss(
       { 'dismissed': true }
     );

@@ -118,11 +118,13 @@ export class HomePage implements OnInit {
   InitProceso( ){
     this.id = this.wsServices.idSocket;
     if(!this.id) {this._tools.presentToast("No hay Conexion"); return false;}
-    if( this.dataUser.estadoCuenta ) { this.getList();}
     this.getGeolocation();
     this.escucharSockets();
     //this.getMisOrdenesActivar()
     clearInterval(this.interval);
+    setTimeout(()=>{
+      if( this.dataUser.estadoCuenta ) { this.getList();}
+    },5000)
   }
 
   getSearchMyUbicacion(){
@@ -208,6 +210,13 @@ export class HomePage implements OnInit {
       if( !marcador.id ) return false;
       this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Cancelado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+    });
+    // chat nuevo
+    this.wsServices.listen('chat-nuevo')
+    .subscribe((chat: any)=> {
+      // console.log("**", chat);
+      if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
     });
 
   }
@@ -384,6 +393,25 @@ export class HomePage implements OnInit {
     this.view = "home";
     this.segment.value = "home"
   }
+
+  updateUser(){
+    let data:any = {
+      id: this.dataUser.id,
+      email: this.dataUser.email,
+      celular: this.dataUser.celular,
+      direccion: this.dataUser.direccion
+    };
+    if(!data.id) return this._tools.presentLoading("Informacion no valida");
+    this._tools.presentLoading();
+    this._user.update(data).subscribe((res:any)=>{
+      console.log(res);
+      this._tools.presentToast("Actualizada la informacion");
+      this._tools.dismisPresent();
+      let accion = new PersonaAction(res, 'post');
+      this._store.dispatch(accion);
+    },(error:any)=>{ console.error(error); this._tools.presentToast("Error al actualizar"); this._tools.dismisPresent(); });
+  }
+  
 
   cerrar_seccion(){
     let accion = new PersonaAction({}, 'delete');

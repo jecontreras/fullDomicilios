@@ -15,6 +15,7 @@ import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Lugar } from 'src/app/interfas/interfaces';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -60,7 +61,8 @@ export class HomePage implements OnInit {
     private _mensajes: ChatService,
     private geolocation: Geolocation,
     private router: Router,
-    private _ordenes: OrdenesService
+    private _ordenes: OrdenesService,
+    private _user: UserService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store.subscribe((store:any)=>{
@@ -255,6 +257,24 @@ export class HomePage implements OnInit {
       this.listMandadosActivos = this.listMandadosActivos.filter((row:any)=> row.id != obj.id );
       this.wsServices.emit("orden-cancelada", res);
     },(error)=> { this._tools.presentToast("Error al cancelar intentelo mas tarde"); this.btnDisabled = false; } )
+  }
+
+  updateUser(){
+    let data:any = {
+      id: this.dataUser.id,
+      email: this.dataUser.email,
+      celular: this.dataUser.celular,
+      direccion: this.dataUser.direccion
+    };
+    if(!data.id) return this._tools.presentLoading("Informacion no valida");
+    this._tools.presentLoading();
+    this._user.update(data).subscribe((res:any)=>{
+      console.log(res);
+      this._tools.presentToast("Actualizada la informacion");
+      this._tools.dismisPresent();
+      let accion = new PersonaAction(res, 'post');
+      this._store.dispatch(accion);
+    },(error:any)=>{ console.error(error); this._tools.presentToast("Error al actualizar"); this._tools.dismisPresent(); });
   }
 
   cerrar_seccion(){

@@ -88,7 +88,7 @@
         <h4>OFERTASTE: {{ ( listOfertando.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
       </ion-text>
     </div>
-    <ion-toolbar *ngIf="data.estado == 0 && ( data.ordenes.estado != 3 && data.ordenes.estado != 2 && data.ordenes.estado != 1)">
+    <ion-toolbar class="ionToolbarHeaderChat" *ngIf="data.estado == 0 && ( data.ordenes.estado != 3 && data.ordenes.estado != 2 && data.ordenes.estado != 1)">
       <div class="ion-text-center">
         <ion-button class="ionButton" (click)="ofertandoCliente()" [disabled]="disableBtnConfirmar">
           CONFIRMAR PRECIO
@@ -100,7 +100,7 @@
   <ion-card class="altoCars has-card-footer">
     <ion-card-header class="colorTitulo">
       <div class="ion-text-center">
-        <ion-card-title color="medium">BANDEJA DE MENSAJES</ion-card-title>
+        <ion-card-title class="textInf" color="medium">BANDEJA DE MENSAJES</ion-card-title>
       </div>
     </ion-card-header>
   </ion-card>
@@ -140,8 +140,13 @@
 <ion-footer>
   <ion-row>
     <ion-col size="12">
-      <ion-input class="ion-color-lavel" [(ngModel)]="mensajeTxt" placeholder="Escribe un mensaje"
+      <ion-item>
+        <ion-input class="ion-color-lavel" [(ngModel)]="mensajeTxt" placeholder="Escribe un mensaje"
         (change)="submitChat()" required type="text"></ion-input>
+        <ion-button slot="end" fill="clear"(click)="submitChat()">
+          <ion-icon color="primary" name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
     </ion-col>
   </ion-row>
 </ion-footer>

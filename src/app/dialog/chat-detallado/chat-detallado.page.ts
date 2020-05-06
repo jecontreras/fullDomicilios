@@ -93,10 +93,22 @@ export class ChatDetalladoPage implements OnInit {
   escucharSockets(){
     // orden-nueva
 
+    this.wsServices.listen('chat-principal')
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      console.log(marcador, this.data);
+      if( this.data.id == marcador.id) {
+        this.data.ofertando = marcador.ofertando;
+      }
+    });
+
     this.wsServices.listen('orden-actualizada')
     .subscribe((marcador: any)=> {
       if( !marcador ) return false;
-      if( this.data.ordenes.id == marcador.id ) this.data.ordenes = marcador;
+      console.log(marcador);
+      if( this.data.ordenes.id == marcador.id ) {
+        this.data.ordenes = marcador;
+      }
     });
 
     this.wsServices.listen('chat-nuevo')
@@ -230,7 +242,6 @@ export class ChatDetalladoPage implements OnInit {
       componentProps: {
         obj: this.data
       },
-      cssClass: 'my-custom-modal-css'
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();

@@ -199,3 +199,48 @@ html, body {
 @media only screen and (min-height: 1200px) {
 
 }
+
+@media only screen and (max-width: 600px) {
+  .textInf {
+    font-size: 15px;
+  }
+  
+}
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 420px) {
+  .textInf {
+    font-size: 15px;
+  }
+}
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .textInf {
+    font-size: 15px;
+  }
+  
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .textInf {
+    font-size: 15px;
+  }
+  
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .textInf {
+    font-size: 16px;
+  }
+  
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .textInf {
+    font-size: 17px;
+  }
+  
+}
+

@@ -13,7 +13,7 @@
 <ion-footer *ngIf="( vista != 'ver_drive' && vista !== 'origen_detalle' ) && mapa">
   <ion-toolbar>
     <div class="ion-text-center">
-      <ion-button class="ionButton" (click)="agregarMarkerBtn()" *ngIf="vista == 'origen'">
+      <ion-button class="ionButton" [disabled]="!markerdisabled" (click)="agregarMarkerBtn()" *ngIf="vista == 'origen'">
         MI UBICACIÓN
       </ion-button>
       <br>

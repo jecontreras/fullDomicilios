@@ -22,6 +22,11 @@ export class ConfirmarPage implements OnInit {
   dataPararm:any = {};
 
   btnDisabled:boolean = false;
+  
+  sliderOpts = {
+    allowSlidePrev: false,
+    allowSlideNext: false
+  };
 
   constructor(
     private _store: Store<STORAGES>,
@@ -51,7 +56,7 @@ export class ConfirmarPage implements OnInit {
   confirmar(){  
     let dataOferta:any = {
       "usuario": this.dataUser.id,
-      "orden": this.dataPararm.id,
+      "orden": this.dataPararm.ordenes.id,
       "ofrece": this.data.precio,
       "descripcion": "init"
     };
@@ -66,9 +71,10 @@ export class ConfirmarPage implements OnInit {
     let data:any = {
       "emisor": this.dataUser.id,
       "reseptor": this.dataPararm.chatDe.id,
-      "text": "Hola, buenos dias, solo quiero confirmar el numero de casa de la dirección de entrega",
-      "ordenes": this.dataPararm.id,
-      "ofertando": res.id
+      "text": "Hola",
+      "ordenes": this.dataPararm.ordenes.id,
+      "ofertando": res.id,
+      "detalladoBtn": true
     };
     this._chat.saved(data).subscribe((res:any)=>{ 
       res = res.data; 
@@ -78,7 +84,9 @@ export class ConfirmarPage implements OnInit {
   }
 
   getChatInit(res:any){
-    this._chat.get({ where: { id: res.chat.id }, limit: 1}).subscribe((res:any)=>{
+    let id = res.id;
+    if( res.chat ) id = res.chat.id;
+    this._chat.get({ where: { id: id }, limit: 1}).subscribe((res:any)=>{
       res = res.data[0];
       if(!res) return false;
       this.wsServices.emit( 'chat-principal', res);

@@ -36,7 +36,7 @@
   <ion-card class="altoCars">
     <ion-card-header class="colorTitulo">
       <div class="ion-text-center">
-        <ion-card-title color="medium">MIS MANDADOS ACTIVOS</ion-card-title>
+        <ion-card-title color="medium" class="textInf">MIS MANDADOS ACTIVOS</ion-card-title>
       </div>
     </ion-card-header>
   </ion-card>
@@ -70,7 +70,7 @@
   <ion-card class="altoCars">
     <ion-card-header class="colorTitulo">
       <div class="ion-text-center">
-        <ion-card-title color="medium">BANDEJA DE MENSAJES</ion-card-title>
+        <ion-card-title color="medium" class="textInf">BANDEJA DE MENSAJES</ion-card-title>
       </div>
     </ion-card-header>
   </ion-card>
@@ -142,6 +142,9 @@
   </ion-list>
   <div class="ion-text-center">
     <br><br><br>
+    <ion-button class="ionButton" (click)="updateUser()">
+      ACTUALIZAR
+    </ion-button>
     <ion-button class="ionButton" (click)="cerrar_seccion()">
       CERRAR SESIÓN
     </ion-button>
