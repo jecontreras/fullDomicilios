@@ -108,10 +108,33 @@ export class HomePage implements OnInit {
     .subscribe((marcador: any)=> {
       //console.log("**", marcador);
       if(marcador.reseptor.id !== this.dataUser.id ) return false;
-      this.listRow.push( marcador );
+      this.listRow.unshift( marcador );
       this.listRow = _.unionBy( this.listRow || [], marcador, 'id');
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ marcador['emisor'].nombre } ${ marcador['emisor'].apellido } Ofrece $ ${ ( marcador['ofertando'].ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) } ` });
     });
+
+    this.wsServices.listen('chat-nuevo')
+    .subscribe((chat: any)=> {
+      // console.log("**", chat, this.listRow);
+      if( !chat.chatPrincipal ) return false;
+      if( chat.chatPrincipal.reseptor !== this.dataUser.id ) return false;
+      this.ProcesoChatPrincipal( chat );
+    });
+  }
+
+  ProcesoChatPrincipal( chat:any ){
+    this._mensajes.get({
+      where:{
+        id: chat.chatPrincipal.id
+      }
+    }).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) return false;
+      this.listRow.unshift( res );
+      this.listRow = _.unionBy( this.listRow || [], res, 'id');
+      // console.log(this.listRow);
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ res['emisor'].nombre } ${ res['emisor'].apellido } ` });
+    })
   }
 
   audioNotificando(obj:any, mensaje:any){
@@ -124,14 +147,25 @@ export class HomePage implements OnInit {
 
   getGeolocation(){
     let vandera:boolean = true;
+    let tiempo:boolean = true;
     setInterval(()=>{ 
-      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
-        if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
-        this.lat = geoposition.coords.latitude;
-        this.lon = geoposition.coords.longitude;
-        if(vandera){ this.crearMarcador();}
-        this.seconds = 5000;
-      },this.seconds);
+      tiempo = true;
+    }, 5000);
+    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+      if(!tiempo) return false;
+      if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
+      this.lat = geoposition.coords.latitude;
+      this.lon = geoposition.coords.longitude;
+      const nuevoMarker = {
+        id: this.id,
+        lng: this.lon,
+        lat: this.lat
+      };
+      this.wsServices.emit( 'marcador-mover', nuevoMarker);
+      if(vandera){ this.crearMarcador();}
+      this.seconds = 5000;
+      vandera = false;
+      tiempo = false;
     });
   }
 

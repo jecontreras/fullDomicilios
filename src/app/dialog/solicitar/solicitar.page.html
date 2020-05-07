@@ -124,8 +124,11 @@
         <ion-col>
           <br><br><br>
           <div class="ion-text-center">
-            <ion-button class="ionButton" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal'"> 
+            <ion-button class="ionButton" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal' && !paramsData.idOfertando"> 
               ACEPTAR Y COORDINAR
+            </ion-button>
+            <ion-button class="ionButton" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal' && paramsData.idOfertando"> 
+              MANDADO EN PROCESO
             </ion-button>
             <ion-button class="ionButton" *ngIf="estadoButton == 'ORDEN YA CONFIRMADA POR OTRO DRIVE'" [disabled]="true"> 
               {{ estadoButton }}

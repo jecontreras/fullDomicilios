@@ -40,7 +40,7 @@
       <ion-text color="light">
         <span>ESTATUS DEL ENVIO</span>
       </ion-text>
-      <ion-text class="colorRed" (click)="confirmar()">
+      <ion-text class="colorRed" (click)="confirmar()" *ngIf="data.ofertando">
         <h4>PENDIENTE DE ACEPTACION</h4>
       </ion-text>
       <ion-text color="success" *ngIf="listOfertando.id">

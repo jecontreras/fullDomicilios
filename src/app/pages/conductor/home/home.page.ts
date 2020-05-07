@@ -135,17 +135,26 @@ export class HomePage implements OnInit {
 
   getGeolocation(){
     let vandera:boolean = true;
+    let tiempo:boolean = true;
     setInterval(()=>{ 
-      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
-        //console.log(geoposition)
-        if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
-        this.lat = geoposition.coords.latitude;
-        this.lon = geoposition.coords.longitude;
-        if(vandera){ this.crearMarcador(); this.getSearchMyUbicacion(); }
-        vandera = false;
-        this.seconds = 5000;
-      });
-     }, this.seconds);
+      tiempo = true;
+    }, 5000);
+    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+      //console.log(geoposition)
+      if(!tiempo) return false;
+      if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
+      this.lat = geoposition.coords.latitude;
+      this.lon = geoposition.coords.longitude;
+      const nuevoMarker = {
+        id: this.id,
+        lng: this.lon,
+        lat: this.lat
+      };
+      this.wsServices.emit( 'marcador-mover', nuevoMarker);
+      if(vandera){ this.crearMarcador(); this.getSearchMyUbicacion(); }
+      vandera = false;
+      tiempo = false;
+    });
   }
 
   crearMarcador(){
@@ -214,9 +223,13 @@ export class HomePage implements OnInit {
     // chat nuevo
     this.wsServices.listen('chat-nuevo')
     .subscribe((chat: any)=> {
-      // console.log("**", chat);
+      console.log("**", chat);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
+      try {
+        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
+      } catch (error) {
+        console.log(error);
+      }
     });
 
   }

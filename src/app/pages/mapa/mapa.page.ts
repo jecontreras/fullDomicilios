@@ -47,6 +47,7 @@ export class MapaPage implements OnInit {
 
   noActivar:boolean = true;
   markerdisabled:boolean = true;
+  canvas:any;
 
   constructor(
     private http: HttpClient,
@@ -122,18 +123,21 @@ export class MapaPage implements OnInit {
 
   getGeolocation() {
     let vandera: boolean = true;
+    let tiempo:boolean = true;
     setTimeout(()=>{
-      this.geolocation.getCurrentPosition().then((geoposition: Geoposition) => {
-        if (this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude) return false;
-        this.lat = geoposition.coords.latitude;
-        this.lon = geoposition.coords.longitude;
-        if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); }
-        vandera = false;
-        this.seconds = 3000;
-      });
-    }, this.seconds);
-    setTimeout(()=>{
-      if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); }  
+      tiempo = true;
+    }, 5000);
+    this.geolocation.getCurrentPosition().then((geoposition: Geoposition) => {
+      if(!tiempo) return false;
+      if (this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude) return false;
+      this.lat = geoposition.coords.latitude;
+      this.lon = geoposition.coords.longitude;
+      if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); }
+      vandera = false;
+      tiempo = false;
+    });
+    let interval = setTimeout(()=>{
+      if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); clearInterval(interval); }  
     },2000)
   }
 
@@ -171,6 +175,8 @@ export class MapaPage implements OnInit {
       },
       trackUserLocation: true
     });
+    this.canvas = this.mapa.getCanvasContainer();
+    this.mapa.addControl(new Mapboxgl.NavigationControl());
     this.mapa.addControl(geolocate)
     setTimeout(()=>{
       geolocate._geolocateButton.click();
@@ -306,12 +312,12 @@ export class MapaPage implements OnInit {
     let data:any = {
       origenlat: valores.lat,
       origenlon: valores.lng,
-      destinolon: this.paramsData.ordenes.origenLon,
-      destinolat: this.paramsData.ordenes.origenLat,
+      destinolon: this.lon,
+      destinolat: this.lat,
       startLon: valores.lng,
       startLat: valores.lat,
-      destinoLon: this.paramsData.ordenes.origenLon,
-      destinoLat: this.paramsData.ordenes.origenLat
+      destinoLon: this.lon,
+      destinoLat: this.lat
     };
     this.getLatLongCliente( data );
   }

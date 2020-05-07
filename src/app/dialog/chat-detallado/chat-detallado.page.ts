@@ -24,7 +24,7 @@ export class ChatDetalladoPage implements OnInit {
     where:{
       estado: 0
     },
-    sort: 'createdAt DESC',
+    sort: 'createdAt ASC',
     skip: 0
   };
   listRow:any = [];
@@ -86,7 +86,7 @@ export class ChatDetalladoPage implements OnInit {
       //this.data.ordenes = this.data.ordenes;
       if(this.data.opt) this.getChatInit();
       else { this.query.where.chat = this.data.id; this.getChatDetallado();}
-      this.getOfertando({ orden: this.data.id, usuario: this.dataUser.id });
+      this.getOfertando({ orden: this.data.ordenes.id, usuario: this.dataUser.id });
     }
   } 
 
@@ -122,6 +122,12 @@ export class ChatDetalladoPage implements OnInit {
     .subscribe((ordenes: any)=> {
       if( this.data.ordenes.id != ordenes.id ) return false;
       this.procesandoOrdenConfirmada( ordenes );
+    });
+
+    this.wsServices.listen('ofreciendo-nuevo')
+    .subscribe((ordenes: any)=> {
+      console.log(ordenes);
+      if( ordenes.orden.id == this.data.ordenes.id ) this.getOfertando({ orden: this.data.ordenes.id, usuario: this.chatDe.id });
     });
 
     this.wsServices.listen('orden-finalizada')
@@ -294,11 +300,12 @@ export class ChatDetalladoPage implements OnInit {
       reseptor: this.chatDe.id,
       ordenes: this.data.ordenes.id
     };
-    console.log( data );
+    console.log(data);
     if( !data.emisor || !data.reseptor || !data.ordenes ) return this._tools.presentToast("Ay algo mal Por Favor Reiniciar");
     if( this.disableBtnChat ) return false;
     this.disableBtnChat = true;
     this._chat.saved( data ).subscribe((res:any)=>{
+      console.log(res);
       this.disableBtnChat = false;
       this.mensajeTxt = "";
       this.listRow.push(res.data);

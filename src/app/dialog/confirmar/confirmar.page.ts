@@ -60,10 +60,10 @@ export class ConfirmarPage implements OnInit {
       "ofrece": this.data.precio,
       "descripcion": "init"
     };
-
+    this.btnDisabled = true;
     this._ofertando.saved( dataOferta ).subscribe((res)=>{
+      this.wsServices.emit("ofreciendo-nuevo", res);
       this.Procesoconfirmar(res);
-      this.btnDisabled = true;
     },(error)=> { this.btnDisabled = true; this._tools.presentToast("Error de servidor"); });
   }
 
@@ -79,8 +79,9 @@ export class ConfirmarPage implements OnInit {
     this._chat.saved(data).subscribe((res:any)=>{ 
       res = res.data; 
       this.getChatInit(res);
-      this.exit()
-    },(error)=>{ this._tools.presentToast("Error de servidor")});
+      this.exit();
+      this.btnDisabled = false;
+    },(error)=>{ this._tools.presentToast("Error de servidor"); this.btnDisabled = false; });
   }
 
   getChatInit(res:any){
