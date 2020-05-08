@@ -196,16 +196,43 @@ html, body {
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-height: 1200px) {
 
-}
-
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 200px) {
+  .textLavel {
+    font-size: 16px;
+  }
   .textInf {
-    font-size: 15px;
+    font-size: 11px;
   }
   
 }
+
+@media only screen and (min-width: 300px) {
+  .textInf {
+    font-size: 12px;
+  }
+  .textLavel {
+    font-size: 16px;
+  }
+  
+}
+
+@media only screen and (min-width: 400px) {
+  .textInf {
+    font-size: 15px;
+  }
+  .textLavel {
+    font-size: 16px;
+  }
+  
+}
+
+// @media only screen and (max-width: 600px) {
+//   .textInf {
+//     font-size: 14px;
+//   }
+  
+// }
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 420px) {
   .textInf {

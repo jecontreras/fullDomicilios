@@ -9,12 +9,12 @@
           <p>EJECUTANDO MANDADO</p>
         </div>
         <div class="ion-text-center" *ngIf="data.ordenes.estado == 0">
-          <p>COORDINANDO DE DETALLES CON EL DRIVER:</p>
+          <p class="textLavel">COORDINANDO DE DETALLES CON EL DRIVER:</p>
         </div>
       </div>
       <div *ngIf="vista == 'drive'">
         <div class="ion-text-center">
-          <p>COORDINANDO DE DETALLES CON EL CLIENTE:</p>
+          <p class="textLavel">COORDINANDO DE DETALLES CON EL CLIENTE:</p>
         </div>
       </div>
     </ion-toolbar>
@@ -37,13 +37,13 @@
 <ion-content class="ion-padding">
   <div *ngIf="vista == 'cliente'">
     <div class="ion-text-center colorTitulo border" *ngIf="data.ordenes.estado == 0">
-      <ion-text color="light">
+      <ion-text color="light" class="textLavel">
         <span>ESTATUS DEL ENVIO</span>
       </ion-text>
-      <ion-text class="colorRed" (click)="confirmar()" *ngIf="data.ofertando">
+      <ion-text class="colorRed textLavel" (click)="confirmar()" *ngIf="data.ofertando">
         <h4>PENDIENTE DE ACEPTACION</h4>
       </ion-text>
-      <ion-text color="success" *ngIf="listOfertando.id">
+      <ion-text color="success" *ngIf="listOfertando.id" class="textLavel">
         <h4>DRIVE OFERTA: {{ ( data['ofertando']?.ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) }} USD</h4>
       </ion-text>
     </div>
@@ -62,7 +62,7 @@
     </ion-toolbar>
     <br>
     <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
-      <ion-button class="ionButton" (click)="openMapaDrive()">
+      <ion-button class="ionButton textInf" (click)="openMapaDrive()">
         VER HUBICACION DE DRIVER
       </ion-button>
     </div>
@@ -114,12 +114,21 @@
     <ion-list>
 
       <ion-item *ngFor="let item of listRow">
-        <ion-avatar slot="start">
+        
+        <ion-avatar slot="start" *ngIf="dataUser.id !== item.emisor.id">
           <img [src]="item['emisor']?.foto || './assets/perfil.png'">
         </ion-avatar>
-        <ion-text color="dark">
+        <ion-text color="dark" *ngIf="dataUser.id !== item.emisor.id">
           <h5>{{ item['text'] }}</h5>
         </ion-text>
+
+        <ion-text color="dark" slot="end" *ngIf="dataUser.id === item.emisor.id">
+          <h5>{{ item['text'] }}</h5>
+        </ion-text>
+        <ion-avatar slot="end" *ngIf="dataUser.id === item.emisor.id">
+          <img [src]="item['emisor']?.foto || './assets/perfil.png'">
+        </ion-avatar>
+      
       </ion-item>
     </ion-list>
   </div>
@@ -142,8 +151,8 @@
     <ion-col size="12">
       <ion-item>
         <ion-input class="ion-color-lavel" [(ngModel)]="mensajeTxt" placeholder="Escribe un mensaje"
-        (change)="submitChat()" required type="text"></ion-input>
-        <ion-button slot="end" fill="clear"(click)="submitChat()">
+        (change)="submitChat()" [disabled]="data.ordenes.estado == 2" required type="text"></ion-input>
+        <ion-button slot="end" fill="clear"(click)="submitChat()" [disabled]="data.ordenes.estado == 2">
           <ion-icon color="primary" name="arrow-forward-circle-outline"></ion-icon>
         </ion-button>
       </ion-item>

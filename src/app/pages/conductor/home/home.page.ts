@@ -264,10 +264,10 @@ export class HomePage implements OnInit {
   }
 
   audioNotificando(obj:any, mensaje:any){
-    let sonido = new Audio();
-    sonido.src = obj;
-    sonido.load();
-    sonido.play();
+    // let sonido = new Audio();
+    // sonido.src = obj;
+    // sonido.load();
+    // sonido.play();
     this._tools.presentNotificacion(mensaje);
   }
 

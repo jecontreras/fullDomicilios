@@ -132,6 +132,12 @@ export class MapaPage implements OnInit {
       if (this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude) return false;
       this.lat = geoposition.coords.latitude;
       this.lon = geoposition.coords.longitude;
+      const nuevoMarker = {
+        id: this.id,
+        lng: this.lon,
+        lat: this.lat
+      };
+      this.wsServices.emit( 'marcador-mover', nuevoMarker);
       if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); }
       vandera = false;
       tiempo = false;
@@ -146,11 +152,23 @@ export class MapaPage implements OnInit {
 
     this.wsServices.listen('marcador-mover')
     .subscribe((marcador: Lugar)=> {
+      console.log("****", marcador, this.markersMapbox)
       if(!this.mapa) return false;
       if(!this.markersMapbox[ marcador.id ]) return false;
       this.markersMapbox[ marcador.id ]
       .setLngLat([ marcador.lng, marcador.lat ]);
     });
+
+     // marcador-borrar
+
+     this.wsServices.listen('marcador-borrar')
+     .subscribe((id: string)=> {
+       console.log("****", id, this.markersMapbox)
+       if(!this.mapa) return false;
+       if(!this.markersMapbox[id]) return false;
+       this.markersMapbox[id].remove();
+       delete this.markersMapbox[id];
+     });
   }
 
   getSearchMyUbicacion() {

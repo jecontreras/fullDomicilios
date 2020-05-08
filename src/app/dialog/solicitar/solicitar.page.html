@@ -6,7 +6,7 @@
       </ion-button>
       <div class="ion-text-center" *ngIf="vista == 'detalles'">
         <ion-text>
-          <h5>
+          <h5 class="textLavel">
             <span>COORDINACION DE DETALLES</span>
             <ion-label>CON EL CLIENTE:</ion-label>
           </h5>
@@ -36,7 +36,7 @@
     <ion-row>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label" position="stacked">¿Qué diligencia haremos? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Qué diligencia haremos? <ion-text color="danger">*</ion-text></ion-label>
           <ion-textarea class="ionColorInput" rows="6" cols="20" placeholder="Danos la mayor cantidad de datos" [(ngModel)]="data.descripcion"></ion-textarea>
         </div>
       </ion-col>
@@ -47,26 +47,26 @@
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a recoger? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Dónde iremos a recoger? <ion-text color="danger">*</ion-text></ion-label>
           <ion-input class="ionColorInput" [(ngModel)]="data.origentexto" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-button class="ionButton" (click)="openMapa('origen', true)">
+          <ion-button class="ionButton textInf" (click)="openMapa('origen', true)">
             Ingresa la ubicación en el mapa
           </ion-button>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label" position="stacked">¿Dónde iremos a entregar? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Dónde iremos a entregar? <ion-text color="danger">*</ion-text></ion-label>
           <ion-input class="ionColorInput" [(ngModel)]="data.destinotext" placeholder="Escribe la dirección con puntos de referencia" required type="text"></ion-input>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-button class="ionButton" (click)="openMapa('destino', true)">
+          <ion-button class="ionButton textInf" (click)="openMapa('destino', true)">
             Ingresa la ubicación en el mapa
           </ion-button>
         </div>
@@ -101,7 +101,7 @@
         </ion-col>
         <ion-col size="12">
           <div class="ion-text-center">
-            <ion-button class="ionButton" (click)="openMapa('origen_detalle', false)">
+            <ion-button class="ionButton textInf" (click)="openMapa('origen_detalle', false)">
               VER UBICACION
             </ion-button>
           </div>
@@ -116,7 +116,7 @@
         </ion-col>
         <ion-col size="12">
           <div class="ion-text-center">
-            <ion-button class="ionButton" (click)="openMapa('destino_detalle', false)">
+            <ion-button class="ionButton textInf" (click)="openMapa('destino_detalle', false)">
               VER UBICACION
             </ion-button>
           </div>
@@ -124,10 +124,10 @@
         <ion-col>
           <br><br><br>
           <div class="ion-text-center">
-            <ion-button class="ionButton" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal' && !paramsData.idOfertando"> 
+            <ion-button class="ionButton textInf" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal' && !paramsData.idOfertando"> 
               ACEPTAR Y COORDINAR
             </ion-button>
-            <ion-button class="ionButton" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal' && paramsData.idOfertando"> 
+            <ion-button class="ionButton textInf" (click)="aceptarOrden()" *ngIf="estadoButton == 'normal' && paramsData.idOfertando"> 
               MANDADO EN PROCESO
             </ion-button>
             <ion-button class="ionButton" *ngIf="estadoButton == 'ORDEN YA CONFIRMADA POR OTRO DRIVE'" [disabled]="true"> 
