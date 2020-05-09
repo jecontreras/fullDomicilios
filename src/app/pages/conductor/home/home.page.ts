@@ -66,6 +66,8 @@ export class HomePage implements OnInit {
 
   vandera:boolean = true;
 
+  contadorChat:number = 0;
+
   constructor(
     private _tools: ToolsService,
     private _store: Store<PERSONA>,
@@ -122,6 +124,8 @@ export class HomePage implements OnInit {
     if(!this.id) {this._tools.presentToast("No hay Conexion"); return false;}
     this.getGeolocation();
     this.escucharSockets();
+    // this._tools.presentLoading();
+    this.getList2();
     //this.getMisOrdenesActivar()
     clearInterval(this.interval);
     setTimeout(()=>{
@@ -139,7 +143,7 @@ export class HomePage implements OnInit {
     this.vandera = true;
     setInterval(()=>{ 
       this.locationDande();
-    }, 5000);
+    }, 3000);
   }
 
   locationDande(){
@@ -228,7 +232,7 @@ export class HomePage implements OnInit {
       console.log("**", chat);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
       try {
-        //this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
+        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
       } catch (error) {
         console.log(error);
       }
@@ -344,8 +348,8 @@ export class HomePage implements OnInit {
   }
 
   getList2(){
-    this.query.where.estadoOrden = 0;
-    this._tools.presentLoading();
+    // this.query2.where.estadoOrden = 0;
+    // this._tools.presentLoading();
     this._mensajes.get(this.query2).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList2(res);
@@ -363,6 +367,7 @@ export class HomePage implements OnInit {
         this.ev.target.complete();
       }
     }
+    this.cambiaStateChat();
   }
 
   openMapa( item:any ){
@@ -385,6 +390,8 @@ export class HomePage implements OnInit {
   openChat( item:any ){
     if(!item) return false;
     item.vista = "drive";
+    if(!item.visto2) this.actualizarChat(item);
+    item.visto2 = true;
     this.modalCtrl.create({
       component: ChatDetalladoPage,
       componentProps: {
@@ -392,12 +399,27 @@ export class HomePage implements OnInit {
       }
     }).then( async (modal)=>{
       modal.present();
+      await modal.onWillDismiss();
+      this.cambiaStateChat();
     });
+  }
+
+  cambiaStateChat(){
+    this.contadorChat = 0;
+    for( let row of this.listRow2 ) if( !row.visto2 ) this.contadorChat++;
+  }
+
+  actualizarChat( obj:any ){
+    let data:any = {
+      id: obj.id,
+      visto2: true
+    };
+    this._mensajes.editar(data).subscribe((res:any)=>console.log(res));
   }
 
   cambioVista( event:any ){
     this.view = event.detail.value;
-    if( this.view == 'chat' ) this.getList2();
+    // if( this.view == 'chat' ) this.getList2();
   }
 
   verMandados(){

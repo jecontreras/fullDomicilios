@@ -10,6 +10,7 @@ import { PERSONA } from 'src/app/interfas/sotarage';
 import { ToolsService } from 'src/app/services/tools.service';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 import { ModalController, NavParams } from '@ionic/angular';
+import { UserService } from 'src/app/services/user.service';
 
 interface RespMarcadores {
   [key: string]: Lugar
@@ -58,7 +59,8 @@ export class MapaPage implements OnInit {
     private mapboxService: MapboxService,
     private modalCtrl: ModalController,
     private navparams: NavParams,
-    private _mapbox: MapboxService
+    private _mapbox: MapboxService,
+    private _user: UserService
   ) {
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store.subscribe((store: any) => {
@@ -95,12 +97,51 @@ export class MapaPage implements OnInit {
     this.getGeolocation();
     let interval:any = setInterval(()=>{
       if(!this.mapa) return false;
-      if(this.vista == "ver_drive") this.llenandoData( { id: this.paramsData.chatDe.idSockets } );
+      if(this.vista == "ver_drive") this.getDrive();
       if(this.vista == "origen_detalle") { this.noActivar = false; this.armarDataOrigenConductorDetalle(); }
       if(this.vista == "destino_detalle") { this.noActivar = false; this.armarDataDestinoOrdenDetalle(); }
       clearInterval( interval );
     },3000 )
     clearInterval(this.interval);
+  }
+
+  escucharSockets() {
+
+    //marcador nuevo
+
+    this.wsServices.listen('marcador-nuevo')
+    .subscribe((marcador: Lugar)=> {
+      if(this.paramsData.vista == "ver_drive") this.ProcesoDriveConection( marcador );
+    });
+    // marcador-mover
+
+    this.wsServices.listen('marcador-mover')
+    .subscribe((marcador: Lugar)=> {
+      // console.log("****", marcador, this.markersMapbox)
+      if(!this.mapa) return false;
+      if(!this.markersMapbox[ marcador.id ]) return false;
+      this.markersMapbox[ marcador.id ]
+      .setLngLat([ marcador.lng, marcador.lat ]);
+    });
+
+     // marcador-borrar
+
+     this.wsServices.listen('marcador-borrar')
+     .subscribe((id: string)=> {
+       if(this.paramsData.vista == "ver_drive") if( this.markersMapbox[id] ) this._tools.presentToast("Drive desconectado");
+      //  if(!this.mapa) return false;
+      //  if(!this.markersMapbox[id]) return false;
+      //  this.markersMapbox[id].remove();
+      //  delete this.markersMapbox[id];
+     });
+  }
+
+  getDrive(){
+    this._user.get( { where:{ id: this.paramsData.chatDe.id }, limit: 1 } ).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) this.llenandoData( { id: this.paramsData.chatDe.idSockets } );
+      else this.llenandoData( { id: res.idSockets } );
+    });
   }
 
   resetInit() {
@@ -132,43 +173,32 @@ export class MapaPage implements OnInit {
       if (this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude) return false;
       this.lat = geoposition.coords.latitude;
       this.lon = geoposition.coords.longitude;
-      const nuevoMarker = {
-        id: this.id,
-        lng: this.lon,
-        lat: this.lat
-      };
-      this.wsServices.emit( 'marcador-mover', nuevoMarker);
-      if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); }
+      // const nuevoMarker = {
+      //   id: this.id,
+      //   lng: this.lon,
+      //   lat: this.lat
+      // };
+      // this.wsServices.emit( 'marcador-mover', nuevoMarker);
+      if (vandera && !this.mapa) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); }
       vandera = false;
       tiempo = false;
     });
     let interval = setTimeout(()=>{
-      if (vandera) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); clearInterval(interval); }  
+      if (vandera && !this.mapa) { this.initializeMap(); this.getSearchMyUbicacion();  if (!this.markersMapbox[this.id]) this.crearMarcador(); clearInterval(interval); }  
     },2000)
   }
 
-  escucharSockets() {
-    // marcador-mover
-
-    this.wsServices.listen('marcador-mover')
-    .subscribe((marcador: Lugar)=> {
-      console.log("****", marcador, this.markersMapbox)
-      if(!this.mapa) return false;
-      if(!this.markersMapbox[ marcador.id ]) return false;
-      this.markersMapbox[ marcador.id ]
-      .setLngLat([ marcador.lng, marcador.lat ]);
-    });
-
-     // marcador-borrar
-
-     this.wsServices.listen('marcador-borrar')
-     .subscribe((id: string)=> {
-       console.log("****", id, this.markersMapbox)
-       if(!this.mapa) return false;
-       if(!this.markersMapbox[id]) return false;
-       this.markersMapbox[id].remove();
-       delete this.markersMapbox[id];
-     });
+  ProcesoDriveConection( obj:any ){
+    // console.log(obj);
+    for (let [ids, marcador] of Object.entries(this.markersMapbox)) {
+      if( marcador['userID'] == obj['userID'] && ids !== obj.id ) { 
+        const customMarker: Lugar = { id: obj['id'], userID: obj['userID'], rol: obj['rol'], estado: obj['estado'], lng: obj['lng'], lat: obj['lat'],
+          nombre: `${ obj['nombre'] }`, color: obj['color'] };
+        this.agregarMarcador(customMarker);
+        this.markersMapbox[ids].remove();
+        delete this.markersMapbox[ids];
+       }
+    }
   }
 
   getSearchMyUbicacion() {
@@ -249,7 +279,7 @@ export class MapaPage implements OnInit {
     //   marker.remove();
     //   this.wsServices.emit( 'marcador-borrar', marcador.id);
     // });
-
+     marker['userID'] = marcador.userID || this.dataUser.id;
     this.markersMapbox[marcador.id] = marker;
 
   }
@@ -323,7 +353,8 @@ export class MapaPage implements OnInit {
         lng: this.paramsData.ordenes.origenConductorlon,
         nombre: this.paramsData.ordenes.coductor.nombre,
         color: "#3171e0",
-        id: this.paramsData.ordenes.coductor.idSockets
+        id: this.paramsData.ordenes.coductor.idSockets,
+        userID: this.paramsData.ordenes.coductor.id
       };
       this.agregarMarcador(valores)
     }else valores = valores[0];

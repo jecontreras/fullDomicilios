@@ -54,6 +54,7 @@ export class HomePage implements OnInit {
 
   listMandadosActivos:any = [];
   btnDisabled:boolean = false;
+  contadorChat:number= 0;
 
   constructor(
     private wsServices: WebsocketService,
@@ -102,6 +103,8 @@ export class HomePage implements OnInit {
     if(!this.id) { this._tools.presentToast("No hay Conexion"); return false;}
     this.escucharSockets();
     this.getGeolocation();
+    this._tools.presentLoading();
+    this.getList();
     clearInterval(this.interval);
   }
 
@@ -113,6 +116,7 @@ export class HomePage implements OnInit {
       this.listRow.unshift( marcador );
       this.listRow = _.unionBy( this.listRow || [], marcador, 'id');
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ marcador['emisor'].nombre } ${ marcador['emisor'].apellido } Ofrece $ ${ ( marcador['ofertando'].ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) } ` });
+      this.cambiaStateChat();
     });
 
     this.wsServices.listen('chat-nuevo')
@@ -135,7 +139,8 @@ export class HomePage implements OnInit {
       this.listRow.unshift( res );
       this.listRow = _.unionBy( this.listRow || [], res, 'id');
       // console.log(this.listRow);
-      //this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ res['emisor'].nombre } ${ res['emisor'].apellido } ` });
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ res['emisor'].nombre } ${ res['emisor'].apellido } ` });
+      this.cambiaStateChat();
     })
   }
 
@@ -151,7 +156,7 @@ export class HomePage implements OnInit {
     this.vandera = true;
     setInterval(()=>{ 
       this.locationDande();
-    }, 5000);
+    }, 3000);
   }
 
   locationDande(){
@@ -190,7 +195,7 @@ export class HomePage implements OnInit {
 
   cambioVista( event:any ){
     this.view = event.detail.value;
-    if( this.view == 'chat' ) this.getList();
+    // if( this.view == 'chat' ) this.getList();
   }
 
   atras(){
@@ -202,6 +207,7 @@ export class HomePage implements OnInit {
     this.ev = ev;
     this.disable_list = false;
     this.listRow = [];
+    this.contadorChat = 0;
     this.query.skip = 0;
     this.getList();
   }
@@ -215,7 +221,6 @@ export class HomePage implements OnInit {
 
   getList(){
     // this.query.where.estadoOrden = 0;
-    this._tools.presentLoading();
     this.query.where.or = [
       { emisor: this.dataUser.id },
       { reseptor: this.dataUser.id }
@@ -237,6 +242,8 @@ export class HomePage implements OnInit {
         this.ev.target.complete();
       }
     }
+    this.contadorChat = 0;
+    this.cambiaStateChat();
   }
 
   openSolicitar( item:any ){
@@ -266,6 +273,8 @@ export class HomePage implements OnInit {
   openChat( item:any ){
     if(!item) return false;
     item.vista = "cliente";
+    if(!item.visto) this.actualizarChat(item);
+    item.visto = true;
     this.modalCtrl.create({
       component: ChatDetalladoPage,
       componentProps: {
@@ -273,7 +282,22 @@ export class HomePage implements OnInit {
       }
     }).then( async (modal)=>{
       modal.present();
+      await modal.onWillDismiss();
+      this.cambiaStateChat();
     });
+  }
+
+  cambiaStateChat(){
+    this.contadorChat = 0;
+    for( let row of this.listRow ) if( !row.visto ) this.contadorChat++;
+  }
+
+  actualizarChat( obj:any ){
+    let data:any = {
+      id: obj.id,
+      visto: true
+    };
+    this._mensajes.editar(data).subscribe((res:any)=>console.log(res));
   }
 
   openInformacion(){

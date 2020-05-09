@@ -81,7 +81,7 @@
 
   <ion-list>
 
-    <ion-item *ngFor="let item of listRow">
+    <ion-item *ngFor="let item of listRow" [ngClass]="{colorNewMensaje: !item.visto}">
       <ion-avatar slot="start">
         <img *ngIf="dataUser.id != item.reseptor.id" [src]="item['reseptor']?.foto || './assets/perfil.png'">
         <img *ngIf="dataUser.id == item.reseptor.id" [src]="item['emisor']?.foto || './assets/perfil.png'">
@@ -168,10 +168,16 @@
 <ion-footer class="ion-padding ionFooter">
   <ion-segment color="tertiary" value="favorite" (ionChange)="cambioVista( $event )"> 
     <ion-segment-button value="chat">
-      <ion-icon name="chatbox-ellipses-outline" color="light"></ion-icon>
+      <ion-label class="ionMenu">
+        <ion-icon name="chatbox-ellipses-outline" color="light">
+        </ion-icon>
+        <ion-badge class="ionBadge" *ngIf="contadorChat" color="danger">{{ ( contadorChat || 0 ) }}</ion-badge>
+      </ion-label>
     </ion-segment-button>
     <ion-segment-button value="perfil">
-      <ion-icon name="person-outline" color="light"></ion-icon>
+      <ion-label class="ionMenu">
+        <ion-icon name="person-outline" color="light"></ion-icon>
+      </ion-label>
     </ion-segment-button>
   </ion-segment>
 </ion-footer>
