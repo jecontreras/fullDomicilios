@@ -64,6 +64,8 @@ export class HomePage implements OnInit {
 
   listRow2:any = [];
 
+  vandera:boolean = true;
+
   constructor(
     private _tools: ToolsService,
     private _store: Store<PERSONA>,
@@ -134,14 +136,15 @@ export class HomePage implements OnInit {
   }
 
   getGeolocation(){
-    let vandera:boolean = true;
-    let tiempo:boolean = true;
+    this.vandera = true;
     setInterval(()=>{ 
-      tiempo = true;
+      this.locationDande();
     }, 5000);
+  }
+
+  locationDande(){
     this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
       //console.log(geoposition)
-      if(!tiempo) return false;
       if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
       this.lat = geoposition.coords.latitude;
       this.lon = geoposition.coords.longitude;
@@ -151,9 +154,8 @@ export class HomePage implements OnInit {
         lat: this.lat
       };
       this.wsServices.emit( 'marcador-mover', nuevoMarker);
-      if(vandera){ this.crearMarcador(); this.getSearchMyUbicacion(); }
-      vandera = false;
-      tiempo = false;
+      if(this.vandera){ this.crearMarcador(); this.getSearchMyUbicacion(); }
+      this.vandera = false;
     });
   }
 
@@ -226,7 +228,7 @@ export class HomePage implements OnInit {
       console.log("**", chat);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
       try {
-        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
+        //this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
       } catch (error) {
         console.log(error);
       }

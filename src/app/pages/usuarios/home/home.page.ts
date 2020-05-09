@@ -30,6 +30,8 @@ export class HomePage implements OnInit {
   interval:any;
   view:string = "home";
 
+  vandera:boolean = true;
+
   listRow:any = [];
   query:any = {
     where:{
@@ -133,7 +135,7 @@ export class HomePage implements OnInit {
       this.listRow.unshift( res );
       this.listRow = _.unionBy( this.listRow || [], res, 'id');
       // console.log(this.listRow);
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ res['emisor'].nombre } ${ res['emisor'].apellido } ` });
+      //this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ res['emisor'].nombre } ${ res['emisor'].apellido } ` });
     })
   }
 
@@ -146,13 +148,14 @@ export class HomePage implements OnInit {
   }
 
   getGeolocation(){
-    let vandera:boolean = true;
-    let tiempo:boolean = true;
+    this.vandera = true;
     setInterval(()=>{ 
-      tiempo = true;
+      this.locationDande();
     }, 5000);
+  }
+
+  locationDande(){
     this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
-      if(!tiempo) return false;
       if(this.lat == geoposition.coords.latitude && this.lon == geoposition.coords.longitude ) return false;
       this.lat = geoposition.coords.latitude;
       this.lon = geoposition.coords.longitude;
@@ -162,10 +165,9 @@ export class HomePage implements OnInit {
         lat: this.lat
       };
       this.wsServices.emit( 'marcador-mover', nuevoMarker);
-      if(vandera){ this.crearMarcador();}
+      if(this.vandera){ this.crearMarcador();}
       this.seconds = 5000;
-      vandera = false;
-      tiempo = false;
+      this.vandera = false;
     });
   }
 

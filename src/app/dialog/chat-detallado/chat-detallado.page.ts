@@ -96,7 +96,8 @@ export class ChatDetalladoPage implements OnInit {
     this.wsServices.listen('chat-principal')
     .subscribe((marcador: any)=> {
       if( !marcador ) return false;
-      console.log(marcador, this.data);
+      // console.log(marcador, this.data);
+      //funciona en el usuario no hay problemas
       if( this.data.id == marcador.id) {
         this.data.ofertando = marcador.ofertando;
       }
@@ -105,7 +106,7 @@ export class ChatDetalladoPage implements OnInit {
     this.wsServices.listen('orden-actualizada')
     .subscribe((marcador: any)=> {
       if( !marcador ) return false;
-      console.log(marcador);
+      // console.log(marcador);
       if( this.data.ordenes.id == marcador.id ) {
         this.data.ordenes = marcador;
       }
@@ -113,9 +114,15 @@ export class ChatDetalladoPage implements OnInit {
 
     this.wsServices.listen('chat-nuevo')
     .subscribe((chat: any)=> {
-      // console.log("**", chat);
+      //console.log("**", chat, this.data, this.query);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
+      if( this.data.id !== chat.chat.id ) {
+        if(this.data.opt) this.getChatInit();
+        return false;
+      }
+      this.query.where.chat = chat.id;
       this.listRow.push( chat );
+      this.listRow = _.unionBy( this.listRow || [], chat, 'id');
     });
     
     this.wsServices.listen('orden-confirmada')
@@ -126,13 +133,13 @@ export class ChatDetalladoPage implements OnInit {
 
     this.wsServices.listen('ofreciendo-nuevo')
     .subscribe((ordenes: any)=> {
-      console.log(ordenes);
+      //console.log(ordenes);
       if( ordenes.orden.id == this.data.ordenes.id ) this.getOfertando({ orden: this.data.ordenes.id, usuario: this.chatDe.id });
     });
 
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
-      console.log(marcador, this.data);
+      //console.log(marcador, this.data);
       if( this.data.ordenes.id == marcador.id ) this.data.ordenes.estado = marcador.estado;
     });
 
@@ -185,6 +192,7 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   getChatDetallado(){
+    if(!this.query.where.chat) return false;
     // this._tools.presentLoading();
     this._chat.getDetallado( this.query ).subscribe((res:any)=>{
       this.dataFormaList( res );
