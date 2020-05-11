@@ -32,7 +32,6 @@ export class WebsocketService {
 
         this.socket.on('disconnect', (socket)=>{
             console.log("Desconectado del servidor", socket);
-            this._tools.presentToast("Desconectado del servidor");
             this.socketStatus = false;
             if( this.banderaDesconection ) this.contadorDesconectado();
         });
@@ -53,6 +52,7 @@ export class WebsocketService {
         this.inteval = setInterval(async()=>{
             console.log(contador, limit)
             if(contador == limit ) {
+                this._tools.presentToast("Desconectado del servidor");
                 this.socketStatus = true; clearInterval(this.inteval);
                 let result = await this._tools.presentAlertConfirm({ mensaje: "!!oops sin conexion refrescar"});
                 if(result) { location.reload();}

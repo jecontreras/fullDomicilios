@@ -62,7 +62,7 @@
     </ion-toolbar>
     <br>
     <div class="ion-text-center" *ngIf="data.ordenes.estado != 0">
-      <ion-button class="ionButton textInf" (click)="openMapaDrive()">
+      <ion-button class="ionButton textInf" (click)="openMapaDrive()" [disabled]="data.ordenes.estado == 2">
         VER HUBICACION DE DRIVER
       </ion-button>
     </div>
