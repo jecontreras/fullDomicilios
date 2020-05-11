@@ -43,7 +43,7 @@ export class CalificacionPage implements OnInit {
     let data = this.dataForm;
     data.creador = this.dataUser.id;
     data.usuario = this.data.chatDe.id;
-    data.ordenes = this.data.id;
+    data.ordenes = this.data.ordenes.id;
     this.btndisableComentario = true;
     this._resena.saved( data ).subscribe((res:any)=>{
       this._tools.presentToast( "Comentario Agregado" );
