@@ -42,6 +42,8 @@ export class ChatDetalladoPage implements OnInit {
   vista:string;
   listOfertando:any = {};
 
+  iniciarVandera:boolean = false;
+
   constructor(
     private modalCtrl: ModalController,
     private navparams: NavParams,
@@ -80,7 +82,7 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   procesoInicial(){
-    if( this.vista == 'cliente') { this.validandoChat(); if( this.data.id ) { this.query.where.chat = this.data.id; this.getChatDetallado(); this.getOfertando({ orden: this.data.ordenes.id, usuario: this.data.emisor.id }); }}
+    if( this.vista == 'cliente') { this.validandoChat(); if( this.data.id ) { this.query.where.chat = this.data.id; this.getChatDetallado(); this.getOfertando({ orden: this.data.ordenes.id, usuario: this.data.emisor.id }); } }
     if( this.vista == 'drive') { 
       if( this.data.chatDe ) { this.chatDe = this.data.chatDe } else this.validandoChat(); 
       //this.data.ordenes = this.data.ordenes;
@@ -88,7 +90,21 @@ export class ChatDetalladoPage implements OnInit {
       else { this.query.where.chat = this.data.id; this.getChatDetallado();}
       this.getOfertando({ orden: this.data.ordenes.id, usuario: this.dataUser.id });
     }
-  } 
+    if( this.data.vista == 'cliente' ) {
+      let interval = setInterval(()=>{
+        if( !this.iniciarVandera ) return false;
+        this.procesoConfirmarAlert();
+        clearInterval( interval );
+      },2000)
+    }
+  }
+
+  procesoConfirmarAlert(){
+    if( this.data.ordenes.estado != 0 ) return true;
+    if( !this.data.ofertando ) return true;
+    this.confirmar();
+  }
+
 
   escucharSockets(){
     // orden-nueva
@@ -177,6 +193,7 @@ export class ChatDetalladoPage implements OnInit {
   getOfertando(data:any){
     this._ofertando.get( { where: data, sort: "createdAt DESC", limit: 1 } ).subscribe((res:any)=>{
       res = res.data[0];
+      this.iniciarVandera = true;
       if(!res) return false;
       this.listOfertando = res;
     },(error)=> this._tools.presentToast("Error de conexion"));
