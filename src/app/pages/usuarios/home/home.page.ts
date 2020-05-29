@@ -16,6 +16,7 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Lugar } from 'src/app/interfas/interfaces';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { UserService } from 'src/app/services/user.service';
+import { EmpresarialPage } from 'src/app/dialog/empresarial/empresarial.page';
 
 @Component({
   selector: 'app-home',
@@ -261,10 +262,33 @@ export class HomePage implements OnInit {
     });
   }
 
+  openEmpresarial( item:any ){
+    let data:any = item || {};
+    if(!item) data.vista = "crear";
+    else data.vista = "update";
+    this.modalCtrl.create({
+      component: EmpresarialPage,
+      componentProps: { 
+        obj: data
+      }
+    }).then( async (modal)=>{
+      modal.present();
+    });
+  }
+
   openMandadosActivos(){
     this.view = "mandados";
     this._tools.presentLoading();
-    this._ordenes.get( { where: { estado: [0, 3], usuario: this.dataUser.id } } ).subscribe((res:any)=>{ 
+    this._ordenes.get( { where: { estado: [0, 3], usuario: this.dataUser.id, tipoOrden: 0 } } ).subscribe((res:any)=>{ 
+      this.listMandadosActivos = res.data
+      this._tools.dismisPresent();
+    }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
+  }
+
+  openMandadosEmpresarialActivos(){
+    this.view = "mandadosEmpresarial";
+    this._tools.presentLoading();
+    this._ordenes.get( { where: { estado: [0, 3], usuario: this.dataUser.id, tipoOrden: 1 } } ).subscribe((res:any)=>{ 
       this.listMandadosActivos = res.data
       this._tools.dismisPresent();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })

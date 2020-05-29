@@ -190,6 +190,7 @@ export class HomePage implements OnInit {
       // Validando estado si esta disponible 
       if( !this.dataUser.estadoCuenta ) return false;
       // if( !( this.RangoOrden( marcador) ) ) return false;
+      if( this.dataUser.tipoOrden == 1 ) return false;
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud de Mandados", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     });

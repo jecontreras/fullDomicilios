@@ -13,12 +13,14 @@ export class WebsocketService {
     public idSocket:string;
     banderaDesconection:boolean = true;
     inteval:any;
+    eventosRetenidos:any = [];
 
     constructor(
         private socket: Socket,
         private _tools: ToolsService
     ){
         this.checkStatus();
+        this.reEnvio();
     }
 
     checkStatus(){
@@ -32,14 +34,28 @@ export class WebsocketService {
 
         this.socket.on('disconnect', (socket)=>{
             console.log("Desconectado del servidor", socket);
+            //this._tools.presentToast("Desconectado del servidor");
             this.socketStatus = false;
             if( this.banderaDesconection ) this.contadorDesconectado();
         });
     }
 
-    emit( evento: string, payload?:any, callback?: Function){
+    emit( evento: string, payload?:any, callback?: Function, opt:boolean = true){
         console.log("Emitiendo", evento);
-        this.socket.emit( evento, payload, callback);
+        if( this.socketStatus && opt ) this.socket.emit( evento, payload, callback);
+        else if( !opt ) this.eventosRetenidos.push({ evento: evento, payload: payload, callback: callback });
+    }
+
+    reEnvio(){
+        let interval = setInterval(()=>{
+            if( !this.socketStatus ) return false;
+            for( let row of this.eventosRetenidos ) { 
+                if( !this.socketStatus ) continue;
+                this.emit( row.evento, row.payload, row.callback, false); 
+                row.estado = true;
+            }
+            this.eventosRetenidos = this.eventosRetenidos.filter( (row:any) => !row.estado );
+        }, 5000);
     }
 
     listen( evento: string ){
@@ -52,10 +68,9 @@ export class WebsocketService {
         this.inteval = setInterval(async()=>{
             console.log(contador, limit)
             if(contador == limit ) {
-                this._tools.presentToast("Desconectado del servidor");
                 this.socketStatus = true; clearInterval(this.inteval);
                 let result = await this._tools.presentAlertConfirm({ mensaje: "!!oops sin conexion refrescar"});
-                if(result) { location.reload();}
+                location.reload();
             }
             contador++;
         }, 1000);

@@ -53,7 +53,11 @@ const routes: Routes = [
   {
     path: 'confirmar',
     loadChildren: () => import('./dialog/confirmar/confirmar.module').then( m => m.ConfirmarPageModule)
+  },  {
+    path: 'empresarial',
+    loadChildren: () => import('./dialog/empresarial/empresarial.module').then( m => m.EmpresarialPageModule)
   }
+
 
 
 
