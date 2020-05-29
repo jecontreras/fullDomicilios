@@ -44,6 +44,9 @@
     <ion-button class="ionButton" *ngIf="dataUser.estadoCuenta" (click)="verMandados()">
       MANDADOS DISPONIBLES
     </ion-button>
+    <ion-button class="ionButton" *ngIf="dataUser.estadoCuenta" (click)="verMandadosEmpresariales()">
+      MANDADOS EMPRESARIALES
+    </ion-button>
   </div>
 
 </ion-content>
@@ -79,6 +82,59 @@
   </ion-list>
   
   <div class="ion-text-center" *ngIf="listRow.length == 0">
+    <ion-text colo="dark">
+      <span>Lista Vacia</span>
+    </ion-text>
+  </div>
+
+  <ion-infinite-scroll threshold="150px"
+                         (ionInfinite)="loadData( $event )"
+                        >
+    <ion-infinite-scroll-content loadingSpinner="crescent"
+                                  loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
+
+<ion-content fullscreen class="ion-padding" *ngIf="view == 'mandadosEmpresariales'">
+  
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card class="altoCars">
+    <ion-card-header class="colorTitulo">
+      <div class="ion-text-center">
+        <ion-card-title color="medium" class="textInf">MANDADOS EMPRESARIALES</ion-card-title>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-list>
+
+    <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivos: item.estado == 3}">
+      <ion-label slot="start">
+        <ion-text>
+          <span>Hora</span>
+          <p>{{ item.horaEntrega | date:'hh:mm:ss' }}</p>
+        </ion-text>
+      </ion-label>
+      <ion-label slot="start">
+        <ion-text color="dark">
+          <h2>DIRECCION:</h2>
+          <h2>{{ item.origentexto }}</h2>
+        </ion-text>
+      </ion-label>
+      <ion-button class="ionButton" (click)="openMapa( item )" slot="end">
+        VER
+      </ion-button>
+    </ion-item>
+  </ion-list>
+  
+  <div class="ion-text-center" *ngIf="listMandadosActivos.length == 0">
     <ion-text colo="dark">
       <span>Lista Vacia</span>
     </ion-text>

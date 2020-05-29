@@ -11,31 +11,37 @@
     <ion-row>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Nombre del cliente? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Hora o rango de horas de entrega?</ion-label>
+          <ion-datetime class="ionColorInput" display-format="h:mm A" picker-format="h:mm A" [(ngModel)]="data.horaEntrega"></ion-datetime>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Nombre del cliente?</ion-label>
           <ion-input class="ionColorInput" [(ngModel)]="data.nombreCliente" required type="text"></ion-input>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Numero del cliente? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Numero del cliente?</ion-label>
           <ion-input class="ionColorInput" [(ngModel)]="data.numeroCliente" required type="number"></ion-input>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Dirección o lugar de entrega? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Dirección o lugar de entrega?</ion-label>
           <ion-textarea class="ionColorInput" rows="6" cols="20" placeholder="Danos la mayor cantidad de datos" [(ngModel)]="data.origentexto"></ion-textarea>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿MONTO A COBRAR? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿MONTO A COBRAR?</ion-label>
           <ion-input class="ionColorInput" [(ngModel)]="data.ofreceCliente" required (focusout)="BlurNumber()" (change)="formatoNumber()" (click)="estadoNumber(true)" type="text"></ion-input>
         </div>
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Datos extra? <ion-text color="danger">*</ion-text></ion-label>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿Datos extra?</ion-label>
           <ion-textarea class="ionColorInput" rows="4" cols="20" placeholder="Danos la mayor cantidad de datos" [(ngModel)]="data.descripcion"></ion-textarea>
         </div>
       </ion-col>

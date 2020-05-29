@@ -12,6 +12,7 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
 import { SolicitarPageModule } from 'src/app/dialog/solicitar/solicitar.module';
 import { ChatDetalladoPageModule } from 'src/app/dialog/chat-detallado/chat-detallado.module';
 import { EmpresarialPageModule } from 'src/app/dialog/empresarial/empresarial.module';
+import { DetallesEmpresarialPageModule } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.module';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { EmpresarialPageModule } from 'src/app/dialog/empresarial/empresarial.mo
     MenuPageModule,
     SolicitarPageModule,
     ChatDetalladoPageModule,
-    EmpresarialPageModule
+    EmpresarialPageModule,
+    DetallesEmpresarialPageModule
   ],
   providers: [
     CallNumber

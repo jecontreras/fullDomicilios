@@ -17,6 +17,7 @@ import { Lugar } from 'src/app/interfas/interfaces';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { UserService } from 'src/app/services/user.service';
 import { EmpresarialPage } from 'src/app/dialog/empresarial/empresarial.page';
+import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
 
 @Component({
   selector: 'app-home',
@@ -268,6 +269,19 @@ export class HomePage implements OnInit {
     else data.vista = "update";
     this.modalCtrl.create({
       component: EmpresarialPage,
+      componentProps: { 
+        obj: data
+      }
+    }).then( async (modal)=>{
+      modal.present();
+    });
+  }
+  openEmpresarialVer( item:any ){
+    let data:any = item || {};
+    if(!item) data.vista = "ver";
+    else data.vista = "ver";
+    this.modalCtrl.create({
+      component: DetallesEmpresarialPage,
       componentProps: { 
         obj: data
       }

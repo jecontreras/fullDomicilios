@@ -19,10 +19,10 @@
           <ion-chip class="chipPerfil ion-chipsHeader">
             <ion-avatar class="avatarPerfil">
               <img
-                [src]="paramsData.usuario.foto || './assets/perfil.png'" />
+                [src]="paramsData['usuario']?.foto || './assets/perfil.png'" />
             </ion-avatar>
             <ion-text color="light">
-              <h5 class="colorBlanco">{{ paramsData.usuario.nombre }} {{ paramsData.usuario.apellido }} </h5>
+              <h5 class="colorBlanco">{{ paramsData['usuario']?.nombre }} {{ paramsData['usuario']?.apellido }} </h5>
             </ion-text>
           </ion-chip>
         </p>

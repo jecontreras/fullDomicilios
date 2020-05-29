@@ -67,6 +67,7 @@ export class HomePage implements OnInit {
   vandera:boolean = true;
 
   contadorChat:number = 0;
+  listMandadosActivos:any = [];
 
   constructor(
     private _tools: ToolsService,
@@ -78,7 +79,7 @@ export class HomePage implements OnInit {
     private _user: UserService,
     private mapboxService: MapboxService,
     private _mensajes: ChatService,
-    private router: Router
+    private router: Router,
   ) { 
     this._store.subscribe((store:any)=>{
         store = store.name;
@@ -425,6 +426,15 @@ export class HomePage implements OnInit {
 
   verMandados(){
     this.view = "mandados";
+  }
+  
+  verMandadosEmpresariales(){
+    this.view = "mandadosEmpresariales"
+    this._tools.presentLoading();
+    this._orden.get( { where: { estado: [0, 3], /*coductor: this.dataUser.id,*/ tipoOrden: 1 } } ).subscribe((res:any)=>{ 
+      this.listMandadosActivos = res.data
+      this._tools.dismisPresent();
+    }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
   }
 
   atras(){

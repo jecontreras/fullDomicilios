@@ -1,0 +1,106 @@
+<ion-header class="ionToolbarHeaderChat">
+  <ion-toolbar class="ionToolbarHeaderChat">
+    <ion-toolbar class="ionToolbarHeaderChat">
+      <ion-button slot="start" fill="clear" (click)="exit()" color="light">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+      <div class="ion-text-center">
+        <ion-text>
+          <h6 class="textLavel">
+            <span *ngIf="data.coductor">ESTE MANDADO HA SIDO ASIGNADO A</span>
+            <span *ngIf="!data.coductor">ESTE MANDADO NO ESTA ASIGNADO</span>
+          </h6>
+          <ion-chip class="chipPerfil ion-chipsHeader" *ngIf="data.coductor">
+            <ion-avatar class="avatarPerfil">
+              <img [src]="data['coductor']?.foto || './assets/perfil.png'" />
+            </ion-avatar>
+            <ion-text color="light">
+              <h5 class="colorBlanco">{{ data['coductor']?.nombre }} {{ data['coductor']?.apellido }} </h5>
+            </ion-text>
+          </ion-chip>
+        </ion-text>
+      </div>
+    </ion-toolbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <div class="ion-text-center">
+          <ion-text color="light" class="textLavel">
+            <span>ESTATUS DEL ENVIO</span>
+          </ion-text>
+          <ion-text class="colorSuccess">
+            <h5>
+              <span *ngIf="data.estado == 3">MANDADO EN PROCESO</span>
+              <span *ngIf="data.estado == 2">MANDADO COMPLETADO</span>
+              <span *ngIf="data.estado == 1">MANDADO ElIMINADO</span>
+              <span *ngIf="data.estado == 0">MANDADO ACTIVO</span>
+            </h5>
+          </ion-text>
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Hora de entrega:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.horaEntrega }}</span>
+            </ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Dirección de entrega:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.origentexto }}</span>
+            </ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Dirección de entrega:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.origentexto }}</span>
+            </ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Nombre del cliente:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.nombreCliente }}</span>
+            </ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Numero del cliente:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.numeroCliente }}</span>
+            </ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Monto a cobrar:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.ofreceCliente }}</span>
+            </ion-text>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label class="ion-color-lavel" position="stacked">Datos extra:</ion-label>
+            <ion-text color="dark">
+              <span>{{ data.descripcion }}</span>
+            </ion-text>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="ion-text-center">
+      <ion-button class="ionButton" expand="full" (click)="openChat()">
+        CHATEAR CON EL DRIVER
+      </ion-button>
+      <ion-button class="ionButton" expand="full" (click)="venUbicacion()">
+        VER UBICACION DEL DRIVER
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

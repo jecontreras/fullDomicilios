@@ -56,6 +56,14 @@ const routes: Routes = [
   },  {
     path: 'empresarial',
     loadChildren: () => import('./dialog/empresarial/empresarial.module').then( m => m.EmpresarialPageModule)
+  },
+  {
+    path: 'detalles-empresarial',
+    loadChildren: () => import('./dialog/detalles-empresarial/detalles-empresarial.module').then( m => m.DetallesEmpresarialPageModule)
+  },
+  {
+    path: 'chat-empresarial',
+    loadChildren: () => import('./dialog/chat-empresarial/chat-empresarial.module').then( m => m.ChatEmpresarialPageModule)
   }
 
 

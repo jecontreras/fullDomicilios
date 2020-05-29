@@ -16,7 +16,7 @@
     </ion-text>
   </ion-toolbar>
   <br><br>
-  
+
   <ion-text color="dark" (click)="openInformacion()">
     <h4>Pasos a seguir para pedir un mandado</h4>
   </ion-text>
@@ -61,7 +61,7 @@
       </ion-button>
     </ion-item>
   </ion-list>
-  
+
   <div class="ion-text-center" *ngIf="listMandadosActivos.length == 0">
     <ion-text colo="dark">
       <span>Lista Vacia</span>
@@ -87,15 +87,20 @@
           <h2>{{ item['usuario'].nombre }} {{ item['usuario'].apellido }}</h2>
         </ion-text>
       </ion-label>
-      <ion-button class="ionButton" (click)="openEmpresarial( item )" slot="end">
-        VER
-      </ion-button>
-      <ion-button color="danger" [disabled]="btnDisabled" (click)="cancelarMandado( item )" slot="end">
+      <ion-label slot="end">
+        <ion-button class="ionButton" (click)="openEmpresarial( item )">
+          EDITAR
+        </ion-button>
+        <ion-button class="ionButton" (click)="openEmpresarialVer( item )">
+          VER
+        </ion-button>
+      </ion-label>
+      <!-- <ion-button color="danger" [disabled]="btnDisabled" (click)="cancelarMandado( item )" slot="end">
         CANCELAR
-      </ion-button>
+      </ion-button> -->
     </ion-item>
   </ion-list>
-  
+
   <div class="ion-text-center" *ngIf="listMandadosActivos.length == 0">
     <ion-text colo="dark">
       <span>Lista Vacia</span>
@@ -145,18 +150,15 @@
       </ion-button>
     </ion-item>
   </ion-list>
-  
+
   <div class="ion-text-center" *ngIf="listRow.length == 0">
     <ion-text colo="dark">
       <span>Lista Vacia</span>
     </ion-text>
   </div>
 
-  <ion-infinite-scroll threshold="150px"
-                         (ionInfinite)="loadData( $event )"
-                        >
-    <ion-infinite-scroll-content loadingSpinner="crescent"
-                                  loadingtext="Cargando data..">
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="loadData( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
 
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
@@ -176,15 +178,18 @@
 
   <ion-list>
     <ion-item>
-      <ion-input class="ion-color-lavel inputColor" placeholder="email" [(ngModel)]="dataUser.email" required type="text"></ion-input>
+      <ion-input class="ion-color-lavel inputColor" placeholder="email" [(ngModel)]="dataUser.email" required
+        type="text"></ion-input>
       <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
     </ion-item>
     <ion-item>
-      <ion-input class="ion-color-lavel inputColor" placeholder="celular" [(ngModel)]="dataUser.celular" required type="text"></ion-input>
+      <ion-input class="ion-color-lavel inputColor" placeholder="celular" [(ngModel)]="dataUser.celular" required
+        type="text"></ion-input>
       <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
     </ion-item>
     <ion-item>
-      <ion-textarea rows="4" class="inputColor" placeholder="direccion" cols="10" [(ngModel)]="dataUser.direccion"></ion-textarea>
+      <ion-textarea rows="4" class="inputColor" placeholder="direccion" cols="10" [(ngModel)]="dataUser.direccion">
+      </ion-textarea>
       <ion-icon slot="end" name="eyedrop-outline"></ion-icon>
     </ion-item>
   </ion-list>
@@ -205,7 +210,8 @@
     1- ¿Qué diligencia haremos ? <br>
     2- ¿Cuáles son los lugares que visitaremos?
     <br>
-    Una vez has llenado estos datos y mandas la solicitud un moticiclista aceptara tu mandado y se pondrá en contacto contigo.
+    Una vez has llenado estos datos y mandas la solicitud un moticiclista aceptara tu mandado y se pondrá en contacto
+    contigo.
     <br><br><br>
     ¿Cuánto cuesta el mandado ?
     <br>
@@ -214,7 +220,7 @@
 </ion-content>
 
 <ion-footer class="ion-padding ionFooter">
-  <ion-segment color="tertiary" value="favorite" (ionChange)="cambioVista( $event )"> 
+  <ion-segment color="tertiary" value="favorite" (ionChange)="cambioVista( $event )">
     <ion-segment-button value="chat">
       <ion-label class="ionMenu">
         <ion-icon name="chatbox-ellipses-outline" color="light">

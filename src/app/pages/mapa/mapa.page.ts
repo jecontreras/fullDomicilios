@@ -434,6 +434,9 @@ export class MapaPage implements OnInit {
 
   creandorRuta( res:any, config:any ){
     let data = res.routes[0];
+    if( !data ) return false;
+    if( !data.geometry ) return false;
+    if( Object.keys(data.geometry).length == 0 ) return false;
     let route = data.geometry.coordinates;
     let geojson:any = {
       type: 'Feature',
