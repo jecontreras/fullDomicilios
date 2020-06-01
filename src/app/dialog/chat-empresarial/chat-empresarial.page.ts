@@ -57,8 +57,8 @@ export class ChatEmpresarialPage implements OnInit {
   ngOnInit() {
     this.paramsData = this.navparams.get('obj');
     this.data = this.paramsData || {};
-    if( Object.keys(this.data).length > 0 ) this.validandoChat();
     this.validandoGet();
+    this.escucharSockets();
   }
 
   validandoGet(){
@@ -68,15 +68,54 @@ export class ChatEmpresarialPage implements OnInit {
       if( !res ) return false;
       this.query.where.chat = res.id;
       this.getChatDetallado();
+      this.validandoChat( res );
     });
   }
 
-  validandoChat(){
-    if( this.dataUser.id == this.data.coductor.id ) this.chatDe = this.data.usuario;
-    else this.chatDe = this.data.coductor;
-    if( !this.data.emisor ) return false;
-    if( this.dataUser.id == this.data.emisor.id ) this.chatDe = this.data.emisor;
-    else this.chatDe = this.data.reseptor;
+  escucharSockets(){
+
+    this.wsServices.listen('orden-actualizada')
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      // console.log(marcador);
+      if( this.data.ordenes.id == marcador.id ) {
+        this.data.ordenes = marcador;
+      }
+    });
+
+    this.wsServices.listen('chat-nuevo')
+    .subscribe((chat: any)=> {
+      //console.log("**", chat, this.data);
+      if( !this.data.chat ) this.getChatInit();
+      else {
+        if( this.data.chat.id != chat.chat.id ) return false;
+        this.listRow.push( chat );
+        this.listRow = _.unionBy( this.listRow || [], chat, 'id');
+      }
+    });
+
+    this.wsServices.listen('orden-finalizada')
+    .subscribe((marcador: any)=> {
+      //console.log(marcador, this.data);
+      if( this.data.ordenes.id == marcador.id ) this.data.ordenes.estado = marcador.estado;
+    });
+
+  }
+
+  getChatInit(){
+    this._chat.get( { where: { ordenes: this.data.id, emisor: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) return false;
+      this.query.where.chat = res.id; 
+      this.data.chat = res;
+      this.getChatDetallado();
+    });
+  }
+
+  validandoChat( res ){
+    if( this.dataUser.id == res.emisor.id ) this.chatDe = res.reseptor;
+    else this.chatDe = res.emisor;
+    this.data.chatDe = this.chatDe;
   }
 
   doRefresh(ev){
@@ -127,6 +166,7 @@ export class ChatEmpresarialPage implements OnInit {
       this.disableBtnChat = false;
       this.mensajeTxt = "";
       this.listRow.push(res.data);
+      if( !this.query.where.chat ) this.wsServices.emit( 'chat-principal', res);
       this.wsServices.emit( 'chat-nuevo', res.data);
     },(error)=> { this._tools.presentToast("Error de servidor mensaje no enviado"); this.disableBtnChat = false; });
   }

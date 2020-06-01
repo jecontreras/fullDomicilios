@@ -11,6 +11,7 @@ import { MenuPageModule } from 'src/app/layout/menu/menu.module';
 import { CalificacionPageModule } from 'src/app/dialog/calificacion/calificacion.module';
 import { SolicitarPageModule } from 'src/app/dialog/solicitar/solicitar.module';
 import { ChatDetalladoPageModule } from 'src/app/dialog/chat-detallado/chat-detallado.module';
+import { DetallesEmpresarialPageModule } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { ChatDetalladoPageModule } from 'src/app/dialog/chat-detallado/chat-deta
     MenuPageModule,
     SolicitarPageModule,
     CalificacionPageModule,
-    ChatDetalladoPageModule
+    ChatDetalladoPageModule,
+    DetallesEmpresarialPageModule
   ],
   declarations: [HomePage]
 })

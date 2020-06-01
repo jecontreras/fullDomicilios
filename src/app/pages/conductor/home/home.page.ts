@@ -13,9 +13,9 @@ import { UserService } from 'src/app/services/user.service';
 import { PersonaAction, ServicioActivoAction } from 'src/app/redux/app.actions';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 import { Router } from '@angular/router';
-import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
 import { ChatService } from 'src/app/service-component/chat.service';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
+import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
 
 @Component({
   selector: 'app-home',
@@ -373,9 +373,11 @@ export class HomePage implements OnInit {
   }
 
   openMapa( item:any ){
-    item.vista = "detalles";
+    let data:any = item || {};
+    if(!item) data.vista = "ver";
+    else data.vista = "ver";
     this.modalCtrl.create({
-      component: SolicitarPage,
+      component: DetallesEmpresarialPage,
       componentProps: {
         obj: item
       }
@@ -431,7 +433,7 @@ export class HomePage implements OnInit {
   verMandadosEmpresariales(){
     this.view = "mandadosEmpresariales"
     this._tools.presentLoading();
-    this._orden.get( { where: { estado: [0, 3], /*coductor: this.dataUser.id,*/ tipoOrden: 1 } } ).subscribe((res:any)=>{ 
+    this._orden.get( { where: { estado: [0, 3], coductor: this.dataUser.id, tipoOrden: 1 } } ).subscribe((res:any)=>{ 
       this.listMandadosActivos = res.data
       this._tools.dismisPresent();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
