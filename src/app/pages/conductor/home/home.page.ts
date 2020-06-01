@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { ChatService } from 'src/app/service-component/chat.service';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
 import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
+import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
 
 @Component({
   selector: 'app-home',
@@ -42,6 +43,12 @@ export class HomePage implements OnInit {
     skip: 0
   };
   
+  queryEmpresarial:any = {
+    where: { estado: [0, 2, 3], tipoOrden: 1 },
+    sort: 'createdAt DESC',
+    skip: 0
+  }
+
   @ViewChild(IonSegment, {static: false}) segment: IonSegment;
 
   public ev:any = {};
@@ -127,7 +134,6 @@ export class HomePage implements OnInit {
     this.escucharSockets();
     // this._tools.presentLoading();
     this.getList2();
-    //this.getMisOrdenesActivar()
     clearInterval(this.interval);
     setTimeout(()=>{
       if( this.dataUser.estadoCuenta ) { this.getList();}
@@ -279,7 +285,7 @@ export class HomePage implements OnInit {
     this._tools.presentNotificacion(mensaje);
   }
 
-  doRefresh(ev){
+  doRefresh(ev ){
     this.ev = ev;
     this.disable_list = false;
     if( this.view == 'mandados' ) {
@@ -290,6 +296,11 @@ export class HomePage implements OnInit {
       this.listRow2 = [];
       this.getList2();
     }
+    if( this.view == 'mandadosEmpresariales' ){
+      this.listMandadosActivos = [];
+      this.getMandadosEmpresariales();
+    }
+
   }
 
   loadData(ev){
@@ -303,16 +314,10 @@ export class HomePage implements OnInit {
       this.query2.skip++;
       this.getList2();
     }
-  }
-
-  getMisOrdenesActivar(){
-    this._orden.get({ where:{ coductor: this.dataUser.id, estado: 3} }).subscribe((res:any)=>{
-      res = res.data[0];
-      if(!res) return false;
-      let accion = new ServicioActivoAction( res, 'post');
-      this._store.dispatch( accion );
-      this.openMapa( res );
-    },(error)=>this._tools.presentToast("Error de Conexion por favor refrescar"));
+    if( this.view == 'mandadosEmpresariales' ){
+      this.queryEmpresarial.skip++;
+      this.getMandadosEmpresariales();
+    }
   }
 
   getList(){
@@ -337,21 +342,13 @@ export class HomePage implements OnInit {
     this.listRow.push(...res.data );
     // console.log(this.listRow)
     this.listRow =_.unionBy(this.listRow || [], res.data, 'id');
-    if( this.evScroll.target ){
-      this.evScroll.target.complete()
-    }
-    if(this.ev){
-      this.disable_list = true;
-      if(this.ev.target){
-        this.ev.target.complete();
-      }
-    }
-    this._tools.dismisPresent();
+    this.destruirProgreso();
   }
 
   getList2(){
     // this.query2.where.estadoOrden = 0;
     // this._tools.presentLoading();
+    this.query2.where.tipoOrden = 0;
     this._mensajes.get(this.query2).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList2(res);
@@ -362,24 +359,17 @@ export class HomePage implements OnInit {
   dataFormaList2(res:any){
     this.listRow2.push(...res.data );
     this.listRow2 =_.unionBy(this.listRow2 || [], this.listRow2, 'id');
-    if( this.evScroll.target ) this.evScroll.target.complete()
-    if(this.ev){
-      this.disable_list = true;
-      if(this.ev.target){
-        this.ev.target.complete();
-      }
-    }
+    this.destruirProgreso();
     this.cambiaStateChat();
   }
-
+  
   openMapa( item:any ){
     let data:any = item || {};
-    if(!item) data.vista = "ver";
-    else data.vista = "ver";
+    data.vista = "detalles";
     this.modalCtrl.create({
-      component: DetallesEmpresarialPage,
+      component: SolicitarPage,
       componentProps: {
-        obj: item
+        obj: data
       }
     }).then( async (modal)=>{
       modal.present();
@@ -388,6 +378,23 @@ export class HomePage implements OnInit {
       this.query.skip = 0;
       this.validanQueryUser();
       this.getList();
+    });
+  }
+
+  openMandoEmpresarial( item:any ){
+    let data:any = item || {};
+    data.vista = "conductor";
+    this.modalCtrl.create({
+      component: DetallesEmpresarialPage,
+      componentProps: {
+        obj: data
+      }
+    }).then( async (modal)=>{
+      modal.present();
+      const { data } = await modal.onWillDismiss();
+      this.listRow = [];
+      this.query.skip = 0;
+      if(!data.dismissed) this.getMandadosEmpresariales();
     });
   }
 
@@ -432,11 +439,29 @@ export class HomePage implements OnInit {
   
   verMandadosEmpresariales(){
     this.view = "mandadosEmpresariales"
+    this.getMandadosEmpresariales();
+  }
+
+  getMandadosEmpresariales(){
     this._tools.presentLoading();
-    this._orden.get( { where: { estado: [0, 3], coductor: this.dataUser.id, tipoOrden: 1 } } ).subscribe((res:any)=>{ 
-      this.listMandadosActivos = res.data
-      this._tools.dismisPresent();
+    this.queryEmpresarial.where.coductor = this.dataUser.id;
+    this._orden.get( this.queryEmpresarial ).subscribe((res:any)=>{ 
+      this.listMandadosActivos = res.data;
+      this.destruirProgreso();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
+  }
+  
+  destruirProgreso(){
+    if( this.evScroll.target ){
+      this.evScroll.target.complete()
+    }
+    if(this.ev){
+      this.disable_list = true;
+      if(this.ev.target){
+        this.ev.target.complete();
+      }
+    }
+    this._tools.dismisPresent();
   }
 
   atras(){
@@ -454,7 +479,6 @@ export class HomePage implements OnInit {
     if(!data.id) return this._tools.presentLoading("Informacion no valida");
     this._tools.presentLoading();
     this._user.update(data).subscribe((res:any)=>{
-      console.log(res);
       this._tools.presentToast("Actualizada la informacion");
       this._tools.dismisPresent();
       let accion = new PersonaAction(res, 'post');

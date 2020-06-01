@@ -113,8 +113,9 @@ export class HomePage implements OnInit {
   escucharSockets(){
     this.wsServices.listen('chat-principal')
     .subscribe((marcador: any)=> {
-      //console.log("**", marcador);
-      if(marcador.reseptor.id !== this.dataUser.id ) return false;
+      console.log("**", marcador);
+      if( !marcador.reseptor ) return false;
+      if( marcador.reseptor.id !== this.dataUser.id ) return false;
       this.listRow.unshift( marcador );
       this.listRow = _.unionBy( this.listRow || [], marcador, 'id');
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Nuevo Mensaje de tu mandado", text: `Nuevo mensaje de ${ marcador['emisor'].nombre } ${ marcador['emisor'].apellido } Ofrece $ ${ ( marcador['ofertando'].ofrece || 0 ).toLocaleString("en-US", { style: 'currency', currency: 'USD' }) } ` });
@@ -207,18 +208,26 @@ export class HomePage implements OnInit {
 
   doRefresh(ev){
     this.ev = ev;
-    this.disable_list = false;
-    this.listRow = [];
-    this.contadorChat = 0;
-    this.query.skip = 0;
-    this.getList();
+    if(this.view == 'chat'){
+      this.disable_list = false;
+      this.listRow = [];
+      this.contadorChat = 0;
+      this.query.skip = 0;
+      this.getList();
+    }
   }
 
   loadData(ev){
     //console.log(ev);
     this.evScroll = ev;
-    this.query.skip++;
-    this.getList();
+    if(this.view == 'chat'){
+      this.query.skip++;
+      this.getList();
+    }
+    if(this.view == 'mandadosEmpresarial'){
+      this.query.skip++;
+      this.getList();
+    }
   }
 
   getList(){
@@ -227,6 +236,7 @@ export class HomePage implements OnInit {
       { emisor: this.dataUser.id },
       { reseptor: this.dataUser.id }
     ];
+    this.query.where.tipoOrden = 0;
     this._mensajes.get(this.query).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList(res);
@@ -278,8 +288,7 @@ export class HomePage implements OnInit {
   }
   openEmpresarialVer( item:any ){
     let data:any = item || {};
-    if(!item) data.vista = "ver";
-    else data.vista = "ver";
+    data.vista = "usuario";
     this.modalCtrl.create({
       component: DetallesEmpresarialPage,
       componentProps: { 

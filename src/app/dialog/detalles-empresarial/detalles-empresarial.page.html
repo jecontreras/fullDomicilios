@@ -47,7 +47,7 @@
           <ion-item lines="none">
             <ion-label class="ion-color-lavel" position="stacked">Hora de entrega:</ion-label>
             <ion-text color="dark">
-              <span>{{ data.horaEntrega }}</span>
+              <span>{{ data.horaEntrega | date:'hh:mm:ss' }}</span>
             </ion-text>
           </ion-item>
           <ion-item lines="none">
@@ -95,11 +95,14 @@
 <ion-footer>
   <ion-toolbar>
     <div class="ion-text-center">
-      <ion-button class="ionButton" expand="full" (click)="openChat()">
+      <ion-button class="ionButton" expand="full" (click)="openChat()" [disabled]="disableBtnFinalizar">
         CHATEAR CON EL DRIVER
       </ion-button>
-      <ion-button class="ionButton" expand="full" (click)="venUbicacion()">
+      <ion-button class="ionButton" expand="full" (click)="venUbicacion()" *ngIf="data.vista == 'usuario'" [disabled]="disableBtnFinalizar">
         VER UBICACION DEL DRIVER
+      </ion-button>
+      <ion-button class="ionButton" expand="full" (click)="finalizarServicio()" *ngIf="data.vista == 'conductor'" [disabled]="disableBtnFinalizar">
+        CONFIRMAR DE FINALIZADA
       </ion-button>
     </div>
   </ion-toolbar>

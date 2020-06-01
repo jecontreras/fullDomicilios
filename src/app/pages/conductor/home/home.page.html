@@ -115,7 +115,7 @@
 
   <ion-list>
 
-    <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivos: item.estado == 3}">
+    <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivosCompletados: item.estado == 2}">
       <ion-label slot="start">
         <ion-text>
           <span>Hora</span>
@@ -128,7 +128,7 @@
           <h2>{{ item.origentexto }}</h2>
         </ion-text>
       </ion-label>
-      <ion-button class="ionButton" (click)="openMapa( item )" slot="end">
+      <ion-button class="ionButton" (click)="openMandoEmpresarial( item )" slot="end">
         VER
       </ion-button>
     </ion-item>

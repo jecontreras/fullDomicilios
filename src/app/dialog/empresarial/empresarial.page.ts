@@ -24,6 +24,11 @@ export class EmpresarialPage implements OnInit {
   vandera:boolean = true;
   numeroIntegrado:number = 0;
   vanderaNumber:boolean = false;
+
+  sliderOpts = {
+    allowSlidePrev: false,
+    allowSlideNext: false
+  };
   
   constructor(
     private modalCtrl: ModalController,
@@ -67,12 +72,13 @@ export class EmpresarialPage implements OnInit {
     if(this.vista == "crear") this.guardarMandado();
     if(this.vista == "update") this.updateMandado();
   }
-
+  
   guardarMandado(){
     this.data.usuario = this.dataUser.id;
     this.data.origenLat = this.dataUser.latitud;
     this.data.origenLon = this.dataUser.longitud;
     this.data.tipoOrden = 1;
+    this.data.ofreceCliente = this.numeroIntegrado;
     this._orden.saved(this.data).subscribe((res:any)=>{
       this._tools.dismisPresent();
       this.btnDisabled = false;

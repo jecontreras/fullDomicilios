@@ -28,7 +28,7 @@
 
     <div class="ion-text-center colorInfo">
       <ion-label>
-        HORA: {{ data.ordenes.horaEntrega }}
+        HORA: {{ data.ordenes.horaEntrega | date:'hh:mm:ss' }}
       </ion-label> <br>
       <ion-label>
         DIRECCIÓN: {{ data.ordenes.origentexto }}

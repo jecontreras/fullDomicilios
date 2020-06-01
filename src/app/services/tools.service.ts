@@ -51,7 +51,7 @@ export class ToolsService {
     return new Promise( async ( resolve )=>{
       const alert = await this.alertController.create({
         header: mensaje.header,
-        message: mensaje.mensaje ||'Message <strong>text</strong>!!!',
+        message: mensaje.mensaje || '',
         buttons: [
           {
             text: mensaje.cancel || 'Cancel',
@@ -72,6 +72,21 @@ export class ToolsService {
       });
   
       await alert.present();
+    });
+  }
+
+  async presentAlert( mensaje:any ) {
+    return new Promise( async ( resolve )=>{
+      const alert = await this.alertController.create({
+        cssClass: mensaje.cssClass || 'my-custom-class',
+        header: mensaje.header || 'Alert',
+        subHeader: mensaje.subHeader || '',
+        message: mensaje.message || '',
+        buttons: mensaje.buttons || ['OK']
+      });
+  
+      await alert.present();
+      resolve( alert );
     });
   }
 

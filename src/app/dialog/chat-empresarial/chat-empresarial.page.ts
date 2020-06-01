@@ -38,6 +38,9 @@ export class ChatEmpresarialPage implements OnInit {
   disableBtnChat:boolean = false;
   //---------------------------------
 
+  //booleando
+  booleandMSX:boolean = false;
+
   constructor(
     private navparams: NavParams,
     private modalCtrl: ModalController,
@@ -65,10 +68,10 @@ export class ChatEmpresarialPage implements OnInit {
     if( !this.data.ordenes ) return false;
     this._chat.get({ where: { ordenes: this.data.ordenes.id }, limit: 1 }).subscribe((res:any)=>{
       res = res.data[0] ;
-      if( !res ) return false;
+      if( !res ) { this.validandoChat( res, false ); return false;}
       this.query.where.chat = res.id;
       this.getChatDetallado();
-      this.validandoChat( res );
+      this.validandoChat( res, true );
     });
   }
 
@@ -85,8 +88,12 @@ export class ChatEmpresarialPage implements OnInit {
 
     this.wsServices.listen('chat-nuevo')
     .subscribe((chat: any)=> {
-      //console.log("**", chat, this.data);
-      if( !this.data.chat ) this.getChatInit();
+      // console.log("**", chat, this.data);
+      if( !this.data.chat ) { 
+        if( this.booleandMSX ) return false;
+        this.booleandMSX = true;
+        this.getChatInit();
+      }
       else {
         if( this.data.chat.id != chat.chat.id ) return false;
         this.listRow.push( chat );
@@ -103,19 +110,35 @@ export class ChatEmpresarialPage implements OnInit {
   }
 
   getChatInit(){
-    this._chat.get( { where: { ordenes: this.data.id, emisor: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
+    this._chat.get( { where: { ordenes: this.data.id, 
+        or: [
+          {
+            emisor: this.dataUser.id
+          },
+          {
+            reseptor: this.dataUser.id
+          }
+        ]
+      }, limit: 1 }).subscribe((res:any)=>{
       res = res.data[0];
       if(!res) return false;
       this.query.where.chat = res.id; 
       this.data.chat = res;
       this.getChatDetallado();
+      this.booleandMSX = false;
     });
   }
 
-  validandoChat( res ){
-    if( this.dataUser.id == res.emisor.id ) this.chatDe = res.reseptor;
-    else this.chatDe = res.emisor;
-    this.data.chatDe = this.chatDe;
+  validandoChat( res, opt:boolean ){
+    if( opt ) {
+      if( this.dataUser.id == res.emisor.id ) this.chatDe = res.reseptor;
+      else this.chatDe = res.emisor;
+      this.data.chatDe = this.chatDe;
+    }else{
+      // console.log(this.data)
+      if( this.data.vista == "cliente" ) this.chatDe = this.data.coductor;
+      else this.chatDe = this.data.usuario;
+    }
   }
 
   doRefresh(ev){
@@ -157,12 +180,12 @@ export class ChatEmpresarialPage implements OnInit {
       reseptor: this.chatDe.id,
       ordenes: this.data.ordenes.id
     };
-    console.log(data);
+    // console.log(data);
     if( !data.emisor || !data.reseptor || !data.ordenes ) return this._tools.presentToast("Ay algo mal Por Favor Reiniciar");
     if( this.disableBtnChat ) return false;
     this.disableBtnChat = true;
     this._chat.saved( data ).subscribe((res:any)=>{
-      console.log(res);
+      // console.log(res);
       this.disableBtnChat = false;
       this.mensajeTxt = "";
       this.listRow.push(res.data);

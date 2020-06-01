@@ -32,9 +32,10 @@ export class ServiciosService {
 
   querys<Interfas>(query:string, datas:any, METODO:string){
     let data = datas;
-    if( METODO === "GET" || METODO === "get"){
-      data.page = datas.page ? datas.page : 1;
-      data.page = datas.limit ? datas.limit : 1;
+    if( METODO === "GET" || METODO === "get" || METODO === "POST" || METODO === "post"){
+      data.page = datas.skip || 0;
+      data.limit = datas.limit ? datas.limit : 10;
+      // delete data.skip;
     }
     query = URL+`/${query}`;
     return this.ejecutarQuery<Interfas>(query, data, METODO);

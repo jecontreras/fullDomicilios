@@ -5,6 +5,10 @@ import { MapaPage } from 'src/app/pages/mapa/mapa.page';
 import { ChatEmpresarialPage } from '../chat-empresarial/chat-empresarial.page';
 import { STORAGES } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
+import { ToolsService } from 'src/app/services/tools.service';
+import { OrdenesService } from 'src/app/service-component/ordenes.service';
+import * as _ from 'lodash';
+import { FormatosService } from 'src/app/services/formatos.service';
 
 @Component({
   selector: 'app-detalles-empresarial',
@@ -18,10 +22,15 @@ export class DetallesEmpresarialPage implements OnInit {
   dataUser:any = {};
   chatDe:any = {};
 
+  disableBtnFinalizar:boolean = false;
+
   constructor(
     private navparams: NavParams,
     private modalCtrl: ModalController,
     private _store: Store<STORAGES>,
+    private _tools: ToolsService,
+    private _ordenes: OrdenesService,
+    private _formato: FormatosService
   ) {
     this._store.subscribe((store:any)=>{
       store = store.name;
@@ -33,7 +42,10 @@ export class DetallesEmpresarialPage implements OnInit {
   ngOnInit() {
     this.paramsData = this.navparams.get('obj');
     this.data = this.paramsData || {};
+    if( this.data.estado == 2 ) this.disableBtnFinalizar = true;
+    console.log(this.data);
     this.validandoChat();
+    this.formatoViewNumber();
   }
 
   validandoChat(){
@@ -44,15 +56,20 @@ export class DetallesEmpresarialPage implements OnInit {
     else this.chatDe = this.data.reseptor;
   }
 
+  formatoViewNumber(){
+    this.data.ofreceCliente = this._formato.monedaChange( 3, 2, this.data.ofreceCliente );
+  }
+
   openChat(){
-    this.data.vista = "cliente";
-    this.data.visto = true;
-    console.log(this.data)
-    this.data.ordenes = this.data;
+    let data:any = _.clone(this.data);
+    if(this.dataUser.rol.rol == 'conductor') data.vista = "conductor";
+    else data.vista = "cliente";
+    data.visto = true;
+    data.ordenes = data;
     this.modalCtrl.create({
       component: ChatEmpresarialPage,
       componentProps: {
-        obj: this.data
+        obj: data
       }
     }).then( async (modal)=>{
       modal.present();
@@ -74,9 +91,26 @@ export class DetallesEmpresarialPage implements OnInit {
     });
   }
 
-  exit(){
+  async finalizarServicio(){
+    let result:any = await this._tools.presentAlertConfirm({ header: "¿Estas seguro que ya completaste el mandado empresarila?", mensaje: ``, cancel: "NO", confirm: "SI"});
+    if(!result) return false;
+    let data:any = {
+      id: this.data.id,
+      estado: 2
+    };
+    this.disableBtnFinalizar = true;
+    this._ordenes.editar(data).subscribe((res:any)=>this.ProcesoFinalizar(res),(error)=> { this.disableBtnFinalizar = false; this._tools.presentToast("Error por favor intentarlo de nuevo") } );
+  }
+
+  async ProcesoFinalizar( res:any ){
+    this.disableBtnFinalizar = false;
+    await this._tools.presentAlert({ header: "¡BIEN HECHO! COMPLETASTE EL MANDADO" });
+    this.exit( false );
+  }
+
+  exit( opt:boolean = true ){
     this.modalCtrl.dismiss(
-      {'dismissed': true}
+      {'dismissed': opt || true }
     );
   }
 
