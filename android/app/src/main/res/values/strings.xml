@@ -4,4 +4,6 @@
     <string name="title_activity_main">Manda2</string>
     <string name="package_name">com.manda2.app</string>
     <string name="custom_url_scheme">com.manda2.app</string>
+    <string name="fb_app_id">594037407864568</string>
+    <string name="fb_app_name">manda2</string>
 </resources>

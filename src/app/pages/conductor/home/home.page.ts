@@ -327,6 +327,7 @@ export class HomePage implements OnInit {
       { coductor: this.dataUser.id }
     ];
     this._tools.presentLoading();
+    this.query.where.tipoOrden = 0;
     // this.query.where.createdAt = {
     //   ">=": moment().add(-60, 'minutes'),
     //   "<=": moment().add(5, 'minutes')

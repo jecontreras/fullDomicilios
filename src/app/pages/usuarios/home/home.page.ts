@@ -42,6 +42,9 @@ export class HomePage implements OnInit {
     sort: 'createdAt desc',
     skip: 0
   };
+  query3:any = {
+    where: { estado: [0, 3, 2], tipoOrden: 1 }
+  }
   public ev:any = {};
   public disable_list:boolean = true;
   public evScroll:any = {};
@@ -55,6 +58,7 @@ export class HomePage implements OnInit {
   public rolUser:string;
 
   listMandadosActivos:any = [];
+  listMandadosEmpreasaActivos:any = [];
   btnDisabled:boolean = false;
   contadorChat:number= 0;
 
@@ -208,12 +212,17 @@ export class HomePage implements OnInit {
 
   doRefresh(ev){
     this.ev = ev;
+    this.disable_list = false;
     if(this.view == 'chat'){
-      this.disable_list = false;
       this.listRow = [];
       this.contadorChat = 0;
       this.query.skip = 0;
       this.getList();
+    }
+    if(this.view == 'mandadosEmpresarial'){
+      this.listMandadosEmpreasaActivos = [];
+      this.query3.skip = 0;
+      this.openMandadosEmpresarialActivos();
     }
   }
 
@@ -225,8 +234,8 @@ export class HomePage implements OnInit {
       this.getList();
     }
     if(this.view == 'mandadosEmpresarial'){
-      this.query.skip++;
-      this.getList();
+      this.query3.skip++;
+      this.openMandadosEmpresarialActivos();
     }
   }
 
@@ -247,6 +256,12 @@ export class HomePage implements OnInit {
   dataFormaList(res:any){
     this.listRow.push(...res.data );
     this.listRow =_.unionBy(this.listRow || [], this.listRow, 'id');
+    this.contadorChat = 0;
+    this.destruirProceso();
+    this.cambiaStateChat();
+  }
+
+  destruirProceso(){
     if( this.evScroll.target ) this.evScroll.target.complete()
     if(this.ev){
       this.disable_list = true;
@@ -254,8 +269,6 @@ export class HomePage implements OnInit {
         this.ev.target.complete();
       }
     }
-    this.contadorChat = 0;
-    this.cambiaStateChat();
   }
 
   openSolicitar( item:any ){
@@ -305,15 +318,18 @@ export class HomePage implements OnInit {
     this._ordenes.get( { where: { estado: [0, 3], usuario: this.dataUser.id, tipoOrden: 0 } } ).subscribe((res:any)=>{ 
       this.listMandadosActivos = res.data
       this._tools.dismisPresent();
+      this.destruirProceso();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
   }
 
   openMandadosEmpresarialActivos(){
     this.view = "mandadosEmpresarial";
     this._tools.presentLoading();
-    this._ordenes.get( { where: { estado: [0, 3], usuario: this.dataUser.id, tipoOrden: 1 } } ).subscribe((res:any)=>{ 
-      this.listMandadosActivos = res.data
+    this.query3.usuario = this.dataUser.id
+    this._ordenes.get( this.query3 ).subscribe((res:any)=>{ 
+      this.listMandadosEmpreasaActivos = res.data
       this._tools.dismisPresent();
+      this.destruirProceso();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
   }
 

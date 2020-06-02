@@ -43,12 +43,13 @@ export class DetallesEmpresarialPage implements OnInit {
     this.paramsData = this.navparams.get('obj');
     this.data = this.paramsData || {};
     if( this.data.estado == 2 ) this.disableBtnFinalizar = true;
-    console.log(this.data);
+    // console.log(this.data);
     this.validandoChat();
     this.formatoViewNumber();
   }
 
   validandoChat(){
+    if( !this.data.coductor ){ this.disableBtnFinalizar = true; return false;}
     if( this.dataUser.id == this.data.coductor.id ) this.chatDe = this.data.usuario;
     else this.chatDe = this.data.coductor;
     if( !this.data.emisor ) return false;
@@ -78,13 +79,14 @@ export class DetallesEmpresarialPage implements OnInit {
   }
 
   venUbicacion(){
-    this.data.vista = "ver_drive";
-    this.data.ordenes = this.data;
-    this.data.chatDe = this.chatDe;
+    let data:any = _.clone(this.data);
+    data.vista = "ver_drive";
+    data.ordenes = data;
+    data.chatDe = this.chatDe;
     this.modalCtrl.create({
       component: MapaPage,
       componentProps: {
-        obj: this.data
+        obj: data
       }
     }).then( async (modal)=>{
       modal.present();

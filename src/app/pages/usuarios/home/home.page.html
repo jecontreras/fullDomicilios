@@ -70,6 +70,12 @@
 </ion-content>
 
 <ion-content class="ion-padding" *ngIf="view == 'mandadosEmpresarial'">
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+  
   <ion-card class="altoCars">
     <ion-card-header class="colorTitulo">
       <div class="ion-text-center">
@@ -80,7 +86,7 @@
 
   <ion-list>
 
-    <ion-item *ngFor="let item of listMandadosActivos" [ngClass]="{colorActivos: item.estado == 3}">
+    <ion-item *ngFor="let item of listMandadosEmpreasaActivos" [ngClass]="{colorActivos: item.estado == 3, colorActivosCompletados: item.estado == 2}">
       <ion-label>
         <ion-text color="dark">
           <h2>MANDADO DE</h2>
@@ -101,11 +107,18 @@
     </ion-item>
   </ion-list>
 
-  <div class="ion-text-center" *ngIf="listMandadosActivos.length == 0">
+  <div class="ion-text-center" *ngIf="listMandadosEmpreasaActivos.length == 0">
     <ion-text colo="dark">
       <span>Lista Vacia</span>
     </ion-text>
   </div>
+  
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="loadData( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-footer class="abajoButtons">
     <ion-grid>
       <ion-col>
