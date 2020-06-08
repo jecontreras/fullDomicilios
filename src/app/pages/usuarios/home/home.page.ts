@@ -324,7 +324,7 @@ export class HomePage implements OnInit {
   }
 
   openEmpresarial( item:any ){
-    let data:any = item || {};
+    let data:any = _.clone(item) || {};
     if(!item) data.vista = "crear";
     else data.vista = "update";
     this.modalCtrl.create({
@@ -339,7 +339,7 @@ export class HomePage implements OnInit {
     });
   }
   openEmpresarialVer( item:any ){
-    let data:any = item || {};
+    let data:any = _.clone(item) || {};
     data.vista = "usuario";
     this.modalCtrl.create({
       component: DetallesEmpresarialPage,

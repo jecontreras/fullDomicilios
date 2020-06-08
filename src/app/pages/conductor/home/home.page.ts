@@ -308,14 +308,17 @@ export class HomePage implements OnInit {
     this.disable_list = false;
     if( this.view == 'mandados' ) {
       this.listRow = [];
+      this.query.skip = 0;
       this.getList();
     }
     if( this.view == 'chat' ){
       this.listRow2 = [];
+      this.query2.skip = 0;
       this.getList2();
     }
     if( this.view == 'mandadosEmpresariales' ){
       this.listMandadosActivos = [];
+      this.queryEmpresarial.skip = 0;
       this.getMandadosEmpresariales();
     }
 
@@ -402,7 +405,7 @@ export class HomePage implements OnInit {
   }
 
   openMandoEmpresarial( item:any ){
-    let data:any = item || {};
+    let data:any = _.clone(item) || {};
     data.vista = "conductor";
     this.modalCtrl.create({
       component: DetallesEmpresarialPage,

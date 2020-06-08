@@ -6,6 +6,7 @@ import { ChatService } from 'src/app/service-component/chat.service';
 import { ToolsService } from 'src/app/services/tools.service';
 import * as _ from 'lodash';
 import { WebsocketService } from 'src/app/services/websocket.services';
+import { FormatosService } from 'src/app/services/formatos.service';
 
 @Component({
   selector: 'app-chat-empresarial',
@@ -47,7 +48,8 @@ export class ChatEmpresarialPage implements OnInit {
     private _store: Store<STORAGES>,
     private _tools: ToolsService,
     private _chat: ChatService,
-    private wsServices: WebsocketService
+    private wsServices: WebsocketService,
+    private _formato: FormatosService,
   ) {
 
     this._store.subscribe((store:any)=>{
@@ -63,6 +65,11 @@ export class ChatEmpresarialPage implements OnInit {
     //console.log( this.data )
     this.validandoGet();
     this.escucharSockets();
+    this.formatoViewNumber();
+  }
+
+  formatoViewNumber(){
+    this.data.ordenes.ofreceCliente = this._formato.monedaChange( 3, 2, this.data.ordenes.ofreceCliente );
   }
 
   validandoGet(){
