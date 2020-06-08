@@ -74,11 +74,14 @@ export class EmpresarialPage implements OnInit {
   }
   
   guardarMandado(){
+
     this.data.usuario = this.dataUser.id;
     this.data.origenLat = this.dataUser.latitud;
     this.data.origenLon = this.dataUser.longitud;
     this.data.tipoOrden = 1;
     this.data.ofreceCliente = this.numeroIntegrado;
+    let validacion:any = this.validadorOrden();
+    if( !validacion ) return this.btnDisabled = false;;
     this._orden.saved(this.data).subscribe((res:any)=>{
       this._tools.dismisPresent();
       this.btnDisabled = false;
@@ -86,8 +89,19 @@ export class EmpresarialPage implements OnInit {
     },(error)=>{ this._tools.presentToast("Error de al crear"); this.btnDisabled = false; this._tools.dismisPresent(); });
   }
 
+  validadorOrden(){
+    if( !this.data.horaEntrega ) { this._tools.presentToast("Error No has colocado Hora de entrega"); return false; }
+    if( !this.data.nombreCliente ) { this._tools.presentToast("Error No has colocado Nombre del cliente"); return false; }
+    if( !this.data.numeroCliente ) { this._tools.presentToast("Error No has colocado Numero del cliente"); return false; }
+    if( !this.data.origentexto ) { this._tools.presentToast("Error No has colocado Direccion o lugar de entrega"); return false; }
+    if( !this.data.ofreceCliente ) { this._tools.presentToast("Error No has colocado Monto a cobrar"); return false; }
+    return true;
+  }
+
   updateMandado(){
     this.data = _.omit( this.data, [ 'usuario', 'coductor', 'idOfertando']);
+    let validacion:any = this.validadorOrden();
+    if( !validacion ) return this.btnDisabled = false;;
     if(this.data.estado == 3 || this.data.estado == 2) { 
       setTimeout(()=>{this._tools.dismisPresent(); }, 2000);
       this.btnDisabled = false; 
@@ -107,12 +121,14 @@ export class EmpresarialPage implements OnInit {
     // this._store.dispatch( accion );
     this._tools.presentToast("Mandado Empresarial Solicitando");
     setTimeout(()=>{
-      this.exit();
+      this.exit( res );
     }, 3000)
   }
 
-  exit(){
-    this.modalCtrl.dismiss();
+  exit( opt:any = false ){
+    this.modalCtrl.dismiss(
+      {'dismissed': opt }
+    );
   }
 
 }

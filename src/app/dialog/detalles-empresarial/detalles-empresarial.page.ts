@@ -9,6 +9,7 @@ import { ToolsService } from 'src/app/services/tools.service';
 import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import * as _ from 'lodash';
 import { FormatosService } from 'src/app/services/formatos.service';
+import { WebsocketService } from 'src/app/services/websocket.services';
 
 @Component({
   selector: 'app-detalles-empresarial',
@@ -30,7 +31,8 @@ export class DetallesEmpresarialPage implements OnInit {
     private _store: Store<STORAGES>,
     private _tools: ToolsService,
     private _ordenes: OrdenesService,
-    private _formato: FormatosService
+    private _formato: FormatosService,
+    private wsServices: WebsocketService,
   ) {
     this._store.subscribe((store:any)=>{
       store = store.name;
@@ -43,9 +45,34 @@ export class DetallesEmpresarialPage implements OnInit {
     this.paramsData = this.navparams.get('obj');
     this.data = this.paramsData || {};
     if( this.data.estado == 2 ) this.disableBtnFinalizar = true;
-    // console.log(this.data);
+    console.log(this.data);
     this.validandoChat();
     this.formatoViewNumber();
+    this.escucharSockets();
+  }
+
+  escucharSockets(){
+    this.wsServices.listen('orden-finalizada')
+    .subscribe((marcador: any)=> {
+      //console.log(marcador);
+      if( !marcador ) return false;
+      if( marcador.id != this.data.id ) return false;
+      this.data.estado = marcador.estado;
+      if( this.data.estado == 2 ) this.disableBtnFinalizar = true;
+    });
+    this.wsServices.listen('orden-finalizada')
+    .subscribe((marcador: any)=> {
+      if( this.data.id == marcador.id ){
+        this.data.horaEntrega = marcador.horaEntrega;
+        this.data.nombreCliente = marcador.nombreCliente;
+        this.data.numeroCliente = marcador.numeroCliente;
+        this.data.ofreceCliente = marcador.ofreceCliente;
+        this.data.origenLat = marcador.origenLat;
+        this.data.origenLon = marcador.origenLon;
+        this.data.origentexto = marcador.origentexto;
+        
+      }
+    });
   }
 
   validandoChat(){
@@ -106,13 +133,14 @@ export class DetallesEmpresarialPage implements OnInit {
 
   async ProcesoFinalizar( res:any ){
     this.disableBtnFinalizar = false;
+    this.wsServices.emit( "orden-finalizada", res);
     await this._tools.presentAlert({ header: "¡BIEN HECHO! COMPLETASTE EL MANDADO" });
     this.exit( false );
   }
 
   exit( opt:boolean = true ){
     this.modalCtrl.dismiss(
-      {'dismissed': opt || true }
+      {'dismissed': opt }
     );
   }
 

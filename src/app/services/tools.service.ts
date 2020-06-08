@@ -27,10 +27,8 @@ export class ToolsService {
   
   async presentLoading(mensaje:string = "") {
     this.loading = await this.loadingCrl.create({
-      spinner: 'crescent',
-      message: 'Iniciando...',
-      translucent: true,
-      cssClass: 'custom-class custom-loading'
+      message: mensaje || 'Please wait...',
+      duration: 2000
     });
     await this.loading.present();
   }

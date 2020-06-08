@@ -18,6 +18,7 @@ import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import { UserService } from 'src/app/services/user.service';
 import { EmpresarialPage } from 'src/app/dialog/empresarial/empresarial.page';
 import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
+import { ChatEmpresarialPage } from 'src/app/dialog/chat-empresarial/chat-empresarial.page';
 
 @Component({
   selector: 'app-home',
@@ -133,6 +134,42 @@ export class HomePage implements OnInit {
       if( chat.chatPrincipal.reseptor !== this.dataUser.id ) return false;
       this.ProcesoChatPrincipal( chat );
     });
+
+    this.wsServices.listen('orden-finalizada')
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      let filtro:any = _.findIndex( this.listMandadosEmpreasaActivos, [ 'id', marcador.id ]);
+      if( filtro >= 0 ){
+        this.listMandadosEmpreasaActivos[filtro] = marcador;
+        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Finalizado", text: `${ marcador['coductor'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      }
+    });
+
+    this.wsServices.listen('orden-confirmada')  
+    .subscribe((marcador: any)=> {
+      if( !marcador ) return false;
+      if( !marcador.coductor ) return false;
+      //console.log(this.listRow, marcador);
+      this.procesoOrdenConfirmada( marcador );
+    });
+  }
+
+  procesoOrdenConfirmada( marcador:any ){
+    //console.log( marcador , this.listMandadosEmpreasaActivos, marcador.usuario.id == this.dataUser.id);
+    if(marcador.usuario.id == this.dataUser.id){
+      // mandado Empresarial
+      if( marcador.tipoOrden == 1 ){
+        let idx:any = _.findIndex( this.listMandadosEmpreasaActivos, [ 'id', marcador.id ]);
+        //console.log(idx);
+        if( idx >= 0 ){
+          this.listMandadosEmpreasaActivos[idx] = marcador;
+          this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Empresarial Asignado", text: `${ marcador['coductor'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+        }
+      }
+    }
+    for( let row of this.listRow ){
+      if( row.ordenes == marcador.id ) row.ordenes = marcador;
+    }
   }
 
   ProcesoChatPrincipal( chat:any ){
@@ -245,7 +282,7 @@ export class HomePage implements OnInit {
       { emisor: this.dataUser.id },
       { reseptor: this.dataUser.id }
     ];
-    this.query.where.tipoOrden = 0;
+    //this.query.where.tipoOrden = 0;
     this._mensajes.get(this.query).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList(res);
@@ -297,6 +334,8 @@ export class HomePage implements OnInit {
       }
     }).then( async (modal)=>{
       modal.present();
+      const { data } = await modal.onWillDismiss();
+      if( data.dismissed ) this.listMandadosEmpreasaActivos.unshift( data.dismissed );
     });
   }
   openEmpresarialVer( item:any ){
@@ -325,9 +364,11 @@ export class HomePage implements OnInit {
   openMandadosEmpresarialActivos(){
     this.view = "mandadosEmpresarial";
     this._tools.presentLoading();
-    this.query3.usuario = this.dataUser.id
+    this.query3.where.usuario = this.dataUser.id;
+    this.query3.sort = 'createdAt desc';
     this._ordenes.get( this.query3 ).subscribe((res:any)=>{ 
-      this.listMandadosEmpreasaActivos = res.data
+      this.listMandadosEmpreasaActivos.push(...res.data );
+      this.listMandadosEmpreasaActivos =_.unionBy(this.listMandadosEmpreasaActivos || [], this.listMandadosEmpreasaActivos, 'id');
       this._tools.dismisPresent();
       this.destruirProceso();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
@@ -338,8 +379,30 @@ export class HomePage implements OnInit {
     item.vista = "cliente";
     if(!item.visto) this.actualizarChat(item);
     item.visto = true;
+    if( item.tipoOrden == 0 ){
+      this.modalCtrl.create({
+        component: ChatDetalladoPage,
+        componentProps: {
+          obj: item
+        }
+      }).then( async (modal)=>{
+        modal.present();
+        await modal.onWillDismiss();
+        this.cambiaStateChat();
+      });
+    }else this.openChatEmpresarial( item );
+  }
+
+  async openChatEmpresarial( item:any ){
+   item = _.clone(item);
+   let orden:any = await this.getOrdenEmpresarialChat( item.ordenes.id );
+   if( !orden ) return this._tools.presentToast("Error al abrir el chat");
+   item = orden;
+   item.vista = "cliente";
+   item.visto = true;
+   item.ordenes = item;
     this.modalCtrl.create({
-      component: ChatDetalladoPage,
+      component: ChatEmpresarialPage,
       componentProps: {
         obj: item
       }
@@ -348,6 +411,16 @@ export class HomePage implements OnInit {
       await modal.onWillDismiss();
       this.cambiaStateChat();
     });
+  }
+
+  getOrdenEmpresarialChat( id:any ){
+    return new Promise( resolve=> {
+      this._ordenes.get( { where: { id: id }, limit: 1}).subscribe(( res:any )=>{
+        res = res.data[0];
+        if( !res ) resolve( false );
+        else resolve( res );
+      });
+    })
   }
 
   cambiaStateChat(){

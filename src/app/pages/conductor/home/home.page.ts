@@ -17,6 +17,7 @@ import { ChatService } from 'src/app/service-component/chat.service';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
 import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
 import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
+import { ChatEmpresarialPage } from 'src/app/dialog/chat-empresarial/chat-empresarial.page';
 
 @Component({
   selector: 'app-home',
@@ -197,7 +198,7 @@ export class HomePage implements OnInit {
       // Validando estado si esta disponible 
       if( !this.dataUser.estadoCuenta ) return false;
       // if( !( this.RangoOrden( marcador) ) ) return false;
-      if( this.dataUser.tipoOrden == 1 ) return false;
+      if( marcador.tipoOrden == 1 ) return false;
       this.listRow.unshift(marcador);
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Solicitud de Mandados", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     });
@@ -222,8 +223,12 @@ export class HomePage implements OnInit {
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
       //console.log(marcador);
-      this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Finalizado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      //this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
+      let filtro:any = _.findIndex( this.listRow, [ 'id', marcador.id ]);
+      if( filtro >-0 ){
+        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Finalizado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+        this.listRow[filtro].estado = marcador.estado;
+      }
     });
     //Orden cancelada
 
@@ -237,12 +242,12 @@ export class HomePage implements OnInit {
     // chat nuevo
     this.wsServices.listen('chat-nuevo')
     .subscribe((chat: any)=> {
-      console.log("**", chat);
+      //console.log("**", chat);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
       try {
         this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     });
 
@@ -250,10 +255,23 @@ export class HomePage implements OnInit {
 
   procesoOrdenConfirmada( marcador:any ){
     if(marcador.coductor.id == this.dataUser.id){
-      let item:any = this.listRow.find( (row:any)=> row.id == marcador.id );
-      item = marcador;
-      item.check = true;
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Aceptado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      //console.log( marcador );
+      // mandado normal
+      if( marcador.tipoOrden == 0 ){
+        let item:any = _.findIndex( this.listRow, [ 'id', marcador.id ]); /*this.listRow.find( (row:any)=> row.id == marcador.id );*/
+        //console.log(item, this.listRow, marcador);
+        if( item < -0 ) return false;
+        this.listRow[item] = marcador;
+        this.listRow[item].check = true;
+        item = this.listRow[item];
+        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Aceptado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` }); 
+      }
+      // mandado empresarial
+      else{
+        let filtro:any = this.listMandadosActivos.find((row:any)=> row.id == marcador.id );
+        if( !filtro ) this.listMandadosActivos.unshift( marcador );
+        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Empresarial Asignado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      }
     }else{
       if(marcador.id) this.listRow = this.listRow.filter( (row:any) => row.id !== marcador.id );
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado no Acepatado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
@@ -272,7 +290,7 @@ export class HomePage implements OnInit {
       longitud2: orden.origenLon
     };
     let result = await this.mapboxService.calcularDistancia( data );
-    console.log( result );
+    //console.log( result );
     if( result <= 10000 ) return true;
     return false;
   }
@@ -349,7 +367,8 @@ export class HomePage implements OnInit {
   getList2(){
     // this.query2.where.estadoOrden = 0;
     // this._tools.presentLoading();
-    this.query2.where.tipoOrden = 0;
+    //this.query2.where.tipoOrden = 0;
+    //this.query2.where.coductor = this.dataUser.id;
     this._mensajes.get(this.query2).subscribe((res:any)=>{
       // console.log(res);
       this.dataFormaList2(res);
@@ -395,26 +414,59 @@ export class HomePage implements OnInit {
       const { data } = await modal.onWillDismiss();
       this.listRow = [];
       this.query.skip = 0;
-      if(!data.dismissed) this.getMandadosEmpresariales();
+      console.log( data );
+      if(!data.dismissed) item.estado = 2;
     });
   }
 
   openChat( item:any ){
     if(!item) return false;
-    item.vista = "drive";
-    if(!item.visto2) this.actualizarChat(item);
-    item.visto2 = true;
-    this.modalCtrl.create({
-      component: ChatDetalladoPage,
-      componentProps: {
-        obj: item
-      }
-    }).then( async (modal)=>{
-      modal.present();
-      await modal.onWillDismiss();
-      this.cambiaStateChat();
-    });
+    if(item.tipoOrden == 0){
+      item.vista = "drive";
+      if(!item.visto2) this.actualizarChat(item);
+      item.visto2 = true;
+      this.modalCtrl.create({
+        component: ChatDetalladoPage,
+        componentProps: {
+          obj: item
+        }
+      }).then( async (modal)=>{
+        modal.present();
+        await modal.onWillDismiss();
+        this.cambiaStateChat();
+      });
+    }else this.openChatEmpresarial( item );
   }
+
+  async openChatEmpresarial( item:any ){
+    item = _.clone(item);
+    let orden:any = await this.getOrdenEmpresarialChat( item.ordenes.id );
+    if( !orden ) return this._tools.presentToast("Error al abrir el chat");
+    item = orden;
+    item.vista = "cliente";
+    item.visto = true;
+    item.ordenes = item;
+     this.modalCtrl.create({
+       component: ChatEmpresarialPage,
+       componentProps: {
+         obj: item
+       }
+     }).then( async (modal)=>{
+       modal.present();
+       await modal.onWillDismiss();
+       this.cambiaStateChat();
+     });
+   }
+ 
+   getOrdenEmpresarialChat( id:any ){
+     return new Promise( resolve=> {
+       this._orden.get( { where: { id: id }, limit: 1}).subscribe(( res:any )=>{
+         res = res.data[0];
+         if( !res ) resolve( false );
+         else resolve( res );
+       });
+     })
+   }
 
   cambiaStateChat(){
     this.contadorChat = 0;
@@ -447,7 +499,8 @@ export class HomePage implements OnInit {
     this._tools.presentLoading();
     this.queryEmpresarial.where.coductor = this.dataUser.id;
     this._orden.get( this.queryEmpresarial ).subscribe((res:any)=>{ 
-      this.listMandadosActivos = res.data;
+      this.listMandadosActivos.push(...res.data );
+      this.listMandadosActivos =_.unionBy(this.listMandadosActivos || [], this.listMandadosActivos, 'id');
       this.destruirProgreso();
     }, (err:any)=>{ this._tools.presentToast("Error de busqueda"); this._tools.dismisPresent(); })
   }

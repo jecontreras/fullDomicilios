@@ -60,6 +60,7 @@ export class ChatEmpresarialPage implements OnInit {
   ngOnInit() {
     this.paramsData = this.navparams.get('obj');
     this.data = this.paramsData || {};
+    //console.log( this.data )
     this.validandoGet();
     this.escucharSockets();
   }

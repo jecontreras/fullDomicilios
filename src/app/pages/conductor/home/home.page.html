@@ -100,7 +100,7 @@
 
 <ion-content fullscreen class="ion-padding" *ngIf="view == 'mandadosEmpresariales'">
   
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="200" pullMax="300">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="500" pullMax="700">
     <ion-refresher-content>
     </ion-refresher-content>
   </ion-refresher>
@@ -124,8 +124,8 @@
       </ion-label>
       <ion-label slot="start">
         <ion-text color="dark">
-          <h2>DIRECCION:</h2>
-          <h2>{{ item.origentexto }}</h2>
+          <h3>DIRECCION:</h3>
+          <h4>{{ item.origentexto }}</h4>
         </ion-text>
       </ion-label>
       <ion-button class="ionButton" (click)="openMandoEmpresarial( item )" slot="end">
