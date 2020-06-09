@@ -90,13 +90,6 @@ export class ChatDetalladoPage implements OnInit {
       else { this.query.where.chat = this.data.id; this.getChatDetallado();}
       this.getOfertando({ orden: this.data.ordenes.id, usuario: this.dataUser.id });
     }
-    if( this.data.vista == 'cliente' ) {
-      let interval = setInterval(()=>{
-        if( !this.iniciarVandera ) return false;
-        this.procesoConfirmarAlert();
-        clearInterval( interval );
-      },2000)
-    }
   }
 
   procesoConfirmarAlert(){
@@ -150,7 +143,7 @@ export class ChatDetalladoPage implements OnInit {
     this.wsServices.listen('ofreciendo-nuevo')
     .subscribe((ordenes: any)=> {
       //console.log(ordenes);
-      if( ordenes.orden.id == this.data.ordenes.id ) this.getOfertando({ orden: this.data.ordenes.id, usuario: this.chatDe.id });
+      if( ordenes.orden.id == this.data.ordenes.id ) this.getOfertando({ orden: this.data.ordenes.id, usuario: this.chatDe.id }, false);
     });
 
     this.wsServices.listen('orden-finalizada')
@@ -190,12 +183,20 @@ export class ChatDetalladoPage implements OnInit {
     this.getChatDetallado();
   }
 
-  getOfertando(data:any){
+  getOfertando(data:any, opt:boolean = true){
     this._ofertando.get( { where: data, sort: "createdAt DESC", limit: 1 } ).subscribe((res:any)=>{
       res = res.data[0];
       this.iniciarVandera = true;
       if(!res) return false;
       this.listOfertando = res;
+      if(!opt) return false;
+      if( this.data.vista == 'cliente' ) {
+        let interval = setInterval(()=>{
+          if( !this.iniciarVandera ) return false;
+          this.procesoConfirmarAlert();
+          clearInterval( interval );
+        },2000)
+      }
     },(error)=> this._tools.presentToast("Error de conexion"));
   }
 
@@ -301,7 +302,9 @@ export class ChatDetalladoPage implements OnInit {
   cambiarEstadoChat(){
     let data:any ={
       id: this.data.id,
-      estadoOrden: 2
+      estadoOrden: 2,
+      visto: true,
+      visto2: true
     };
     this._chat.editar(data).subscribe((res:any)=>console.log(res));
   }
@@ -325,6 +328,8 @@ export class ChatDetalladoPage implements OnInit {
       reseptor: this.chatDe.id,
       ordenes: this.data.ordenes.id
     };
+    if( this.dataUser.rol.rol == "conductor") data.visto2 = true;
+    if( this.dataUser.rol.rol == "usuario") data.visto = true;
     console.log(data);
     if( !data.emisor || !data.reseptor || !data.ordenes ) return this._tools.presentToast("Ay algo mal Por Favor Reiniciar");
     if( this.disableBtnChat ) return false;

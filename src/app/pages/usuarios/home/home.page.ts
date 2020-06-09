@@ -118,7 +118,7 @@ export class HomePage implements OnInit {
   escucharSockets(){
     this.wsServices.listen('chat-principal')
     .subscribe((marcador: any)=> {
-      console.log("**", marcador);
+      //console.log("**", marcador);
       if( !marcador.reseptor ) return false;
       if( marcador.reseptor.id !== this.dataUser.id ) return false;
       this.listRow.unshift( marcador );
@@ -137,11 +137,18 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-finalizada')
     .subscribe((marcador: any)=> {
+      //console.log(marcador);
       if( !marcador ) return false;
       let filtro:any = _.findIndex( this.listMandadosEmpreasaActivos, [ 'id', marcador.id ]);
       if( filtro >= 0 ){
         this.listMandadosEmpreasaActivos[filtro] = marcador;
         this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Finalizado", text: `${ marcador['coductor'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      }
+      for( let i = 0; i <this.listRow.length; i++ ){
+        if( this.listRow[i].ordenes.id == marcador.id) {
+          this.listRow[i].visto = true;
+          this.actualizarChat( this.listRow[i] );
+        }
       }
     });
 

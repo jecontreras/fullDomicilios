@@ -93,13 +93,18 @@ export class SolicitarPage implements OnInit {
         this.data.destinolat = respuesta.lat;
         this.data.destinoLon =respuesta.lon;
       }
-      console.log(data);
+      //console.log(data);
     });
   }
-
+  validador(){
+    if( !this.data.origenLat || !this.data.origenLon || !this.data.destinoLon || !this.data.destinolat ) { this._tools.presentToast("origen o destino indefinido"); return false}
+    if( !this.data.descripcion ) { this._tools.presentToast("Falta que diligencia haremos"); return false}
+    return true;
+  }
   submitMandado(){
-    if( !this.data.origenLat || !this.data.origenLon ) return this._tools.presentToast("origen o destino indefinido");
-    console.log(this.data);
+    let validando = this.validador();
+    if( !validando ) return false;
+    //console.log(this.data);
     this.data.ofreceCliente = "4.00";
     this.btnDisabled = true;
     this._tools.presentLoading();
@@ -117,6 +122,8 @@ export class SolicitarPage implements OnInit {
 
   updateMandados(){
     this.data = _.omit( this.data, [ 'usuario', 'coductor', 'idOfertando']);
+    let validando = this.validador();
+    if( !validando ) return false;
     if(this.data.estado == 3 || this.data.estado == 2) { 
       setTimeout(()=>{this._tools.dismisPresent(); }, 2000);
       this.btnDisabled = false; 

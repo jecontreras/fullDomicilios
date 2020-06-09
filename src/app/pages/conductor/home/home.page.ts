@@ -229,6 +229,12 @@ export class HomePage implements OnInit {
         this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Finalizado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
         this.listRow[filtro].estado = marcador.estado;
       }
+      for( let is = 0; is < this.listRow2.length; is++ ){
+        if( this.listRow2[is].ordenes.id == marcador.id) {
+          this.listRow2[is].visto2 = true;
+          this.actualizarChat( this.listRow2[is] );
+        }
+      }
     });
     //Orden cancelada
 
@@ -245,12 +251,27 @@ export class HomePage implements OnInit {
       //console.log("**", chat);
       if(chat.reseptor.id !== this.dataUser.id && ( chat.ordenes )) return false;
       try {
-        this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
+        this.ProcesoChatPrincipal( chat );
       } catch (error) {
         //console.log(error);
       }
     });
 
+  }
+
+  ProcesoChatPrincipal( chat:any ){
+    this._mensajes.get({
+      where:{
+        id: chat.chatPrincipal.id
+      }
+    }).subscribe((res:any)=>{
+      res = res.data[0];
+      if(!res) return false;
+      this.listRow2.unshift( res );
+      this.listRow2 = _.unionBy( this.listRow2 || [], res, 'id');
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Un nuevo mensaje", text: `Usuario: ${ chat['emisor'].nombre } del mandado: ${ chat['ordenes'].descripcion } mensaje:  ${ chat.text }` });
+      this.cambiaStateChat();
+    })
   }
 
   procesoOrdenConfirmada( marcador:any ){
