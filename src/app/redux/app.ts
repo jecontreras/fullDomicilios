@@ -283,6 +283,29 @@ export function appReducer(state: STORAGES = APP, action: _action.actions) {
         break;
       }
     }
+    case _action.CHATFINIX: {
+      switch(action.opt) {
+        case 'post' :
+          if(!state.chatfinix) state.chatfinix = {};
+            state.chatfinix = action.payload;
+            return local_Storage(state);
+        break;
+        case 'put': {
+          state.chatfinix = action.payload;
+        }
+        return local_Storage(state);
+        break;
+        case 'delete': 
+          state.chatfinix = {};
+          return local_Storage(state);
+        break;
+        case 'drop': {
+          state.chatfinix = {};
+          return local_Storage(state);
+        }
+        break;
+      }
+    }
     default: return state;
   }
 }

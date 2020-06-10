@@ -10,6 +10,8 @@ import { OrdenesService } from 'src/app/service-component/ordenes.service';
 import * as _ from 'lodash';
 import { FormatosService } from 'src/app/services/formatos.service';
 import { WebsocketService } from 'src/app/services/websocket.services';
+import { ChatService } from 'src/app/service-component/chat.service';
+import { ChatFinixAction } from 'src/app/redux/app.actions';
 
 @Component({
   selector: 'app-detalles-empresarial',
@@ -33,6 +35,7 @@ export class DetallesEmpresarialPage implements OnInit {
     private _ordenes: OrdenesService,
     private _formato: FormatosService,
     private wsServices: WebsocketService,
+    private _chat: ChatService
   ) {
     this._store.subscribe((store:any)=>{
       store = store.name;
@@ -134,8 +137,35 @@ export class DetallesEmpresarialPage implements OnInit {
   async ProcesoFinalizar( res:any ){
     this.disableBtnFinalizar = false;
     this.wsServices.emit( "orden-finalizada", res);
+    this.cambiarEstadoChat();
     await this._tools.presentAlert({ header: "¡BIEN HECHO! COMPLETASTE EL MANDADO" });
     this.exit( false );
+  }
+  
+  async ChatInit(){
+    return new Promise(resolve=>{
+      this._chat.get({ where: { ordenes: this.data.id }, limit: 1 }).subscribe((res:any)=>{
+        res = res.data[0] ;
+        if( !res ) return resolve(false);
+        else resolve( res );
+      });
+    })
+  }
+
+  async cambiarEstadoChat(){
+    let chat:any = await this.ChatInit();
+    if(!chat) return false;
+    let data:any ={
+      id: chat.id,
+      estadoOrden: 2,
+      visto: true,
+      visto2: true
+    };
+    this._chat.editar(data).subscribe((res:any)=>{
+      console.log(res);
+      let accion:any = new ChatFinixAction( res, 'post');
+      this._store.dispatch( accion );
+    });
   }
 
   exit( opt:boolean = true ){

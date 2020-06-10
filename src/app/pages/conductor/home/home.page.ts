@@ -10,7 +10,7 @@ import { WebsocketService } from 'src/app/services/websocket.services';
 import { Lugar } from 'src/app/interfas/interfaces';
 import { ModalController, IonSegment } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
-import { PersonaAction, ServicioActivoAction } from 'src/app/redux/app.actions';
+import { PersonaAction, ServicioActivoAction, ChatFinixAction } from 'src/app/redux/app.actions';
 import { MapboxService, Feature } from 'src/app/service-component/mapbox.service';
 import { Router } from '@angular/router';
 import { ChatService } from 'src/app/service-component/chat.service';
@@ -96,7 +96,15 @@ export class HomePage implements OnInit {
         if( !store.servicioActivo ) store.servicioActivo = [];
         if( Object.keys( store.servicioActivo ).length > 0 ) this.ordenActiva = store.servicioActivo[0] || {};
         this.validanQueryUser();
+        if( store.chatfinix ) if( Object.keys( store.chatfinix ).length > 0) this.cambiarEstadoChat( store.chatfinix );
     });
+  }
+
+  ngOnInit(): void {
+    this.InitApp();
+    var intervalID = window.setTimeout(()=>{
+      this.segment.value = "home";
+    }, 200);
   }
 
   validanQueryUser(){
@@ -108,11 +116,16 @@ export class HomePage implements OnInit {
     //this.query = { where:{ estado: 0 }, skip: 0 };
   }
 
-  ngOnInit(): void {
-    this.InitApp();
-    var intervalID = window.setTimeout(()=>{
-      this.segment.value = "home";
-    }, 200);
+  cambiarEstadoChat( chat:any ){
+    for( let is = 0; is < this.listRow2.length; is++ ){
+      if( this.listRow2[is].id == chat.id) {
+        this.listRow2[is].visto2 = true;
+        this.actualizarChat( this.listRow2[is] );
+      }
+    }
+    let accion:any = new ChatFinixAction( chat, 'delete');
+    this._store.dispatch( accion );
+    this.cambiaStateChat();
   }
 
   InitApp(){
@@ -457,9 +470,9 @@ export class HomePage implements OnInit {
       }).then( async (modal)=>{
         modal.present();
         await modal.onWillDismiss();
-        this.cambiaStateChat();
       });
     }else this.openChatEmpresarial( item );
+    this.cambiaStateChat();
   }
 
   async openChatEmpresarial( item:any ){
@@ -586,6 +599,7 @@ export class HomePage implements OnInit {
       let accion = new PersonaAction( res, 'put');
       this._store.dispatch( accion );
       this.disableEstado = false;
+      this.wsServices.emit("drive", res);
     },(error)=> { console.error(error); this._tools.presentToast("Error de servidor"); this.disableEstado = false;})
   }
   

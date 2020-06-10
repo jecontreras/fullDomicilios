@@ -16,8 +16,11 @@ export interface STORAGES {
     ordenactivo?: ORDENACTIVO;
     resena?: RESENA;
     APP?: APP;
+    chatfinix?:  CHATFINIX
 };
+export interface CHATFINIX{
 
+}
 export interface APP {
 
 }

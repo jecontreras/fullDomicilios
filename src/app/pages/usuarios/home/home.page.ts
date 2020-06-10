@@ -9,7 +9,7 @@ import { ModalController, IonSegment } from '@ionic/angular';
 import { SolicitarPage } from 'src/app/dialog/solicitar/solicitar.page';
 import { ChatService } from 'src/app/service-component/chat.service';
 import * as _ from 'lodash'
-import { PersonaAction } from 'src/app/redux/app.actions';
+import { PersonaAction, ChatFinixAction } from 'src/app/redux/app.actions';
 import { Router } from '@angular/router';
 import { ChatDetalladoPage } from 'src/app/dialog/chat-detallado/chat-detallado.page';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
@@ -79,7 +79,8 @@ export class HomePage implements OnInit {
         store = store.name;
         this.dataUser = store.persona;
         if( this.dataUser ) this.dataUser.celular = this.dataUser.indicativo+this.dataUser.celular;
-        if(this.dataUser.rol) this.rolUser = this.dataUser.rol.rol;
+        if( this.dataUser.rol ) this.rolUser = this.dataUser.rol.rol;
+        if( store.chatfinix ) if( Object.keys( store.chatfinix ).length > 0) this.cambiarEstadoChat( store.chatfinix );
     });
   }
 
@@ -90,6 +91,18 @@ export class HomePage implements OnInit {
   ionViewDidLeave(){
     console.log(4)
     this.banderaRefres = true;
+  }
+
+  cambiarEstadoChat( chat:any ){
+    for( let is = 0; is < this.listRow.length; is++ ){
+      if( this.listRow[is].id == chat.id) {
+        this.listRow[is].visto2 = true;
+        this.actualizarChat( this.listRow[is] );
+      }
+    }
+    let accion:any = new ChatFinixAction( chat, 'delete');
+    this._store.dispatch( accion );
+    this.cambiaStateChat()
   }
 
   InitApp(){
@@ -395,9 +408,9 @@ export class HomePage implements OnInit {
       }).then( async (modal)=>{
         modal.present();
         await modal.onWillDismiss();
-        this.cambiaStateChat();
       });
     }else this.openChatEmpresarial( item );
+    this.cambiaStateChat();
   }
 
   async openChatEmpresarial( item:any ){

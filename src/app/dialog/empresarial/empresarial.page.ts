@@ -74,15 +74,15 @@ export class EmpresarialPage implements OnInit {
   }
   
   guardarMandado(){
-
-    this.data.usuario = this.dataUser.id;
-    this.data.origenLat = this.dataUser.latitud;
-    this.data.origenLon = this.dataUser.longitud;
-    this.data.tipoOrden = 1;
-    this.data.ofreceCliente = this.numeroIntegrado;
+    let data:any = _.clone( this.data );
+    data.usuario = this.dataUser.id;
+    data.origenLat = this.dataUser.latitud;
+    data.origenLon = this.dataUser.longitud;
+    data.tipoOrden = 1;
+    data.ofreceCliente = this.numeroIntegrado;
     let validacion:any = this.validadorOrden();
     if( !validacion ) return this.btnDisabled = false;;
-    this._orden.saved(this.data).subscribe((res:any)=>{
+    this._orden.saved(data).subscribe((res:any)=>{
       this._tools.dismisPresent();
       this.btnDisabled = false;
       this.procesoMandado( res );

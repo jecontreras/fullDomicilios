@@ -8,6 +8,7 @@ export let CARRITO          = '[App] Carrito';
 export let SERVICIOACTIVO   = '[App] ServicioActivo';
 export let ORDENACTIVO      = '[App] OrdenActivo';
 export let NOTIFICACIONES   = '[App] Notificaciones';
+export let CHATFINIX        = '[App] Chatfinix';
 
 export class NameappAction implements Action {
     readonly type = NAMEAPP;
@@ -49,6 +50,11 @@ export class NotificacionesAction implements Action {
     constructor( public payload: object,  public opt: string){}
 }
 
+export class ChatFinixAction implements Action {
+    readonly type = CHATFINIX;
+    constructor( public payload: object,  public opt: string){}
+}
+
 export type actions = NameappAction         |
                       PersonaAction         |
                       BuscadorAction        |
@@ -56,4 +62,5 @@ export type actions = NameappAction         |
                       CarritoAction         |
                       ServicioActivoAction  |
                       OrdenActivoAction     |
-                      NotificacionesAction  ;
+                      NotificacionesAction  |
+                      ChatFinixAction       ;

@@ -190,6 +190,8 @@ export class ChatEmpresarialPage implements OnInit {
     };
     // console.log(data);
     if( !data.emisor || !data.reseptor || !data.ordenes ) return this._tools.presentToast("Ay algo mal Por Favor Reiniciar");
+    if( this.dataUser.rol.rol == "conductor") data.visto2 = true;
+    if( this.dataUser.rol.rol == "usuario") data.visto = true;
     if( this.disableBtnChat ) return false;
     this.disableBtnChat = true;
     this._chat.saved( data ).subscribe((res:any)=>{

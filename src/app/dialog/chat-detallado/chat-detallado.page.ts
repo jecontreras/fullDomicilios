@@ -11,6 +11,7 @@ import { CalificacionPage } from '../calificacion/calificacion.page';
 import { OfertandoService } from 'src/app/service-component/ofertando.service';
 import { ConfirmarPage } from '../confirmar/confirmar.page';
 import { WebsocketService } from 'src/app/services/websocket.services';
+import { ChatFinixAction } from 'src/app/redux/app.actions';
 
 @Component({
   selector: 'app-chat-detallado',
@@ -306,7 +307,10 @@ export class ChatDetalladoPage implements OnInit {
       visto: true,
       visto2: true
     };
-    this._chat.editar(data).subscribe((res:any)=>console.log(res));
+    this._chat.editar(data).subscribe((res:any)=>{
+      let accion:any = new ChatFinixAction( res, 'post');
+      this._store.dispatch( accion );
+    });
   }
 
   async openCalifacion( res:any ){
