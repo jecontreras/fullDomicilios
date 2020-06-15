@@ -100,7 +100,8 @@ export class LoginPage implements OnInit {
       confirpassword: 98090871986,
       nombre: this.user.name,
       foto: this.user.picture.data.url,
-      id: res.id
+      id: res.id,
+      facebookActualizar: false
     };
     this._user.update(data).subscribe((res:any)=>console.log(res));
   }
