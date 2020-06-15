@@ -84,7 +84,8 @@ export class AuthService implements CanActivate {
       const identity = this.dataUser || {};
       // console.log(identity)
       if (Object.keys(identity).length >0) {
-        if( identity.disabledFacebook && identity.idFacebook !== "" ) this.loginFacebook();
+        //console.log( identity.facebookActualizar && identity.idFacebook !== ""   )
+        if( identity.facebookActualizar && identity.idFacebook !== "" ) this.loginFacebook();
         return true;
       } else {
         this.router.navigate(['/portada']);

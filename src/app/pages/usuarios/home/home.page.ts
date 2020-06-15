@@ -19,6 +19,7 @@ import { UserService } from 'src/app/services/user.service';
 import { EmpresarialPage } from 'src/app/dialog/empresarial/empresarial.page';
 import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
 import { ChatEmpresarialPage } from 'src/app/dialog/chat-empresarial/chat-empresarial.page';
+import { MapboxService } from 'src/app/service-component/mapbox.service';
 
 @Component({
   selector: 'app-home',
@@ -72,7 +73,8 @@ export class HomePage implements OnInit {
     private geolocation: Geolocation,
     private router: Router,
     private _ordenes: OrdenesService,
-    private _user: UserService
+    private _user: UserService,
+    private mapboxService: MapboxService
   ) { 
     (Mapboxgl as any).accessToken = environment.mapbox.accessTokens;
     this._store.subscribe((store:any)=>{
@@ -174,6 +176,12 @@ export class HomePage implements OnInit {
     });
   }
 
+  getSearchMyUbicacion(){
+    this.mapboxService
+      .search_wordLngLat(`${ this.lon },${ this.lat }`)
+      .subscribe((features: any) => { });
+  }
+
   procesoOrdenConfirmada( marcador:any ){
     //console.log( marcador , this.listMandadosEmpreasaActivos, marcador.usuario.id == this.dataUser.id);
     if(marcador.usuario.id == this.dataUser.id){
@@ -234,7 +242,7 @@ export class HomePage implements OnInit {
         lat: this.lat
       };
       this.wsServices.emit( 'marcador-mover', nuevoMarker);
-      if(this.vandera){ this.crearMarcador();}
+      if(this.vandera){ this.crearMarcador(); this.getSearchMyUbicacion(); }
       this.seconds = 5000;
       this.vandera = false;
     });
