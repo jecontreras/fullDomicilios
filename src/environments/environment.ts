@@ -8,8 +8,8 @@ const config: SocketIoConfig = { url: 'https://socketsmanda2.herokuapp.com', opt
 export const environment = {
   production: false,
   socketConfig: config,
-  url: "http://localhost:1337",
-  //url: "https://backendmanda.herokuapp.com",
+  //url: "http://localhost:1337",
+  url: "https://backendmanda.herokuapp.com",
   // url: "https://17114203.ngrok.io",
   urlServer: "https://socketsmanda2.herokuapp.com",
   urlActivacion: "https://www.google.com",

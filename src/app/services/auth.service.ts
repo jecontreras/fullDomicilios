@@ -6,6 +6,10 @@ import { tap } from 'rxjs/operators';
 import {Router, CanActivate } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { PERSONA } from '../interfas/sotarage';
+import { Facebook } from '@ionic-native/facebook/ngx';
+import { UserService } from './user.service';
+import { ToolsService } from './tools.service';
+import { PersonaAction } from '../redux/app.actions';
 
 export interface User {
   heroesUrl: string;
@@ -16,8 +20,21 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService implements CanActivate {
+ 
   dataUser:any = {};
-  constructor(private http: HttpClient, private router: Router, private _store: Store<PERSONA>) {
+  btnDisabled:boolean = false;
+  showUser:boolean = false;
+  user:any = {};
+  banderaFacebook:boolean
+
+  constructor(
+    private http: HttpClient, 
+    private router: Router, 
+    private _store: Store<PERSONA>,
+    private facebook: Facebook,
+    private _user: UserService,
+    private _tools: ToolsService
+  ) {
       this._store
       .subscribe((store:any)=>{
         store = store.name;
@@ -62,14 +79,62 @@ export class AuthService implements CanActivate {
         const expiresAt = JSON.parse(expiration);
         return moment(expiresAt);
     }
+
     canActivate() {
-      const identity = this.dataUser;
+      const identity = this.dataUser || {};
       // console.log(identity)
       if (Object.keys(identity).length >0) {
+        if( identity.disabledFacebook && identity.idFacebook !== "" ) this.loginFacebook();
         return true;
       } else {
         this.router.navigate(['/portada']);
         return false;
       }
+    }
+
+    loginFacebook(){
+      this.btnDisabled = true;
+      this.facebook.login(['public_profile', 'email'])
+      .then(rta => {
+        // console.log(rta.status);
+        if(rta.status == 'connected') this.getInfo();
+      })
+      .catch(error =>console.error( error ));
+    }
+  
+    getInfo(){
+      this.facebook.api('/me?fields=id,name,email,first_name,picture,last_name,gender',['public_profile','email'])
+      .then(data=>{
+        // console.log(data);
+        this.showUser = true; 
+        this.user = data;
+        this.getUserData();
+      })
+      .catch(error =>console.error( error ));
+    }
+  
+    getUserData(){
+      this._user.get({ where: { idFacebook: this.user.id }}).subscribe((res:any)=>{
+        res = res.data[0];
+        if(!res) return false;
+        else this.updateUser( res );
+      },(error)=> { this._tools.presentToast("Error de conexion"); })
+    }
+  
+    updateUser( res:any ){
+      let data:any = {
+        email: this.user.email,
+        nombre: this.user.name,
+        foto: this.user.picture.data.url,
+        facebookActualizar: false,
+        id: res.id
+      };
+      this._user.update(data).subscribe((res:any)=>this.ProcesoStorages( { data: res } ));
+    }
+
+    ProcesoStorages( res:any ){
+      this.btnDisabled = false;
+      let accion:any = new PersonaAction(res.data, 'post');
+      this._store.dispatch(accion);
     }
 }
