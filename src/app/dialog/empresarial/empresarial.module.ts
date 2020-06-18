@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { EmpresarialPageRoutingModule } from './empresarial-routing.module';
 
 import { EmpresarialPage } from './empresarial.page';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EmpresarialPageRoutingModule
+    EmpresarialPageRoutingModule,
+    NgxCurrencyModule
   ],
   declarations: [EmpresarialPage]
 })

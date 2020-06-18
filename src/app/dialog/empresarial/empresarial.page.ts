@@ -52,20 +52,20 @@ export class EmpresarialPage implements OnInit {
 
   }
   
-  estadoNumber(opt){
-    if(opt) this.data.ofreceCliente = this.numeroIntegrado;
-    this.numeroIntegrado = Number( this.data.ofreceCliente || 0 );
-    this.vanderaNumber = false;
-  }
+  // estadoNumber(opt){
+  //   if(opt) this.data.ofreceCliente = this.numeroIntegrado;
+  //   this.numeroIntegrado = Number( this.data.ofreceCliente || 0 );
+  //   this.vanderaNumber = false;
+  // }
 
-  formatoNumber( opt:boolean = false ){
-    if(!opt) { this.estadoNumber(false); this.data.ofreceCliente = this._formato.monedaChange( 3, 2, this.data.ofreceCliente); this.vanderaNumber = true;}
-  }
+  // formatoNumber( opt:boolean = false ){
+  //   if(!opt) { this.estadoNumber(false); this.data.ofreceCliente = this._formato.monedaChange( 3, 2, this.data.ofreceCliente); this.vanderaNumber = true;}
+  // }
 
-  BlurNumber(){
-    if( this.vanderaNumber ) return false;
-    this.formatoNumber();
-  }
+  // BlurNumber(){
+  //   if( this.vanderaNumber ) return false;
+  //   this.formatoNumber();
+  // }
 
   submitMandado(){
     this.btnDisabled = true;
@@ -79,9 +79,10 @@ export class EmpresarialPage implements OnInit {
     data.origenLat = this.dataUser.latitud;
     data.origenLon = this.dataUser.longitud;
     data.tipoOrden = 1;
-    data.ofreceCliente = this.numeroIntegrado;
+    // data.ofreceCliente = this.numeroIntegrado;
     let validacion:any = this.validadorOrden();
-    if( !validacion ) return this.btnDisabled = false;;
+    if( !validacion ) return this.btnDisabled = false;
+    data.ofreceCliente = String( data.ofreceCliente );
     this._orden.saved(data).subscribe((res:any)=>{
       this._tools.dismisPresent();
       this.btnDisabled = false;

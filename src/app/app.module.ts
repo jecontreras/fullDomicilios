@@ -24,7 +24,7 @@ import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { VercionPageModule } from './dialog/vercion/vercion.module';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
-
+import { NgxCurrencyModule } from "ngx-currency";
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +42,8 @@ import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
     MenuPageModule,
     VercionPageModule,
     SocketIoModule.forRoot( environment.socketConfig ),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    NgxCurrencyModule
   ],
   providers: [
     Geolocation,

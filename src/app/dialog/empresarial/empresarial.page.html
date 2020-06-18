@@ -35,8 +35,9 @@
       </ion-col>
       <ion-col size="12">
         <div class="ion-text-center">
-          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿MONTO A COBRAR?</ion-label>
-          <ion-input class="ionColorInput" [(ngModel)]="data.ofreceCliente" required (focusout)="BlurNumber()" (change)="formatoNumber()" (click)="estadoNumber(true)" type="text"></ion-input>
+          <ion-label class="ion-color-lavel label textLavel" position="stacked">¿MONTO A COBRAR?</ion-label><br>
+          <input currencyMask class="ionColorInput mejorando" [(ngModel)]="data.ofreceCliente" [options]="{ prefix: 'USD$ ', thousands: '.', decimal: ',' }" />
+          <!-- <ion-input class="ionColorInput" [(ngModel)]="data.ofreceCliente" required (focusout)="BlurNumber()" (change)="formatoNumber()" (click)="estadoNumber(true)" type="text"></ion-input> -->
         </div>
       </ion-col>
       <ion-col size="12">

@@ -94,10 +94,7 @@ export class LoginPage implements OnInit {
 
   updateUser( res:any ){
     let data:any = {
-      rol: "usuario",
       email: this.user.email,
-      password: 98090871986,
-      confirpassword: 98090871986,
       nombre: this.user.name,
       foto: this.user.picture.data.url,
       id: res.id,
