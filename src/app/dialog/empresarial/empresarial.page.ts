@@ -49,7 +49,8 @@ export class EmpresarialPage implements OnInit {
     this.paramsData = this.navparams.get('obj');
     this.vista = this.paramsData.vista;
     if( this.paramsData.vista = "update") this.data = this.paramsData;
-
+    if( !this.data.id ) this.data.ofreceCliente =  4;
+    console.log( this.data );
   }
   
   // estadoNumber(opt){

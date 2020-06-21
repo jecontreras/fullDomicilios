@@ -37,7 +37,7 @@
         NOMBRE: {{ data.ordenes.nombreCliente }}
       </ion-label> <br>
       <ion-label>
-        MONTO A COBRAR: {{ data.ordenes.ofreceCliente }}
+        MONTO A COBRAR: <input currencyMask [disabled]="true"  [(ngModel)]="data.ofreceCliente" [options]="{ align: 'left', prefix: 'USD$ ', thousands: '.', decimal: ',' }" />
       </ion-label>
     </div>
 

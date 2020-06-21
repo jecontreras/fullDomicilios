@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ChatEmpresarialPageRoutingModule } from './chat-empresarial-routing.module';
 
 import { ChatEmpresarialPage } from './chat-empresarial.page';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ChatEmpresarialPageRoutingModule
+    ChatEmpresarialPageRoutingModule,
+    NgxCurrencyModule
   ],
   declarations: [ChatEmpresarialPage]
 })

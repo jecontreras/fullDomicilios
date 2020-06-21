@@ -88,7 +88,7 @@ export class DetallesEmpresarialPage implements OnInit {
   }
 
   formatoViewNumber(){
-    this.data.ofreceCliente = this._formato.monedaChange( 3, 2, this.data.ofreceCliente );
+    //this.data.ofreceCliente = this._formato.monedaChange( 3, 2, this.data.ofreceCliente );
   }
 
   openChat(){

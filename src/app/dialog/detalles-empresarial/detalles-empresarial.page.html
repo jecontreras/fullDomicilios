@@ -15,7 +15,7 @@
               <img [src]="data['coductor']?.foto || './assets/perfil.png'" />
             </ion-avatar>
             <ion-text color="light">
-              <h5 class="colorBlanco">{{ data['coductor']?.nombre }} {{ data['coductor']?.apellido }} </h5>
+              <h5 class="colorBlanco textLavel">{{ data['coductor']?.nombre }} {{ data['coductor']?.apellido }} </h5>
             </ion-text>
           </ion-chip>
         </ion-text>
@@ -77,7 +77,7 @@
           <ion-item lines="none">
             <ion-label class="ion-color-lavel" position="stacked">Monto a cobrar:</ion-label>
             <ion-text color="dark">
-              <span>{{ data.ofreceCliente }}</span>
+              <input currencyMask [disabled]="true"  [(ngModel)]="data.ofreceCliente" [options]="{ align: 'left', prefix: 'USD$ ', thousands: '.', decimal: ',' }" />
             </ion-text>
           </ion-item>
           <ion-item lines="none">

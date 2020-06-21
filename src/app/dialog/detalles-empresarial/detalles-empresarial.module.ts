@@ -9,6 +9,7 @@ import { DetallesEmpresarialPageRoutingModule } from './detalles-empresarial-rou
 import { DetallesEmpresarialPage } from './detalles-empresarial.page';
 import { MapaPageModule } from 'src/app/pages/mapa/mapa.module';
 import { ChatEmpresarialPageModule } from '../chat-empresarial/chat-empresarial.module';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { ChatEmpresarialPageModule } from '../chat-empresarial/chat-empresarial.
     IonicModule,
     DetallesEmpresarialPageRoutingModule,
     ChatEmpresarialPageModule,
-    MapaPageModule
+    MapaPageModule,
+    NgxCurrencyModule
   ],
   declarations: [DetallesEmpresarialPage]
 })
