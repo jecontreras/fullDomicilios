@@ -253,10 +253,13 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-cancelada')
     .subscribe((marcador: any)=> {
-      //console.log( marcador , this.listRow );
+      //console.log( marcador , this.listMandadosActivos );
       if( !marcador.id ) return false;
       this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
-      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Cancelado", text: `${ marcador['usuario'].nombre } Origen ${ marcador['origentexto'] } Destino ${ marcador['destinotext'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      let filtro:any = this.listMandadosActivos.find( ( row:any )=> row.id !== marcador.id );
+      if( !filtro ) return false;
+      this.listMandadosActivos = this.listMandadosActivos.filter( ( row:any )=> row.id !== marcador.id );
+      this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Empresarial Cancelado", text: `${ marcador['usuario'].nombre } Destino ${ marcador['origentexto'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
     });
     // chat nuevo
     this.wsServices.listen('chat-nuevo')
@@ -438,8 +441,12 @@ export class HomePage implements OnInit {
     });
   }
 
-  openMandoEmpresarial( item:any ){
+  async openMandoEmpresarial( item:any ){
     let data:any = _.clone(item) || {};
+    this.disableEstado = true;
+    data = await this.getEmpresarial( data );
+    this.disableEstado = false;
+    if( !data ) { this.listMandadosActivos =this.listMandadosActivos.filter( ( row:any )=> row.id !== item.id ); return this._tools.presentToast( "lo sentimos este mandado empresarial no esta disponible!"); }
     data.vista = "conductor";
     this.modalCtrl.create({
       component: DetallesEmpresarialPage,
@@ -453,6 +460,16 @@ export class HomePage implements OnInit {
       this.query.skip = 0;
       console.log( data );
       if(!data.dismissed) item.estado = 2;
+    });
+  }
+
+  async getEmpresarial( data:any ){
+    return new Promise( resolve => {
+      this._orden.get( { where: { id: data.id, coductor: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
+        res = res.data[0];
+        if( !res ) return resolve( false );
+        else return resolve( res );
+      },(erro:any)=> this.disableEstado = false );
     });
   }
 

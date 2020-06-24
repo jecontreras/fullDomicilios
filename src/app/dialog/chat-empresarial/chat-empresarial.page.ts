@@ -116,6 +116,23 @@ export class ChatEmpresarialPage implements OnInit {
       if( this.data.ordenes.id == marcador.id ) this.data.ordenes.estado = marcador.estado;
     });
 
+    this.wsServices.listen('orden-cancelada')
+    .subscribe((marcador: any)=> {
+      //console.log( marcador, this.data )
+      if( !marcador.id ) return false;
+      if( marcador.id === this.data.ordenes.id ) { 
+        if( this.data.vista == "usuario" ) {
+          this.data.coductor = marcador.coductor;
+          this.data.ordenes.coductor = marcador.coductor;
+        }
+        else{
+          this._tools.presentAlert({ header: "ESTE MANDADO EMPRESARIAL HA SIDO CANCELADO!" }); 
+          this.exit(); 
+          return false;
+        }
+      }
+    });
+
   }
 
   getChatInit(){

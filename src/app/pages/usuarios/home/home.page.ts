@@ -20,6 +20,7 @@ import { EmpresarialPage } from 'src/app/dialog/empresarial/empresarial.page';
 import { DetallesEmpresarialPage } from 'src/app/dialog/detalles-empresarial/detalles-empresarial.page';
 import { ChatEmpresarialPage } from 'src/app/dialog/chat-empresarial/chat-empresarial.page';
 import { MapboxService } from 'src/app/service-component/mapbox.service';
+import { resolve } from 'url';
 
 @Component({
   selector: 'app-home',
@@ -173,6 +174,14 @@ export class HomePage implements OnInit {
       if( !marcador.coductor ) return false;
       //console.log(this.listRow, marcador);
       this.procesoOrdenConfirmada( marcador );
+    });
+
+    this.wsServices.listen('orden-cancelada')
+    .subscribe((marcador: any)=> {
+      console.log(marcador); 
+      if( !marcador.id ) return false;
+      let filtro:any = _.findIndex( this.listMandadosEmpreasaActivos, [ 'id', marcador.id ]);
+      if( filtro >=0 ) this.listMandadosEmpreasaActivos[filtro] = marcador;
     });
   }
 
@@ -366,8 +375,12 @@ export class HomePage implements OnInit {
       if( data.dismissed ) this.listMandadosEmpreasaActivos.unshift( data.dismissed );
     });
   }
-  openEmpresarialVer( item:any ){
+  async openEmpresarialVer( item:any ){
     let data:any = _.clone(item) || {};
+    this.btnDisabled = true;
+    data = await this.getEmpresarial( data );
+    this.btnDisabled = false;
+    if( !data ) { this.listMandadosEmpreasaActivos =this.listMandadosEmpreasaActivos.filter( ( row:any )=> row.id !== item.id ); return this._tools.presentToast( "lo sentimos este mandado empresarial no esta disponible!"); }
     data.vista = "usuario";
     this.modalCtrl.create({
       component: DetallesEmpresarialPage,
@@ -376,6 +389,16 @@ export class HomePage implements OnInit {
       }
     }).then( async (modal)=>{
       modal.present();
+    });
+  }
+
+  async getEmpresarial( data:any ){
+    return new Promise( resolve => {
+      this._ordenes.get( { where: { id: data.id, usuario: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
+        res = res.data[0];
+        if( !res ) return resolve( false );
+        else return resolve( res );
+      },(erro:any)=> this.btnDisabled = false );
     });
   }
 

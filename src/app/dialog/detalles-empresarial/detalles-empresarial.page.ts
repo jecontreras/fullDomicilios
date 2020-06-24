@@ -76,6 +76,20 @@ export class DetallesEmpresarialPage implements OnInit {
         
       }
     });
+    this.wsServices.listen('orden-cancelada')
+    .subscribe((marcador: any)=> {
+      //console.log( marcador, this.data )
+      if( !marcador.id ) return false;
+      if( marcador.id === this.data.id ) { 
+        if( this.data.vista == "usuario" ) this.data.coductor = marcador.coductor;
+        else{
+          this._tools.presentAlert({ header: "ESTE MANDADO EMPRESARIAL HA SIDO CANCELADO!" }); 
+          this.exit(); 
+          return false;
+        }
+      }
+
+    });
   }
 
   validandoChat(){
@@ -169,9 +183,13 @@ export class DetallesEmpresarialPage implements OnInit {
   }
 
   exit( opt:boolean = true ){
-    this.modalCtrl.dismiss(
-      {'dismissed': opt }
-    );
+    try {
+      this.modalCtrl.dismiss(
+        {'dismissed': opt }
+      );
+    } catch (error) {
+      
+    }
   }
 
 }

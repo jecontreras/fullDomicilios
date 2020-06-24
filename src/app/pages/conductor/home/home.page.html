@@ -128,7 +128,7 @@
           <h4>{{ item.origentexto }}</h4>
         </ion-text>
       </ion-label>
-      <ion-button class="ionButton" (click)="openMandoEmpresarial( item )" slot="end">
+      <ion-button class="ionButton" (click)="openMandoEmpresarial( item )" slot="end" [disabled]="disableEstado">
         VER
       </ion-button>
     </ion-item>
