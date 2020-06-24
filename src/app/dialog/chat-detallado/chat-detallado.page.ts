@@ -202,7 +202,7 @@ export class ChatDetalladoPage implements OnInit {
   }
 
   getChatInit(){
-    this._chat.get( { where: { ordenes: this.data.id, emisor: this.dataUser.id }, limit: 1 }).subscribe((res:any)=>{
+    this._chat.get( { where: { ordenes: this.data.id, emisor: this.dataUser.id, estado: 0 }, limit: 1 }).subscribe((res:any)=>{
       res = res.data[0];
       if(!res) return false;
       this.query.where.chat = res.id; 

@@ -177,14 +177,17 @@ export class HomePage implements OnInit {
     });
 
     this.wsServices.listen('orden-cancelada')
-    .subscribe((marcador: any)=> {
+    .subscribe(async (marcador: any)=> {
       console.log(marcador); 
       if( !marcador.id ) return false;
       let filtro:any = _.findIndex( this.listMandadosEmpreasaActivos, [ 'id', marcador.id ]);
       if( filtro >=0 ) this.listMandadosEmpreasaActivos[filtro] = marcador;
+      if( !marcador.idChat ) return false;
+      this.listRow = this.listRow.filter( ( row:any ) => row.id !== marcador.idChat );
+      this.cambiaStateChat();
     });
   }
-
+  
   getSearchMyUbicacion(){
     this.mapboxService
       .search_wordLngLat(`${ this.lon },${ this.lat }`)
@@ -212,7 +215,8 @@ export class HomePage implements OnInit {
   ProcesoChatPrincipal( chat:any ){
     this._mensajes.get({
       where:{
-        id: chat.chatPrincipal.id
+        id: chat.chatPrincipal.id,
+        estado: 0
       }
     }).subscribe((res:any)=>{
       res = res.data[0];

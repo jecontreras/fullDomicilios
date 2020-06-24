@@ -75,7 +75,7 @@ export class ChatEmpresarialPage implements OnInit {
 
   validandoGet(){
     if( !this.data.ordenes ) return false;
-    this._chat.get({ where: { ordenes: this.data.ordenes.id }, limit: 1 }).subscribe((res:any)=>{
+    this._chat.get({ where: { ordenes: this.data.ordenes.id, estado: 0 }, limit: 1 }).subscribe((res:any)=>{
       res = res.data[0] ;
       if( !res ) { this.validandoChat( res, false ); return false;}
       this.query.where.chat = res.id;
@@ -118,17 +118,21 @@ export class ChatEmpresarialPage implements OnInit {
 
     this.wsServices.listen('orden-cancelada')
     .subscribe((marcador: any)=> {
-      //console.log( marcador, this.data )
-      if( !marcador.id ) return false;
+      console.log( marcador, this.data )
+      if( !marcador.id && !this.data.id ) return false;
       if( marcador.id === this.data.ordenes.id ) { 
-        if( this.data.vista == "usuario" ) {
+        if( this.data.vista == "cliente" ) {
           this.data.coductor = marcador.coductor;
           this.data.ordenes.coductor = marcador.coductor;
+          //this.getChatInit();
+          this.exit();
         }
         else{
-          this._tools.presentAlert({ header: "ESTE MANDADO EMPRESARIAL HA SIDO CANCELADO!" }); 
-          this.exit(); 
-          return false;
+          if( this.dataUser.rol.rol !== "usuario"){
+            //this._tools.presentAlert({ header: "ESTE MANDADO EMPRESARIAL HA SIDO CANCELADO!" }); 
+            this.exit(); 
+            return false;
+          }
         }
       }
     });
@@ -136,7 +140,7 @@ export class ChatEmpresarialPage implements OnInit {
   }
 
   getChatInit(){
-    this._chat.get( { where: { ordenes: this.data.id, 
+    this._chat.get( { where: { ordenes: this.data.id, estado: 0,
         or: [
           {
             emisor: this.dataUser.id

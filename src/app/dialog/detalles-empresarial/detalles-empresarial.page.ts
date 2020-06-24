@@ -79,13 +79,16 @@ export class DetallesEmpresarialPage implements OnInit {
     this.wsServices.listen('orden-cancelada')
     .subscribe((marcador: any)=> {
       //console.log( marcador, this.data )
-      if( !marcador.id ) return false;
+      if( !marcador.id && !this.data.id ) return false;
       if( marcador.id === this.data.id ) { 
         if( this.data.vista == "usuario" ) this.data.coductor = marcador.coductor;
         else{
-          this._tools.presentAlert({ header: "ESTE MANDADO EMPRESARIAL HA SIDO CANCELADO!" }); 
-          this.exit(); 
-          return false;
+          if( this.dataUser.rol.rol !== "usuario"){
+            this._tools.presentToast("ESTE MANDADO EMPRESARIAL HA SIDO CANCELADO!");
+            this.exit(); 
+            this.data = {};
+            return false;
+          }
         }
       }
 

@@ -253,13 +253,15 @@ export class HomePage implements OnInit {
 
     this.wsServices.listen('orden-cancelada')
     .subscribe((marcador: any)=> {
-      //console.log( marcador , this.listMandadosActivos );
+      console.log( marcador , this.listMandadosActivos );
       if( !marcador.id ) return false;
       this.listRow = this.listRow.filter( ( row:any )=> row.id !== marcador.id );
       let filtro:any = this.listMandadosActivos.find( ( row:any )=> row.id !== marcador.id );
       if( !filtro ) return false;
       this.listMandadosActivos = this.listMandadosActivos.filter( ( row:any )=> row.id !== marcador.id );
       this.audioNotificando('./assets/sonidos/notificando.mp3', { titulo: "Mandado Empresarial Cancelado", text: `${ marcador['usuario'].nombre } Destino ${ marcador['origentexto'] } Ofrece $ ${ ( marcador['ofreceCliente'] || 0 ).toLocaleString(1) } USD` });
+      if( marcador.idChat ) this.listRow2 = this.listRow2.filter( ( row:any )=> row.id !== marcador.idChat );
+      this.cambiaStateChat();
     });
     // chat nuevo
     this.wsServices.listen('chat-nuevo')
