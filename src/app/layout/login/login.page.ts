@@ -47,18 +47,23 @@ export class LoginPage implements OnInit {
     private _authSrvice: AuthService
   ) { 
     
-    if (this._authSrvice.isLoggedIn()) {
-      this._router.navigate(['/cargando']);
-    }
+    // if (this._authSrvice.isLoggedIn()) {
+    //   this._router.navigate(['/cargando']);
+    // }
   }
 
   ngOnInit() {
   }
 
+  openView(opt:string){
+    if(opt == "facebook") this.loginFacebook();
+    if(opt == "google") this.loginGoogle();
+    this.vista = opt;
+  }
+
   loginFacebook(){
     this.facebook.login(['public_profile', 'email'])
     .then(rta => {
-      console.log(rta.status);
       if(rta.status == 'connected'){
         this.getInfo();
       };
@@ -69,10 +74,18 @@ export class LoginPage implements OnInit {
     });
   }
 
+  loginGoogle(){
+    this.btnDisabled = true;
+    this._user.get({
+      where:{
+        nombre: "jose"
+      },limit: 1
+    }).subscribe((res:any)=> this.ProcesoStorages( { data: res.data[0]} ),(error:any)=> this.btnDisabled = false);
+  }
+
   getInfo(){
     this.facebook.api('/me?fields=id,name,email,first_name,picture,last_name,gender',['public_profile','email'])
     .then(data=>{
-      console.log(data);
       this.showUser = true; 
       this.user = data;
       this.getUserData();
@@ -124,12 +137,6 @@ export class LoginPage implements OnInit {
     let accion:any = new PersonaAction(res.data, 'post');
     this._store.dispatch(accion);
     this._router.navigate(['/cargando']);
-  }
-
-  openView(opt:string){
-    console.log(opt);
-    if(opt == "facebook") this.loginFacebook();
-    this.vista = opt;
   }
 
   iniciar(){

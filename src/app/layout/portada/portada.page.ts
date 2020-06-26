@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,9 +15,13 @@ export class PortadaPage implements OnInit {
     allowSlideNext: false
   };
 
+  lat:number;
+  lon:number;
+
   constructor(
     private _authSrvice: AuthService,
-    private _router: Router
+    private _router: Router,
+    private geolocation: Geolocation,
   ) {
     if (this._authSrvice.isLoggedIn()) {
       this._router.navigate(['/cargando']);
@@ -26,16 +31,13 @@ export class PortadaPage implements OnInit {
   ngOnInit() {
     //location.reload();
   }
-  
-  ingresar(){
-    
+
+  permitirGps(){
+    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+      this.lat = geoposition.coords.latitude;
+      this.lon = geoposition.coords.longitude;
+      this._router.navigate(['/login']);
+    }); 
   }
 
-  registrar(){
-
-  }
-
-  ayuda(){
-    
-  }
 }

@@ -40,20 +40,10 @@ export class CargandoPage implements OnInit {
       this.InitApp();
      }
    }
-  //  ionViewDidEnter(){
-  //    console.log(2)
-  //  }
-  //  ionViewWillLeave(){
-  //    console.log(3)
-  //  }
-  // ionViewDidLeave(){
-  //   console.log(4)
-  // }
-  //  ngOnDestroy(){
-  //    console.log(5)
-  //  }
+
   ngOnInit() {
      this.validandoLogin();
+     console.log( this.data );
      this._tools.presentLoading();
     setTimeout(()=>{ 
       this.InitApp();
@@ -68,8 +58,7 @@ export class CargandoPage implements OnInit {
     this._tools.dismisPresent();
     this.bandera = true;
     if(!this.rolUser) return this.clearLogin();
-    if(this.rolUser == 'usuario') this._router.navigate(['/usuarios/home']);
-    if(this.rolUser == 'conductor') this._router.navigate(['/conductor/home']);
+    this._router.navigate(['/home']);
   }
 
   clearLogin(){

@@ -1,3 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <h6>BIENVENIDO</h6>
+            <h6>¡Pedir comida nunca fue tan fácil!</h6>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
   <ion-slides [options]="sliderOpts">
     <ion-slide>
@@ -6,14 +20,22 @@
           <ion-col size="12">
             <img src="./assets/icon/logo.png" class="logo">
           </ion-col>
-          <ion-col size="12">
-            <div class="ion-text-center">
-              <ion-button slot="start" class="ionButton" [routerLink]="['/login']">Iniciar sesión</ion-button><br>
-              <ion-button slot="end" class="ionButton" [routerLink]="['/registro']">registrate</ion-button>
-            </div>
-          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-slide>
   </ion-slides>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-button slot="start" color="primary" [routerLink]="['/cargando']">Omitir</ion-button>
+            <ion-button slot="end" color="primary" (click)="permitirGps()">Permitir</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

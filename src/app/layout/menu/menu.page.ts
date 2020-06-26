@@ -62,13 +62,6 @@ export class MenuPage implements OnInit {
   cargaMenu(){
     this.dataService.getMenuOpts().subscribe(rta=>{ 
       this.dataMenu=rta.map((row:any)=>{
-        if(row.opt){
-          if(this.rolUser === 'usuario'){
-            row.redirectTo = `/usuarios${ row.redirectTo }`;
-          }else{
-            row.redirectTo = `/conductor${ row.redirectTo }`;
-          }
-        }
         if( row.name == 'Notificaciones' ) row.count = this.countNotificaciones;
         return row;
       }); 

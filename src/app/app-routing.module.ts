@@ -11,63 +11,16 @@ const routes: Routes = [
     loadChildren: () => import('./layout/portada/portada.module').then( m => m.PortadaPageModule)
   },
   {
-    path: 'login',
-    loadChildren: () => import('./layout/login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'registro',
-    loadChildren: () => import('./layout/registro/registro.module').then( m => m.RegistroPageModule)
-  },
-  {
-    path: 'ayuda',
-    loadChildren: () => import('./pages/ayuda/ayuda.module').then( m => m.AyudaPageModule)
-  },
-  {
     path: 'cargando',
     loadChildren: () => import('./pages/cargando/cargando.module').then( m => m.CargandoPageModule)
   },
   {
-    path: 'usuarios',
-    loadChildren: () => import('./pages/usuarios/usuarios.module').then( m => m.UsuariosModule)
-  },
-  {
-    path: 'conductor',
-    loadChildren: () => import('./pages/conductor/conductor.module').then( m => m.ConductorModule)
-  },
-  {
-    path: 'notificaciones',
-    loadChildren: () => import('./pages/notificaciones/notificaciones.module').then( m => m.NotificacionesPageModule)
-  },
-  {
-    path: 'politicas',
-    loadChildren: () => import('./layout/politicas/politicas.module').then( m => m.PoliticasPageModule)
-  },
-  {
-    path: 'solicitar',
-    loadChildren: () => import('./dialog/solicitar/solicitar.module').then( m => m.SolicitarPageModule)
-  },
-  {
-    path: 'chat-detallado',
-    loadChildren: () => import('./dialog/chat-detallado/chat-detallado.module').then( m => m.ChatDetalladoPageModule)
-  },
-  {
-    path: 'confirmar',
-    loadChildren: () => import('./dialog/confirmar/confirmar.module').then( m => m.ConfirmarPageModule)
+    path: 'login',
+    loadChildren: () => import('./layout/login/login.module').then( m => m.LoginPageModule)
   },  {
-    path: 'empresarial',
-    loadChildren: () => import('./dialog/empresarial/empresarial.module').then( m => m.EmpresarialPageModule)
-  },
-  {
-    path: 'detalles-empresarial',
-    loadChildren: () => import('./dialog/detalles-empresarial/detalles-empresarial.module').then( m => m.DetallesEmpresarialPageModule)
-  },
-  {
-    path: 'chat-empresarial',
-    loadChildren: () => import('./dialog/chat-empresarial/chat-empresarial.module').then( m => m.ChatEmpresarialPageModule)
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   }
-
-
-
 
 ];
 

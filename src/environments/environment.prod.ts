@@ -1,12 +1,12 @@
 import { SocketIoConfig } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'https://socketsmanda2.herokuapp.com', options: {} };
+const config: SocketIoConfig = { url: 'https://gpssockets.herokuapp.com', options: {} };
 
 export const environment = {
   production: true,
   socketConfig: config,
-  url: "https://backendmanda.herokuapp.com",
-  urlServer: "https://socketsmanda2.herokuapp.com",
+  url: "https://apigps.herokuapp.com",
+  urlServer: "https://gpssockets.herokuapp.com",
   urlActivacion: "https://www.google.com",
   mapbox: {
     accessTokens: "pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2p0MG01MXRqMW45cjQzb2R6b2ptc3J4MSJ9.zA2W0IkI0c6KaAhJfk9bWg"
