@@ -19,6 +19,7 @@ export class CargandoPage implements OnInit {
   data:any = {};
   rolUser:string;
   bandera:boolean = false;
+  vista:string = "home";
 
   constructor(
     private _tools: ToolsService,
@@ -58,7 +59,12 @@ export class CargandoPage implements OnInit {
     this._tools.dismisPresent();
     this.bandera = true;
     if(!this.rolUser) return this.clearLogin();
-    this._router.navigate(['/home']);
+    if( this.rolUser === "usuario" ) this.vista = "usuario";
+    //this._router.navigate(['/home']);
+  }
+
+  selecciono( opt:string ){
+    console.log( opt );
   }
 
   clearLogin(){

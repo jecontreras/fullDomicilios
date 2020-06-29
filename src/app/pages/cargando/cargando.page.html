@@ -1,10 +1,47 @@
-<ion-content>
+<ion-content *ngIf="vista == 'home'">
   <ion-slides [options]="sliderOpts">
     <ion-slide>
       <div class="slide">
         <!-- <img src="./assets/icon/cargando.png"> -->
         <h2>Espere un momento ...</h2>
         <p></p>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
+
+<ion-content *ngIf="vista == 'usuario'">
+  <ion-slides [options]="sliderOpts">
+    <ion-slide>
+      <div class="slide">
+        <div class="ion-text-center">
+          <img src="./assets/icon/logo.png" class="logo">
+          <br>
+          <ion-text color="dark">
+            <h4>Bienvenido, como podemos atenderte?</h4>
+          </ion-text>
+          <section>
+            <br><br>
+            <ion-card>
+              <ion-card-content>
+                <ion-button fill="solid" large="large" color="primary" (click)="selecciono('odenar')">
+                  <ion-icon name="restaurant-outline"></ion-icon>
+                  ORDENAR EN RESTAURANTE
+                </ion-button>
+                <br>
+                <ion-button fill="solid" large="large" color="primary" (click)="selecciono('reservar')">
+                  <ion-icon name="file-tray-full-outline"></ion-icon>
+                  RESERVAR MESA
+                </ion-button>
+                <br>
+                <ion-button fill="solid" large="large" color="primary" (click)="selecciono('domicilio')">
+                  <ion-icon name="rocket-outline"></ion-icon>
+                  A DOMICILIO
+                </ion-button>
+              </ion-card-content>
+            </ion-card>
+          </section>
+        </div>
       </div>
     </ion-slide>
   </ion-slides>
