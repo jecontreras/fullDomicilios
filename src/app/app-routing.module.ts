@@ -17,10 +17,24 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () => import('./layout/login/login.module').then( m => m.LoginPageModule)
-  },  {
+  },
+  {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  }
+  },
+  {
+    path: 'platos',
+    loadChildren: () => import('./pages/platos/platos.module').then( m => m.PlatosPageModule)
+  },
+  {
+    path: 'platos/:id',
+    loadChildren: () => import('./pages/platos/platos.module').then( m => m.PlatosPageModule)
+  },
+  {
+    path: 'view-restaurante/:id',
+    loadChildren: () => import('./pages/view-restaurante/view-restaurante.module').then( m => m.ViewRestaurantePageModule)
+  },
+
 
 ];
 

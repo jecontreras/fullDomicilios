@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" color="primary">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ tipoPlato }}</ion-title>
+    <!-- <ion-segment scrollable mode="md" color="primary" class="bg_secondary_light text-white"
+      (ionChange)="cambios( $event )">
+      <ion-segment-button mode="md" *ngFor="let item of lisFiltro">
+        <ion-text color="dark">
+          <ion-label class="titulo"> {{ item.titulo }}</ion-label>
+        </ion-text>
+      </ion-segment-button>
+    </ion-segment> -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="100">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item *ngFor="let item of listRow" [routerLink]="['/view-restaurante', item.id ]" >
+      <div slot="start">
+        <img class="img_dimenciones rounded" [src]="item.foto">
+      </div>
+      <ion-label>
+        <h2>{{ item.titulo }}</h2>
+        <h3>{{ item.rango }}</h3>
+        <p>{{ item.detalles }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="  ( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>

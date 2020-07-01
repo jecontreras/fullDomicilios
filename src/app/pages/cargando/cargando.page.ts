@@ -65,6 +65,7 @@ export class CargandoPage implements OnInit {
 
   selecciono( opt:string ){
     console.log( opt );
+    this._router.navigate(['/home']);
   }
 
   clearLogin(){

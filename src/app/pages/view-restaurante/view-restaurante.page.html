@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar>
+    <img class="dimencionFoto" [src]="data.foto" >
+    <ion-buttons slot="start" color="primary" class="poster-detalle-sobre">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+
+    <ion-button fill="clear" slot="end" color="danger" class="poster-detalle-sobre">
+      <ion-icon name="heart-outline"></ion-icon>
+    </ion-button>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item lines="none">
+    <ion-text colo="dark" slot="start">
+      <h5>{{ data.titulo  }}</h5>
+      <span>{{ data.subtipo }} . {{ data.distancia }}</span>
+    </ion-text>
+    <div slot="end">
+      <ion-icon class="fin" name="chevron-forward-outline"></ion-icon><br>
+      <ion-text color="warning">
+        <span>★ {{ data.rango }}</span>
+      </ion-text>
+    </div>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-list>
+      <ion-item>
+        <ion-avatar slot="start">
+          <ion-icon [name]="data.domicilio.icon"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ data.domicilio.titulo }}</h2>
+          <p>{{ data.domicilio.precio }}</p>
+        </ion-label>
+        <ion-button slot="end" fill="clear">
+          Cambiar
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-item>
+  <ion-item>
+    <div slot="start">
+      <ion-text color="dark">
+        <span>
+          <ion-icon name="logo-usd"></ion-icon>
+          no hay pedido mínimo
+        </span>
+      </ion-text>
+    </div>
+    <ion-icon slot="end" name="search-outline"></ion-icon>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let item of data.listCarta">
+      <ion-list>
+        <ion-list-header>
+          <ion-text color="primary">
+            <h5>{{ item.tipo }}</h5>
+          </ion-text>
+        </ion-list-header>
+        <ion-item *ngFor="let articulo of item.articulos">
+          <ion-text color="dark">
+            <h5 class="titulo">{{ articulo.titulo }}</h5>
+            <h6 class="descripcion">{{ articulo.descripcion }}</h6>
+            <p class="precio">{{ articulo.precio }}</p>
+          </ion-text>
+          <div slot="end">
+            <img class="img_dimenciones rounded" [src]="articulo.foto">
+          </div>
+          <!-- <ion-avatar slot="end">
+            <img [src]="articulo.foto">
+          </ion-avatar> -->
+        </ion-item>
+      </ion-list>
+    </ion-item>
+  </ion-list>
+</ion-content>

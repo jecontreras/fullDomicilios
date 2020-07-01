@@ -1,9 +1,130 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>home</ion-title>
+    <ion-searchbar [(ngModel)]="searchtxt" (change)="search()" animated placeholder="Platillo o restaurante"
+      showCancelButton="focus" cancelButtonText="Custom Cancel"></ion-searchbar>
+    <ion-button fill="clear" slot="end" (click)="openFiltro()" color="primary">
+      Filtro
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+
+  <ion-toolbar>
+    <div slot="start">
+      <ion-toolbar>
+        <ion-icon slot="start" name="apps-outline"></ion-icon>
+        <ion-text>
+          <h6>
+            Tu cupón de $10.000
+            <ion-icon name="albums-outline"></ion-icon>
+          </h6>
+        </ion-text>
+      </ion-toolbar>
+    </div>
+    <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+    <br><br>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-slides [options]="slideOpts">
+      <ion-slide *ngFor="let off of listCartas" [routerLink]="['/listcategoria', off.id]">
+        <ion-card class="padding_car">
+          <img [src]="off.foto">
+          <ion-card-content no-border class="padding_car">
+            <ion-list class="ion_list">
+              <ion-item>
+                <!-- <ion-avatar slot="start">
+                  <img [src]="off.foto2">
+                </ion-avatar> -->
+                <ion-label>
+                  <!-- <h2>{{ off.categoria }}</h2> -->
+                  <p>
+                    <ion-icon name="star-outline"></ion-icon>{{ off.descripcion }}
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <div slot="start">
+      <ion-toolbar>
+        <ion-icon slot="start" name="apps-outline"></ion-icon>
+        <ion-text>
+          <h6>
+            Prevención al COVID-19
+            <ion-icon name="albums-outline"></ion-icon>
+          </h6>
+        </ion-text>
+      </ion-toolbar>
+    </div>
+    <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+    <br><br>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-list>
+      <ion-list-header>
+        Cocinas
+      </ion-list-header>
+    </ion-list>
+    <ion-slides [options]="slideCosina">
+      <ion-slide *ngFor="let off of listCocinas" [routerLink]="['/platos', off.id]">
+        <ion-card class="padding_car">
+          <img [src]="off.foto">
+          <ion-card-content no-border class="padding_car">
+            <ion-list class="ion_list">
+              <ion-item>
+                <!-- <ion-avatar slot="start">
+                  <img [src]="off.foto2">
+                </ion-avatar> -->
+                <ion-label>
+                  <!-- <h2>{{ off.categoria }}</h2> -->
+                  <p>
+                    <ion-icon name="star-outline"></ion-icon>{{ off.descripcion }}
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-list>
+      <ion-list-header>
+        Restaurante
+      </ion-list-header>
+      <ion-item *ngFor="let item of listRestaurante">
+        <ion-avatar slot="start">
+          <img [src]="item.foto">
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ item.titulo }}</h2>
+          <h3>{{ item.rango }}</h3>
+          <p>{{ item.detalles }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-toolbar>
 
 </ion-content>
+
+<ion-footer>
+  <ion-segment scrollable mode="md" color="primary" class="bg_secondary_light text-white"
+    (ionChange)="cambioView( $event )">
+    <ion-segment-button mode="md" *ngFor="let item of listMenu">
+      <ion-icon color="dark" [name]="item.icon"></ion-icon>
+      <ion-text color="dark">
+        <ion-label class="titulo"> {{ item.titulo }}</ion-label>
+      </ion-text>
+    </ion-segment-button>
+  </ion-segment>
+</ion-footer>
