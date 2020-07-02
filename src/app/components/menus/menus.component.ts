@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { STORAGES } from 'src/app/interfas/sotarage';
+import { Store } from '@ngrx/store';
+import { ToolsService } from 'src/app/services/tools.service';
+import { ModalController } from '@ionic/angular';
+import { CarritoPage } from 'src/app/dialog/carrito/carrito.page';
 
 @Component({
   selector: 'app-menus',
@@ -25,10 +30,49 @@ export class MenusComponent implements OnInit {
       icon: "person-outline"
     }
   ];
+  countCarro:any ={
+    precio: 0,
+    cantidad: 0
+  }
+  constructor(
+    private _store: Store<STORAGES>,
+    private _tools: ToolsService,
+    private modalCtrl: ModalController,
+  ) { 
+    this._store.subscribe((store:any)=>{
+         store = store.name;
+         if( !store ) return false;
+         if( store.carrito ) {
+          if( Object.keys( store.carrito ).length > 0 ) this.procesoCarro( store.carrito);
+         }
+    });
 
-  constructor() { }
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log( this.countCarro );
+  }
+
+  procesoCarro( carrito:any ){
+    let precio:number = 0;
+    for( let item of carrito ) if( item.precioTotal ) precio+= Number( item.precioTotal );
+    this.countCarro = {
+      precio: this.convertiendo( precio ),
+      cantidad: carrito.length
+    };
+  }
+  
+  convertiendo( numero ){
+    return this._tools.monedaChange( 3, 2, numero );
+  }
+
+  async openCarrito(){
+    const modal = await this.modalCtrl.create({
+      component: CarritoPage,
+      componentProps: {  },
+    });
+    modal.present();
+  }
 
   cambioView( event:any ){
     console.log( event );

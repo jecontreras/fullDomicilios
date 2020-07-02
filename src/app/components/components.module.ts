@@ -6,6 +6,7 @@ import { PipeModule } from '../pipe/pipe.module';
 import { BuscadorComponent } from './buscador/buscador.component';
 import { MenusComponent } from './menus/menus.component';
 import { DetallesComponent } from './detalles/detalles.component';
+import { CarritoPageModule } from '../dialog/carrito/carrito.module';
 
 
 
@@ -28,7 +29,8 @@ import { DetallesComponent } from './detalles/detalles.component';
   imports: [ 
     CommonModule,
     IonicModule,
-    PipeModule
+    PipeModule,
+    CarritoPageModule
   ],
 })
 export class ComponentsModule { }

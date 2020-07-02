@@ -1,5 +1,5 @@
-<ion-header class="ionToolbarHeaderChat">
-  <ion-toolbar class="ionToolbarHeaderChat">
+<ion-header>
+  <ion-toolbar>
     <ion-button slot="start" fill="clear" (click)="exit()">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
@@ -26,7 +26,8 @@
     <ion-text color="dark">
       <h5>{{ data.titulo }}</h5>
       <p class="textInformacion">{{ data.descripcion }}</p>
-      <p class="colorPrecio">{{ data.precio }} {{ data.precioAnt }}</p>
+      <p *ngIf="!data.precioPromo" class="colorPrecio ">{{ data.precioForma }} </p>
+      <p *ngIf="data.precioPromo" class="colorPrecio ">{{ data.precioPromoForma }} <span class="precioPromicion"> {{ data.precioForma }}</span></p>
     </ion-text><br>
   </ion-item>
 
@@ -46,19 +47,30 @@
     <ion-label class="ion-color-lavel" position="stacked"><ion-icon name="chatbox-ellipses-outline"></ion-icon>
       Observación 
     </ion-label>
-    <ion-textarea [(ngModel)]="data.observacion"></ion-textarea>
+    <ion-textarea class="fondoText" [(ngModel)]="data.observacionPedido"></ion-textarea>
   </ion-item>
 
 </ion-content>  
 
 <ion-footer>
   <ion-toolbar>
+    <div slot="start" class="fondoPrecio">  
+      <ion-button fill="clear" color="danger" [disabled]="!data.cantidadAdquirir" (click)="cantidadAus('menos')">
+        -
+      </ion-button>
+      <ion-button fill="clear" color="dark">
+        {{ data.cantidadAdquirir || 0 }}
+      </ion-button>
+      <ion-button fill="clear" color="danger" (click)="cantidadAus('mas')">
+        +
+      </ion-button>
+    </div>
     <div slot="end" class="fondoButton">
-      <ion-button fill="clear" color="light">
+      <ion-button fill="clear" color="light" (click)="agregarCarro()">
         <span slot="start">Agregar</span>
       </ion-button>
-      <ion-button fill="clear" color="light">
-        <span slot="end">{{ data.precio }}</span>
+      <ion-button fill="clear" color="light" (click)="agregarCarro()">
+        <span slot="end">{{ ( data.precioTotalForma ) }}</span>
       </ion-button>
     </div>
   </ion-toolbar>

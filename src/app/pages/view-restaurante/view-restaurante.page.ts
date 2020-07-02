@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DetalleProductoPage } from 'src/app/dialog/detalle-producto/detalle-producto.page';
+import { ToolsService } from 'src/app/services/tools.service';
 
 @Component({
   selector: 'app-view-restaurante',
@@ -20,7 +21,7 @@ export class ViewRestaurantePage implements OnInit {
     domicilio:{
       icon: "bicycle-outline",
       titulo: "Entregar en 60-70 min",
-      precio: "$ 7.000"
+      precio: "7000"
     },
     horarios:{
       dias: "Miercoles",
@@ -53,8 +54,8 @@ export class ViewRestaurantePage implements OnInit {
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
-            precioAnt: "$ 8.000",
+            precio: "6700",
+            precioPromo: "8000",
             restaurante: {},
             tiempo: "60-70 min",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
@@ -62,8 +63,8 @@ export class ViewRestaurantePage implements OnInit {
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
-            precioAnt: "$ 8.000",
+            precio: "6700",
+            precioPromo: "8000",
             restaurante: {},
             tiempo: "60-70 min",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
@@ -71,8 +72,8 @@ export class ViewRestaurantePage implements OnInit {
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
-            precioAnt: "$ 8.000",
+            precio: "6700",
+            precioPromo: "8000",
             restaurante: {},
             tiempo: "60-70 min",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
@@ -85,19 +86,22 @@ export class ViewRestaurantePage implements OnInit {
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
+            precio: "6700",
+            precioPromo: "8000",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
           },
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
+            precio: "6700",
+            precioPromo: "8000",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
           },
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
+            precio: "6700",
+            precioPromo: "8000",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
           }
         ]
@@ -108,19 +112,22 @@ export class ViewRestaurantePage implements OnInit {
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
+            precio: "6700",
+            precioPromo: "8000",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
           },
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
+            precio: "6700",
+            precioPromo: "8000",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
           },
           {
             titulo: "Pastel Ranchero",
             descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "$ 6.700",
+            precio: "6700",
+            precioPromo: "8000",
             foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
           }
         ]
@@ -131,10 +138,22 @@ export class ViewRestaurantePage implements OnInit {
   vista:string = "home";
 
   constructor(
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private _tools: ToolsService
   ) { }
 
   ngOnInit() {
+    for( let item of this.data.listCarta ){
+      for( let row of item.articulos ){
+        row.precioForma = this.convertiendo( row.precio );
+        row.precioPromoForma = this.convertiendo( row.precioPromo );
+      }
+    }
+    this.data.domicilio.precioForma = this.convertiendo( this.data.domicilio.precio );
+  }
+
+  convertiendo( numero ){
+    return this._tools.monedaChange( 3, 2, numero );
   }
 
   async openProducto( obj:any ){

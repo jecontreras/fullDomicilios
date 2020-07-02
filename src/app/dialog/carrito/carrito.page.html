@@ -1,0 +1,120 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>CARRITO</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-list-header>
+      Entregar en
+    </ion-list-header>
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="https://image.flaticon.com/icons/png/512/235/235861.png">
+      </ion-avatar>
+      <ion-label>
+        <h2 class="textSegtman">Casa</h2>
+        <h3 class="textSegtman">Cl 23 # 14 - 70</h3>
+        <p class="textSegtman">Casa . Cerca al Trigal Del Norte</p>
+      </ion-label>
+    </ion-item>
+    <ion-list-header>
+      Entrega
+    </ion-list-header>
+    <ion-item>
+      <ion-text>
+        <p>Agora, 60 - 70 min - $ 7.000</p>
+      </ion-text>
+    </ion-item>
+    <ion-list-header>
+      Pasteles y Pasteles
+    </ion-list-header>
+    <ion-item *ngFor="let item of listCarrito">
+      <ion-avatar slot="start" *ngIf="item.foto">
+        <img [src]="item.foto">
+      </ion-avatar>
+      <ion-text (click)="openArticulo( item )">
+        <h5>{{ item.cantidadAdquirir }}X {{ item.titulo }}</h5>
+      </ion-text>
+      <p slot="end">
+        <span>{{ item.precioTotalForm }}</span>
+        <ion-icon name="ellipsis-vertical-outline" (click)="presentActionSheet(item)"></ion-icon>
+      </p>
+    </ion-item>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <div class="ion-text-center">
+              <ion-text color="danger" (click)="openMas()">
+                <p>Agregar más productos</p>
+              </ion-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item>
+      <ion-text color="dark" slot="start">
+        <p>Subtotal</p>
+      </ion-text>
+      <ion-text color="dark" slot="end">
+        <p>{{ data.subtotalForm }}</p>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-text color="dark" slot="start">
+        <p>Costo de domicilio</p>
+      </ion-text>
+      <ion-text color="dark" slot="end">
+        <p>{{ data.costoDomicilioForm }}</p>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-text color="dark" slot="start">
+        <p>Total</p>
+      </ion-text>
+      <ion-text color="dark" slot="end">
+        <p>{{ data.totalForm }}</p>
+      </ion-text>
+    </ion-item>
+  </ion-list>
+  <ion-item>
+    <ion-avatar slot="start">
+      <img src="./assets/productos/cupon.png">
+    </ion-avatar>
+    <ion-label>
+      <h2>Cupon de descuento</h2>
+      <p>1 disponible</p>
+    </ion-label>
+    <ion-button fill="clear" color="danger">
+      Agregar
+    </ion-button>
+  </ion-item>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-list>
+      <ion-list-header>
+        <h2>Forma de pago</h2>
+      </ion-list-header>
+    </ion-list>
+    <ion-button color="danger" expand="block">
+      Elegir forma de pago
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

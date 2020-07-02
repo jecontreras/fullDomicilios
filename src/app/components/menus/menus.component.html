@@ -1,4 +1,18 @@
 <ion-footer>
+  <ion-toolbar *ngIf="countCarro.cantidad" class="carritoEdit" (click)="openCarrito()">
+    <ion-icon slot="start" name="cart-outline"></ion-icon>
+    <ion-badge class="estiloBad">{{ ( countCarro.cantidad || 0 ) }}</ion-badge>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center precioFormat">
+            Ver Carrito
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <p slot="end" class="precioFormat"> {{ countCarro.precio }} </p>
+  </ion-toolbar>
   <ion-segment scrollable mode="md" color="primary" class="bg_secondary_light text-white"
     (ionChange)="cambioView( $event )">
     <ion-segment-button mode="md" *ngFor="let item of listMenu">

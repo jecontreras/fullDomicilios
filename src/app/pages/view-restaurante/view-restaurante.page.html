@@ -35,7 +35,7 @@
 <ion-content *ngIf="vista =='home'">
   <br>
   <ion-item lines="none">
-    <ion-text colo="dark" slot="start">
+    <ion-text colo="dark" slot="start" (click)="vista = 'informacion'">
       <h5>{{ data.titulo  }}</h5>
       <span>{{ data.subtipo }} . {{ data.distancia }}</span>
     </ion-text>
@@ -50,16 +50,16 @@
     <br>
     <ion-list>
       <ion-item>
-        <ion-avatar slot="start">
+        <ion-avatar class="logoDomi" slot="start">
           <ion-icon [name]="data.domicilio.icon"></ion-icon>
         </ion-avatar>
         <ion-label>
           <h2>{{ data.domicilio.titulo }}</h2>
-          <p>{{ data.domicilio.precio }}</p>
+          <p>{{ data.domicilio.precioForma }}</p>
         </ion-label>
-        <ion-button slot="end" fill="clear">
+        <!-- <ion-button slot="end" fill="clear">
           Cambiar
-        </ion-button>
+        </ion-button> -->
       </ion-item>
     </ion-list>
   </ion-item>
@@ -86,7 +86,13 @@
           <ion-text color="dark">
             <h5 class="titulo">{{ articulo.titulo }}</h5>
             <h6 class="descripcion">{{ articulo.descripcion }}</h6>
-            <p class="precio">{{ articulo.precio }}</p>
+            <p *ngIf="!articulo.precioPromo">
+              <span class="precio"> {{ articulo.precioForma }}</span>
+            </p>
+            <p *ngIf="articulo.precioPromo">
+              <span class="precio precioFormat"> {{ articulo.precioPromoForma }}</span>
+              <span class="precioPromicion precioFormat"> {{ articulo.precioForma }}</span>
+            </p>
           </ion-text>
           <div slot="end">
             <img class="img_dimenciones rounded" [src]="articulo.foto">

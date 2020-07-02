@@ -35,7 +35,14 @@
 .textInformacion{
   font-size: 11px;
 }
-
+.precioFormat{
+  font-size: 13px;
+}
+.precioPromicion {
+  text-decoration: line-through;
+  color: green;
+  margin-left: 10px;
+}
 ion-list{
   border-radius: 12px !important;
 }
