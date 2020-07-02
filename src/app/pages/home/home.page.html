@@ -117,14 +117,4 @@
 
 </ion-content>
 
-<ion-footer>
-  <ion-segment scrollable mode="md" color="primary" class="bg_secondary_light text-white"
-    (ionChange)="cambioView( $event )">
-    <ion-segment-button mode="md" *ngFor="let item of listMenu">
-      <ion-icon color="dark" [name]="item.icon"></ion-icon>
-      <ion-text color="dark">
-        <ion-label class="titulo"> {{ item.titulo }}</ion-label>
-      </ion-text>
-    </ion-segment-button>
-  </ion-segment>
-</ion-footer>
+<app-menus></app-menus>

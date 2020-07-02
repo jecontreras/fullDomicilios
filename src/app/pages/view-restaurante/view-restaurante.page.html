@@ -1,5 +1,6 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar *ngIf="vista =='home'">
+    
     <img class="dimencionFoto" [src]="data.foto" >
     <ion-buttons slot="start" color="primary" class="poster-detalle-sobre">
       <ion-back-button defaultHref="/"></ion-back-button>
@@ -10,22 +11,43 @@
     </ion-button>
 
   </ion-toolbar>
+
+  <ion-toolbar *ngIf="vista =='informacion'">
+    <ion-button slot="start" fill="clear" (click)="vista = 'home'">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>INFORMACIÓN</h6><br>
+              <span class="textInformacion">{{ data.titulo }}</span>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="vista =='home'">
+  <br>
   <ion-item lines="none">
     <ion-text colo="dark" slot="start">
       <h5>{{ data.titulo  }}</h5>
       <span>{{ data.subtipo }} . {{ data.distancia }}</span>
     </ion-text>
     <div slot="end">
-      <ion-icon class="fin" name="chevron-forward-outline"></ion-icon><br>
+      <ion-icon class="fin" (click)="vista = 'informacion'" name="chevron-forward-outline"></ion-icon><br>
       <ion-text color="warning">
         <span>★ {{ data.rango }}</span>
       </ion-text>
     </div>
   </ion-item>
   <ion-item lines="none">
+    <br>
     <ion-list>
       <ion-item>
         <ion-avatar slot="start">
@@ -46,7 +68,7 @@
       <ion-text color="dark">
         <span>
           <ion-icon name="logo-usd"></ion-icon>
-          no hay pedido mínimo
+          {{ data.ordenMinima }}
         </span>
       </ion-text>
     </div>
@@ -60,7 +82,7 @@
             <h5>{{ item.tipo }}</h5>
           </ion-text>
         </ion-list-header>
-        <ion-item *ngFor="let articulo of item.articulos">
+        <ion-item *ngFor="let articulo of item.articulos" (click)="openProducto( articulo )">
           <ion-text color="dark">
             <h5 class="titulo">{{ articulo.titulo }}</h5>
             <h6 class="descripcion">{{ articulo.descripcion }}</h6>
@@ -77,3 +99,9 @@
     </ion-item>
   </ion-list>
 </ion-content>
+
+<ion-content *ngIf="vista == 'informacion'">
+  <app-detalles [detalle]="data"></app-detalles>
+</ion-content>
+
+<app-menus></app-menus>

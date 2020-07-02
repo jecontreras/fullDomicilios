@@ -4,7 +4,8 @@ import { HeaderComponent } from './header/header.component';
 import { IonicModule } from '@ionic/angular';
 import { PipeModule } from '../pipe/pipe.module';
 import { BuscadorComponent } from './buscador/buscador.component';
-import { AppRoutingModule } from '../app-routing.module';
+import { MenusComponent } from './menus/menus.component';
+import { DetallesComponent } from './detalles/detalles.component';
 
 
 
@@ -14,14 +15,17 @@ import { AppRoutingModule } from '../app-routing.module';
   ],
   declarations: [
     HeaderComponent,
-    BuscadorComponent
+    BuscadorComponent,
+    MenusComponent,
+    DetallesComponent
   ],
   exports: [
     HeaderComponent,
-    BuscadorComponent
+    BuscadorComponent,
+    MenusComponent,
+    DetallesComponent
   ],
-  imports: [
-    AppRoutingModule, 
+  imports: [ 
     CommonModule,
     IonicModule,
     PipeModule

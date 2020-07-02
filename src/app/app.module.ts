@@ -25,6 +25,7 @@ import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { VercionPageModule } from './dialog/vercion/vercion.module';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { NgxCurrencyModule } from "ngx-currency";
+import { ComponentsModule } from './components/components.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,7 +44,8 @@ import { NgxCurrencyModule } from "ngx-currency";
     VercionPageModule,
     SocketIoModule.forRoot( environment.socketConfig ),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    NgxCurrencyModule
+    NgxCurrencyModule,
+    ComponentsModule
   ],
   providers: [
     Geolocation,
