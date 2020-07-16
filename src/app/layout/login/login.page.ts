@@ -10,6 +10,7 @@ import { Indicativo } from 'src/app/JSON/indicativo';
 import { ModalController } from '@ionic/angular';
 import { PoliticasPage } from '../politicas/politicas.page';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 const indicativos = Indicativo;
 
@@ -44,7 +45,8 @@ export class LoginPage implements OnInit {
     private _router: Router,
     private modalCtrl: ModalController,
     private facebook: Facebook,
-    private _authSrvice: AuthService
+    private _authSrvice: AuthService,
+    private iab: InAppBrowser
   ) { 
     
     // if (this._authSrvice.isLoggedIn()) {
@@ -162,6 +164,23 @@ export class LoginPage implements OnInit {
       component: PoliticasPage,
       componentProps: {}
     }).then(modal=>modal.present());
+  }
+
+  openRecuperar( url:string ){
+    const browser = this.iab.create(url, '_system');
+  }
+
+  pruebas( opt: string ){
+    let user:string = "";
+    if( opt == 'usuario') user = "jose@email.com";
+    else user = "manolas@email.com";
+    this.btnDisabled = true;
+    this._user.get( { where: { email: user } } ).subscribe((res:any)=>{
+      res = res.data[0];
+      if( !res ) return this._tools.presentToast("Error estamos teniendo problemas con el servidor");
+      else this.ProcesoStorages( { data: res } );
+      this.btnDisabled = false;
+    })
   }
 
 }

@@ -8,6 +8,7 @@ import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
 import { PoliticasPageModule } from '../politicas/politicas.module';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   imports: [
@@ -16,6 +17,9 @@ import { PoliticasPageModule } from '../politicas/politicas.module';
     IonicModule,
     LoginPageRoutingModule,
     PoliticasPageModule
+  ],
+  providers:[
+    InAppBrowser
   ],
   declarations: [LoginPage]
 })
