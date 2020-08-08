@@ -41,6 +41,10 @@ const routes: Routes = [
     path: 'carrito',
     loadChildren: () => import('./dialog/carrito/carrito.module').then( m => m.CarritoPageModule)
   },
+  {
+    path: 'chat',
+    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
+  },
 
 
 

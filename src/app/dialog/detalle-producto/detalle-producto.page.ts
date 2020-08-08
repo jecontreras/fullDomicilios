@@ -9,7 +9,10 @@ import { CarritoAction } from 'src/app/redux/app.actions';
   styleUrls: ['./detalle-producto.page.scss'],
 })
 export class DetalleProductoPage implements OnInit {
+  
   data:any = {}; 
+  listDetalles:any = [];
+
   constructor(
     private modalCtrl: ModalController,
     private navparams: NavParams,
@@ -21,6 +24,18 @@ export class DetalleProductoPage implements OnInit {
     this.data.cantidadAdquirir = 1;
     this.data.precioTotal = this.data.precio;
     this.data.precioTotalForma = this.convertiendo( this.data.precioTotal );
+    this.listDetalles = [
+      {
+        titulo: "teriyaki",
+        subtitulo: "",
+        check: false
+      },
+      {
+        titulo: "picante",
+        subtitulo: "",
+        check: false
+      },
+    ]
   }
 
   cantidadAus( opt:string ){

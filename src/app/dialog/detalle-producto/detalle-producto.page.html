@@ -44,6 +44,16 @@
   </ion-item>
 
   <ion-item>
+    <ion-item lines="none" *ngFor="let item of listDetalles">
+      <ion-text color="dark" slot="start">
+        <span>{{ item.titulo }}</span><br>
+        <label *ngIf="item.subtitulo">{{ item.subtitulo }}</label>
+      </ion-text>
+      <ion-checkbox slot="end" [(ngModel)]="item.check" color="primary"></ion-checkbox>
+    </ion-item>
+  </ion-item>
+
+  <ion-item>
     <ion-label class="ion-color-lavel" position="stacked"><ion-icon name="chatbox-ellipses-outline"></ion-icon>
       Observación 
     </ion-label>
