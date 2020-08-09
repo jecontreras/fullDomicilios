@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-platos',
@@ -8,66 +9,19 @@ import { Component, OnInit } from '@angular/core';
 export class PlatosPage implements OnInit {
   
   lisFiltro:any = [];
-  listRow:any = [
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 1
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 2
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 3
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 4
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 5
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 6
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000",
-      id: 7
-    }
-  ];
+  listRow:any = [];
   tipoPlato:string = "TIPICA";
   ev:any = {};
   evScroll:any;
   query:any = {};
   loading:any;
 
-  constructor() { }
+  constructor(
+    private _dataServe: DataService
+  ) { }
 
   ngOnInit() {
+    this.listRow = this._dataServe.dbs.listRestaurante;
   }
 
   cambios(){

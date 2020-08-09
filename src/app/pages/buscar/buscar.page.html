@@ -1,0 +1,124 @@
+<ion-header>
+
+  <ion-toolbar>
+    <ion-buttons slot="start" color="primary" class="poster-detalle-sobre">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+
+    <ion-searchbar placeholder="Platillo o restaurante" animated [(ngModel)]="searchtxt" (change)="search()">
+    </ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content *ngIf="view == 'home'">
+
+  <ion-item lines="none">
+    <ion-text color="dark">
+      <h4>Buscas Recientes</h4>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none" *ngFor="let item of listHistorial" (click)="seleccionHist( item )">
+    <ion-icon slot="start" name="refresh-circle-outline"></ion-icon>
+    <ion-text color="dark">
+      <p>{{ item.titulo }}</p>
+    </ion-text>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-text color="dark">
+      <h4>Categorias</h4>
+    </ion-text>
+  </ion-item>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let item of listCategorias" (click)="openCategoria( item )">
+        <ion-card>
+          <img [src]="item.foto" />
+          <ion-card-header>
+            <ion-card-title>{{ item.descripcion }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+<ion-content *ngIf="view == 'buscando'">
+  
+  <ion-segment #tabs scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
+    <ion-segment-button mode="md" class="textSegtman segmenButton" [value]="item" *ngFor="let item of listOpcion">
+      <ion-label text-capitalize> {{ item }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-segment #vistas scrollable mode="md" color="primary" (ionChange)="cambioView2( $event )" *ngIf="view2 == 'restarurante'">
+    <ion-segment-button mode="md" class="textSegtman segmenButton" [value]="item.titulo" *ngFor="let item of listFiltro">
+      <ion-label text-capitalize> {{ item.titulo }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="view2 == 'restarurante'">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh( $event, 'restaurante')" pullMin="100" pullMax="100">
+      <ion-refresher-content>
+      </ion-refresher-content>
+    </ion-refresher>
+  
+    <ion-list>
+      <ion-item *ngFor="let item of listRow" [routerLink]="['/view-restaurante', item.id ]" >
+        <div slot="start">
+          <img class="img_dimenciones rounded" [src]="item.foto">
+        </div>
+        <ion-label>
+          <h2>{{ item.titulo }}</h2>
+          <h3>{{ item.rango }}</h3>
+          <p>{{ item.detalles }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll threshold="150px" (ionInfinite)="loadData( $event, 'restaurante' )">
+      <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+  
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+  <div *ngIf="view2 == 'platillos'">
+
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event, 'platillos')" pullMin="100" pullMax="100">
+      <ion-refresher-content>
+      </ion-refresher-content>
+    </ion-refresher>
+
+    <ion-item *ngFor="let articulo of listPlatos" (click)="openProducto( articulo )">
+      <ion-text color="dark">
+        <h5 class="titulo">{{ articulo.titulo }}</h5>
+        <h6 class="descripcion">{{ articulo.descripcion }}</h6>
+        <p *ngIf="!articulo.precioPromo">
+          <span class="precio"> {{ articulo.precioForma }}</span>
+        </p>
+        <p *ngIf="articulo.precioPromo">
+          <span class="precio precioFormat"> {{ articulo.precioPromoForma }}</span>
+          <span class="precioPromicion precioFormat"> {{ articulo.precioForma }}</span>
+        </p>
+      </ion-text>
+      <div slot="end">
+        <img class="img_dimenciones rounded" [src]="articulo.foto">
+      </div>
+      <!-- <ion-avatar slot="end">
+        <img [src]="articulo.foto">
+      </ion-avatar> -->
+    </ion-item>
+
+    <ion-infinite-scroll threshold="150px" (ionInfinite)=" loadData( $event, 'platillos' )">
+      <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+  
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+  </div>
+
+</ion-content>
+
+<app-menus></app-menus>

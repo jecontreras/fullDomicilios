@@ -61,6 +61,18 @@ export class CarritoPage implements OnInit {
     this.exit()
   }
 
+  openFormaPago(){
+
+  }
+
+  openCedula(){
+
+  }
+
+  finalVenta(){
+    
+  }
+
   async presentActionSheet( obj:any ) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Albums',

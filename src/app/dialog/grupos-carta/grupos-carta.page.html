@@ -1,0 +1,45 @@
+<ion-content>
+  
+  <ion-button fill="clear" size="small" (click)="exit()" color="dark" class="btnClose">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <img [src]="dataParams.foto" class="fotoImg" alt="">
+  <ion-item>
+    <ion-text color="dark">
+      <h5>{{ dataParams.descripcion }}</h5>
+    </ion-text>
+  </ion-item>
+  
+  <ion-segment #vistas scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
+    <ion-segment-button mode="md" class="textSegtman segmenButton" [value]="item.titulo" *ngFor="let item of listOpcion">
+      <ion-label text-capitalize> {{ item.titulo }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let item of listRow" (click)="openProducto( item )">
+        <ion-card>
+          <img [src]="item.foto" />
+          <ion-card-header>
+            <ion-card-title>{{ item.titulo | slice: 100 }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-text color="dark">
+              <span>A partir de {{ item.precioForma }}</span><br>
+              <label>DOMICILIO {{ item.valorDomicilioForma }}</label>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button color="danger" expand="block" (click)="exit()">
+      Volver a inicio
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

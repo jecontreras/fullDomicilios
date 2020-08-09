@@ -48,7 +48,7 @@
         <img [src]="item.foto">
       </ion-avatar>
       <ion-text (click)="openArticulo( item )">
-        <h5>{{ item.cantidadAdquirir }}X {{ item.titulo }}</h5>
+        <h6>{{ item.cantidadAdquirir }}X {{ item.titulo }}</h6>
       </ion-text>
       <p slot="end">
         <span>{{ item.precioTotalForm }}</span>
@@ -105,16 +105,35 @@
       Agregar
     </ion-button>
   </ion-item>
+  <ion-list>
+    <ion-list-header>
+      <h2>Forma de pago</h2>
+    </ion-list-header>
+    <ion-item>
+      <ion-text color="dark" slot="start">
+        <span>Formas de pago</span>
+      </ion-text>
+      <ion-button slot="end" fill="clear" color="danger" (click)="openFormaPago()">
+        Elegir
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-text color="dark" slot="start">
+        <span>CC/NIT</span>
+      </ion-text>
+      <ion-button slot="end" fill="clear" color="danger" (click)="openCedula()">
+        Cambiar
+      </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-list>
-      <ion-list-header>
-        <h2>Forma de pago</h2>
-      </ion-list-header>
-    </ion-list>
-    <ion-button color="danger" expand="block">
+    <ion-button color="danger" expand="block" (click)="openFormaPago()" *ngIf="!data.formaPago">
       Elegir forma de pago
+    </ion-button>
+    <ion-button color="danger" expand="block" (click)="finalVenta()" *ngIf="data.formaPago">
+      Hacer pedido
     </ion-button>
   </ion-toolbar>
 </ion-footer>

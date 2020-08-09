@@ -28,7 +28,7 @@
 
   <ion-toolbar>
     <ion-slides [options]="slideOpts">
-      <ion-slide *ngFor="let off of listCartas" [routerLink]="['/listcategoria', off.id]">
+      <ion-slide *ngFor="let off of listCartas" (click)="openGrupos( off )">
         <ion-card class="padding_car">
           <img [src]="off.foto">
           <ion-card-content no-border class="padding_car">
@@ -102,7 +102,7 @@
       <ion-list-header>
         Restaurante
       </ion-list-header>
-      <ion-item *ngFor="let item of listRestaurante">
+      <ion-item *ngFor="let item of listRestaurante" [routerLink]="['/view-restaurante', item.id ]">
         <ion-avatar slot="start">
           <img [src]="item.foto">
         </ion-avatar>

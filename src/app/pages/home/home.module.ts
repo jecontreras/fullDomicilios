@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { GruposCartaPageModule } from 'src/app/dialog/grupos-carta/grupos-carta.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    GruposCartaPageModule
   ],
   declarations: [HomePage]
 })

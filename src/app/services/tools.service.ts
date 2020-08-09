@@ -99,7 +99,6 @@ export class ToolsService {
     return new Promise( resolve=>{
       let accion = new modelo( data, 'post');
       this._store.dispatch( accion );
-      console.log( data, modelo, accion)
       resolve( true );
     });
   }

@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { ToolsService } from 'src/app/services/tools.service';
 import { ModalController } from '@ionic/angular';
 import { CarritoPage } from 'src/app/dialog/carrito/carrito.page';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menus',
@@ -38,6 +39,7 @@ export class MenusComponent implements OnInit {
     private _store: Store<STORAGES>,
     private _tools: ToolsService,
     private modalCtrl: ModalController,
+    private Router: Router
   ) { 
     this._store.subscribe((store:any)=>{
          store = store.name;
@@ -75,7 +77,8 @@ export class MenusComponent implements OnInit {
   }
 
   cambioView( event:any ){
-    console.log( event );
+    let select:any = event.detail.value;
+    if ( select == 'Buscar') this.Router.navigate(['/buscar']);
   }
 
 }

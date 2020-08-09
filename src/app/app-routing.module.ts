@@ -45,6 +45,14 @@ const routes: Routes = [
     path: 'chat',
     loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
   },
+  {
+    path: 'grupos-carta',
+    loadChildren: () => import('./dialog/grupos-carta/grupos-carta.module').then( m => m.GruposCartaPageModule)
+  },
+  {
+    path: 'buscar',
+    loadChildren: () => import('./pages/buscar/buscar.module').then( m => m.BuscarPageModule)
+  },
 
 
 

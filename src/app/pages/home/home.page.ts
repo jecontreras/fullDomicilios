@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { GruposCartaPage } from 'src/app/dialog/grupos-carta/grupos-carta.page';
+import { DataService } from 'src/app/services/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -14,107 +18,30 @@ export class HomePage implements OnInit {
     freeMode: true
   };
 
-  listCartas:any = [
-    {
-      foto:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQEXOdnWrzZgtxWzIZyMRMYmJUBZXvKY9egTQ&usqp=CAU",
-      descripcion: "¡Pide de 11:00 am a 3:00 pm y disfruta!"
-    },
-    {
-      foto:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ9IC-ciQRfqJf5JJ3MoGAWF9xqdcD7llRGCg&usqp=CAU",
-      descripcion: "Descubre algo nuevo"
-    }
-  ];
-  
   slideCosina = {
     slidesPerView: 3,
     freeMode: true
   };
 
-  listCocinas:any = [
-    {
-      foto:"https://cdn.viajala.com/img/blog/hornado.jpg?zIvKREsIOfDEQLzbBC3t4DnDzqUH4GVK",
-      id: 1,
-      descripcion: "Tipica"
-    },
-    {
-      foto:"https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg",
-      id: 2,
-      descripcion: "Parrilla"
-    },
-    {
-      foto:"https://gastronomiaycia.republica.com/wp-content/uploads/2011/08/hct_polloasadoconcha.jpg",
-      id: 3,
-      descripcion: "Pollo"
-    }
-  ];
+  listCartas:any = [];
 
-  listRestaurante:any = [
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    },
-    {
-      foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
-      titulo: "Donde la Negra Costeña",
-      rango: "* 4,8 . Tipica . 7,7km",
-      detalles: "45-55 min . $ 5.000"
-    }
-  ];
+  listCocinas:any = [];
 
-  listMenu:any = [
-    {
-      titulo: "Inicio",
-      icon: "home-outline"
-    },
-    {
-      titulo: "Buscar",
-      icon: "search-outline"
-    },
-    {
-      titulo: "Pedidos",
-      icon: "clipboard-outline"
-    },
-    {
-      titulo: "Perfil",
-      icon: "person-outline"
-    }
-  ];
+  listRestaurante:any = [];
 
-  constructor() { }
+  listMenu:any = [];
+
+  constructor(
+    private modalCtrl: ModalController,
+    private _dataServe: DataService
+  ) { }
 
   ngOnInit() {
+    this.listCartas = this._dataServe.dbs.listCartas;
+    this.listCocinas = this._dataServe.dbs.listCocinas;
+    this.listRestaurante = this._dataServe.dbs.listRestaurante;
+    this.listMenu = this._dataServe.dbs.listMenu;
+
     console.log( this.listRestaurante );
   }
 
@@ -126,8 +53,14 @@ export class HomePage implements OnInit {
 
   }
 
-  cambioView( event:any ){
-    console.log( event );
+  async openGrupos( off ){
+    const modal = await this.modalCtrl.create({
+      component: GruposCartaPage,
+      componentProps: {
+        obj: off || {}
+      },
+    });
+    modal.present();
   }
 
 }

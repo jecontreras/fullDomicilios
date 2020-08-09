@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DetalleProductoPage } from 'src/app/dialog/detalle-producto/detalle-producto.page';
 import { ToolsService } from 'src/app/services/tools.service';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-view-restaurante',
@@ -11,144 +12,18 @@ import { ToolsService } from 'src/app/services/tools.service';
 export class ViewRestaurantePage implements OnInit {
   
   restaurante:string = "";
-  data:any = {
-    titulo: "Pasteles y Pasteles",
-    subtipo: "Tipica",
-    foto: "./assets/productos/foto.png",
-    distancia: "2,5km",
-    rango: "4.4 (19)",
-    ordenMinima: "no hay pedido mínimo",
-    domicilio:{
-      icon: "bicycle-outline",
-      titulo: "Entregar en 60-70 min",
-      precio: "7000"
-    },
-    horarios:{
-      dias: "Miercoles",
-      hora: "11:00 a las 20:00",
-      listPagos: [
-        {
-          titulo: "Mastercad",
-          foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSId0Av1GgTDGYur7nqDSfg7WU6sjv1ueKjAw&usqp=CAU"
-        },
-        {
-          titulo: "Mastercad",
-          foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSId0Av1GgTDGYur7nqDSfg7WU6sjv1ueKjAw&usqp=CAU"
-        },
-        {
-          titulo: "Mastercad",
-          foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSId0Av1GgTDGYur7nqDSfg7WU6sjv1ueKjAw&usqp=CAU"
-        }
-      ],
-      listPagosEntrega: [
-        {
-          titulo: "Efectivo",
-          foto: "https://i0.pngocean.com/files/178/28/878/computer-icons-money-bag-bank-clip-art-cash.jpg"
-        },
-      ]
-    },
-    listCarta:[
-      {
-        tipo: "Pasteles Gourmet",
-        articulos:[
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            restaurante: {},
-            tiempo: "60-70 min",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          },
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            restaurante: {},
-            tiempo: "60-70 min",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          },
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            restaurante: {},
-            tiempo: "60-70 min",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          }
-        ]
-      },
-      {
-        tipo: "Combos",
-        articulos:[
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          },
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          },
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          }
-        ]
-      },
-      {
-        tipo: "Arepas rellenas",
-        articulos:[
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          },
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          },
-          {
-            titulo: "Pastel Ranchero",
-            descripcion: "Salchicha ranchera de zenú con jamón y queso mozarella",
-            precio: "6700",
-            precioPromo: "8000",
-            foto: "https://previews.123rf.com/images/visionsi/visionsi1410/visionsi141000476/32943570-plato-sano-de-carnes-mixtas-incluyendo-bistec-a-la-parrilla-comida-balc%C3%A1nica.jpg"
-          }
-        ]
-      }
-    ]
-  };
+  data:any = {};
   id:any = "";
   vista:string = "home";
 
   constructor(
     private modalCtrl: ModalController,
-    private _tools: ToolsService
+    private _tools: ToolsService,
+    private _dataServe: DataService
   ) { }
 
   ngOnInit() {
-    for( let item of this.data.listCarta ){
-      for( let row of item.articulos ){
-        row.precioForma = this.convertiendo( row.precio );
-        row.precioPromoForma = this.convertiendo( row.precioPromo );
-      }
-    }
+    this.data = this._dataServe.dbs;
     this.data.domicilio.precioForma = this.convertiendo( this.data.domicilio.precio );
   }
 

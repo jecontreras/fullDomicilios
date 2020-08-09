@@ -42,16 +42,27 @@
       {{ data.tiempo }}
     </p>
   </ion-item>
-
-  <ion-item>
-    <ion-item lines="none" *ngFor="let item of listDetalles">
-      <ion-text color="dark" slot="start">
-        <span>{{ item.titulo }}</span><br>
-        <label *ngIf="item.subtitulo">{{ item.subtitulo }}</label>
-      </ion-text>
-      <ion-checkbox slot="end" [(ngModel)]="item.check" color="primary"></ion-checkbox>
-    </ion-item>
-  </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" *ngFor="let item of listDetalles" lines="none">
+        <div class="fondoDetalle">
+          <ion-text color="dark">
+            <h4>{{ item.titulo }} *</h4>
+          </ion-text>
+        </div>
+        <ion-list>
+          <ion-item lines="none" *ngFor="let row of item.lista">
+            <ion-text color="dark" slot="start">
+              <span>{{ row.titulo }}</span><br>
+              <label *ngIf="row.subtitulo">{{ row.subtitulo }}</label><br>
+              <label *ngIf="row.detalle">{{ row.detalle }}</label>
+            </ion-text>
+            <ion-checkbox slot="end" [(ngModel)]="row.check" (click)="validadorSeleccion( item, row )" color="danger"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-item>
     <ion-label class="ion-color-lavel" position="stacked"><ion-icon name="chatbox-ellipses-outline"></ion-icon>

@@ -1,0 +1,45 @@
+.img_dimenciones{
+    height: 86px;
+    width: 106px;
+    -webkit-box-align: center;
+    align-items: center;
+    min-width: 106px;
+    min-height: 86px;
+    border-radius: 8px;
+    max-height: 120px;
+    max-width: 120px;
+}
+
+
+.poster-detalle-sobre {
+    position: relative;
+    top: -34px;
+    left: -10px;
+    margin-bottom: -75px;
+}
+
+.dimencionFoto{
+    max-height: 81px;
+    min-height: 80px;
+    max-width: 195px;
+    min-width: 190px;
+}
+
+.fin{
+    position: relative;
+    right: -57px;
+}
+.titulo {
+    font-size: 14px;
+}
+.descripcion{
+    font-size: 12px;
+}
+
+.precio{
+    color: #860909;
+}
+
+.logoDomi{
+    margin-top: 16px;
+}
