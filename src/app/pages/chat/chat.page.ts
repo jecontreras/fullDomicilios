@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-
+  
+  messages2:any = [];
+  
   constructor() { }
 
   ngOnInit() {
