@@ -1,56 +1,177 @@
-<ion-header class="ionToolbarHeaderChat">
-  <ion-toolbar class="ionToolbarHeaderChat">
-    <ion-button slot="start" fill="clear" (click)="exit()" color="light">
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <div class="ion-text-center">
-    <ion-text color="dark">
-      <h1>EL MANDADO <br>HA SIDO<br>COMPLETADO</h1>
-    </ion-text>
-    <ion-text color="dark">
-      <p>¿Cómo calificas a {{ data.chatDe.nombre }} {{ data.chatDe.apellido }}?</p>
-    </ion-text>
     <ion-grid>
       <ion-row>
         <ion-col size="12">
-          <div class="clasificacion">
-            <div class="ion-text-center">
-              <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="dataForm.valoracion">
-              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=5}" for="radio1">★</label>
-              <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="dataForm.valoracion">
-              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=4}" for="radio2">★</label>
-              <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="dataForm.valoracion">
-              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=3}" for="radio3">★</label>
-              <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="dataForm.valoracion">
-              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=2}" for="radio4">★</label>
-              <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="dataForm.valoracion">
-              <label class="label" [ngClass]="{'checkcolor':dataForm.valoracion >=1}" for="radio5">★</label>
-            </div>
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>CALIFICA</h6>
+            </ion-text>
           </div>
         </ion-col>
       </ion-row>
     </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <img [src]="fotoCalificar" class="anchosIMG" alt="">
+
+  <ion-item lines="none">
     <ion-text color="dark">
-      <p>Envíanos comentarios <br> (esto no lo verá el driver) <br> Tu opinion es muy importante para nosotros </p>
+      <h4>Califica tu pedido</h4><br>
+      <p>{{ data.create | date:'medium' }} . {{ data.empresa.titulo }}</p>
     </ion-text>
-    <ion-item class="ion-padding">
-      <ion-textarea rows="6" cols="20" placeholder="Escriba un mensaje" [(ngModel)]="dataForm.descripcion">
-      </ion-textarea>
-    </ion-item>
-  </div>
+  </ion-item>
+
+  <ion-item *ngFor="let item of data.listArticulos">
+    <ion-avatar slot="start" *ngIf="item.foto">
+      <img [src]="item.foto">
+    </ion-avatar>
+    <ion-text (click)="openArticulo( item )">
+      <h6>{{ item.cantidadAdquirir || 1 }}X {{ item.titulo }}</h6>
+    </ion-text>
+    <p slot="end">
+      <span>{{ item.precioTotalForm }}</span>
+    </p>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-text color="dark">
+      <h4>¿Tu pedido llegó a tiempo?</h4><br>
+      <p>Tiempo estimado de entrega: {{ data.tiempoEstimado }}</p>
+    </ion-text>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <h6>Si, llegó a tiempo</h6>
+    </ion-text>
+    <ion-checkbox slot="end" color="primary"></ion-checkbox>  
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <h6>No, llegó tarde</h6>
+    </ion-text>
+    <ion-checkbox slot="end" color="primary"></ion-checkbox>  
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <h4>¿Cuántas estrellas merece?</h4><br>
+      <p>Evalua tu experiencia con los siguientes criterios</p>
+    </ion-text>
+  </ion-item>
+  
+  <ion-item>
+    <ion-text color="dark" slot="start">
+      <h6>Embalaje</h6>
+    </ion-text>
+    <div slot="end">
+      <div class="clasificacion">
+        <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=5}" for="radio1">★</label>
+        <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=4}" for="radio2">★</label>
+        <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=3}" for="radio3">★</label>
+        <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=2}" for="radio4">★</label>
+        <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=1}" for="radio5">★</label>
+      </div>
+    </div>
+  </ion-item>
+
+  <ion-item>
+    <ion-text color="dark" slot="start">
+      <h6>Tiempo de entrega</h6>
+    </ion-text>
+    <div slot="end">
+      <div class="clasificacion">
+        <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=5}" for="radio1">★</label>
+        <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=4}" for="radio2">★</label>
+        <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=3}" for="radio3">★</label>
+        <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=2}" for="radio4">★</label>
+        <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=1}" for="radio5">★</label>
+      </div>
+    </div>
+  </ion-item>
+  <ion-item>
+    <ion-text color="dark" slot="start">
+      <h6>Comida</h6>
+    </ion-text>
+    <div slot="end">
+      <div class="clasificacion">
+        <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=5}" for="radio1">★</label>
+        <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=4}" for="radio2">★</label>
+        <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=3}" for="radio3">★</label>
+        <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=2}" for="radio4">★</label>
+        <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=1}" for="radio5">★</label>
+      </div>
+    </div>
+  </ion-item>
+  <ion-item>
+    <ion-text color="dark" slot="start">
+      <h6>Costo/Beneficio</h6>
+    </ion-text>
+    <div slot="end">
+      <div class="clasificacion">
+        <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=5}" for="radio1">★</label>
+        <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=4}" for="radio2">★</label>
+        <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=3}" for="radio3">★</label>
+        <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=2}" for="radio4">★</label>
+        <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="data.calificacion">
+        <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=1}" for="radio5">★</label>
+      </div>
+    </div>
+  </ion-item>
+
+  <ion-item>
+    <ion-textarea placeholder="Dejar un comentario" readonly></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-text color="dark">
+      <h4>Califica a FullDomicilio</h4><br>
+      <span>En una escala del 0 al 10 ¿Qué tan probable es que nos recomiendes con un amigo?</span>
+    </ion-text>
+  </ion-item>
+
+  <ion-item>
+    <ion-toolbar>
+      <div class="ion-text-center">
+        <ion-chip *ngFor="let item of listNumeros">
+          <ion-label color="secondary">{{ item }}</ion-label>
+        </ion-chip>
+      </div>
+    </ion-toolbar>
+  </ion-item>
 
 </ion-content>
 
-<ion-footer class="ionToolbarHeaderChat">
-  <ion-toolbar class="ionToolbarHeaderChat">
-    <div class="ion-text-center">
-      <ion-button class="ionButton" (click)="submitComentario()" [disabled]="btndisableComentario">
-        Enviar
-      </ion-button>
-    </div>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="full" color="danger">
+      Calificar
+    </ion-button>
   </ion-toolbar>
 </ion-footer>

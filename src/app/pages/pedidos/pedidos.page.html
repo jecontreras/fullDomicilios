@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <div class="ion-text-center">
+      <h5>PEDIDOS</h5>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="100">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item *ngFor="let item of listRow" lines="none" (click)="opendetalles( item )">
+      <div slot="start">
+        <h5>
+          {{ item.createdAt | date: "dd LLL" }}
+        </h5>
+      </div>
+      <ion-label>
+        <h2>{{ item.titulo }}</h2>
+        <p>{{ item.descripcion }}</p>
+        <ion-button color="danger" fill="outline">Calificar</ion-button>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="  ( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>

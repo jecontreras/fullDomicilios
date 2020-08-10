@@ -26,9 +26,13 @@ import { VercionPageModule } from './dialog/vercion/vercion.module';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { NgxCurrencyModule } from "ngx-currency";
 import { ComponentsModule } from './components/components.module';
+import { AdminComponent } from './pages/admin/admin.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    AdminComponent
+  ],
   entryComponents: [],
   imports: [
     BrowserModule, 

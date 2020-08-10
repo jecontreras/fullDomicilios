@@ -33,7 +33,7 @@
           <img [src]="off.foto">
           <ion-card-content no-border class="padding_car">
             <ion-list class="ion_list">
-              <ion-item>
+              <ion-item lines="none">
                 <!-- <ion-avatar slot="start">
                   <img [src]="off.foto2">
                 </ion-avatar> -->
@@ -79,7 +79,7 @@
           <img [src]="off.foto">
           <ion-card-content no-border class="padding_car">
             <ion-list class="ion_list">
-              <ion-item>
+              <ion-item lines="none">
                 <!-- <ion-avatar slot="start">
                   <img [src]="off.foto2">
                 </ion-avatar> -->
@@ -102,7 +102,7 @@
       <ion-list-header>
         Restaurante
       </ion-list-header>
-      <ion-item *ngFor="let item of listRestaurante" [routerLink]="['/view-restaurante', item.id ]">
+      <ion-item *ngFor="let item of listRestaurante" [routerLink]="['/view-restaurante', item.id ]" lines="none">
         <ion-avatar slot="start">
           <img [src]="item.foto">
         </ion-avatar>
@@ -116,5 +116,3 @@
   </ion-toolbar>
 
 </ion-content>
-
-<app-menus></app-menus>

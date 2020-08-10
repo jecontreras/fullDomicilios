@@ -4,7 +4,7 @@
       <ion-text color="dark">
         <h5>Horarios de domicilio <ion-icon name="chevron-down-outline"></ion-icon></h5>
       </ion-text>
-      <ion-item>
+      <ion-item lines="none">
         <p class="textInformacion" slot="start">{{ data.horarios.dias }}</p>
         <p class="textInformacion" >{{ data.horarios.hora }}</p>
       </ion-item>
@@ -14,7 +14,7 @@
         <h5>Paga en la app </h5>
       </ion-text>
       <ion-list>
-        <ion-item>
+        <ion-item lines="none">
           <ion-chip outline *ngFor="let item of data.horarios.listPagos">
             <ion-avatar>
               <img [src]="item.foto">
@@ -29,7 +29,7 @@
         <h5>Paga en la entrega </h5>
       </ion-text>
       <ion-list>
-        <ion-item>
+        <ion-item lines="none">
           <ion-chip outline *ngFor="let item of data.horarios.listPagosEntrega">
             <ion-avatar>
               <img [src]="item.foto">

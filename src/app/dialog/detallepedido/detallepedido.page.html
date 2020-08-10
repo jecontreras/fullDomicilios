@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="exit()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>DETALLES DEL PEDIDO</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item lines="none">
+    <h5>{{ data.empresa.titulo }}</h5>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="danger">
+      <span>
+        <div class="clasificacion">
+          <input id="radio1" type="radio" name="estrellas" value="5" [(ngModel)]="data.calificacion">
+          <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=5}" for="radio1">★</label>
+          <input id="radio2" type="radio" name="estrellas" value="4" [(ngModel)]="data.calificacion">
+          <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=4}" for="radio2">★</label>
+          <input id="radio3" type="radio" name="estrellas" value="3" [(ngModel)]="data.calificacion">
+          <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=3}" for="radio3">★</label>
+          <input id="radio4" type="radio" name="estrellas" value="2" [(ngModel)]="data.calificacion">
+          <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=2}" for="radio4">★</label>
+          <input id="radio5" type="radio" name="estrellas" value="1" [(ngModel)]="data.calificacion">
+          <label class="label label2" [ngClass]="{'checkcolor':data.calificacion >=1}" for="radio5">★</label>
+        </div>
+      </span>
+      <h6 (click)="openCalificar()">Calificar pedido</h6>
+    </ion-text>
+  </ion-item>
+  <ion-item *ngFor="let item of data.listArticulos">
+    <ion-avatar slot="start" *ngIf="item.foto">
+      <img [src]="item.foto">
+    </ion-avatar>
+    <ion-text (click)="openArticulo( item )">
+      <h6>{{ item.cantidadAdquirir || 1 }}X {{ item.titulo }}</h6>
+    </ion-text>
+    <p slot="end">
+      <span>{{ item.precioTotalForm }}</span>
+    </p>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <p>Subtotal</p>
+    </ion-text>
+    <ion-text color="dark" slot="end">
+      <p>{{ data.subtotalForm }}</p>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <p>Costo de domicilio</p>
+    </ion-text>
+    <ion-text color="dark" slot="end">
+      <p>{{ data.costoDomicilioForm }}</p>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <p>Total</p>
+    </ion-text>
+    <ion-text color="dark" slot="end">
+      <p>{{ data.totalForm }}</p>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="danger">
+      <h5>Dirección de domicilio</h5>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark">
+      <p class="textInfo">{{ data.direccion }}</p>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="danger">
+      <h5>Más informacion</h5>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <p class="textInfo">N° de pedido</p>
+    </ion-text>
+    <ion-text color="dark" slot="end">
+      <p class="textInfo">{{ data.numeroPedido }}</p>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <p class="textInfo">Fecha del pedido</p>
+    </ion-text>
+    <ion-text color="dark" slot="end">
+      <p class="textInfo">{{ data.createdAt | date:'medium' }}</p>
+    </ion-text>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-text color="dark" slot="start">
+      <p class="textInfo">Dinheiro</p>
+    </ion-text>
+    <ion-text color="dark" slot="end">
+      <p class="textInfo">Cambio de {{ data.cambioDe }}</p>
+    </ion-text>
+  </ion-item>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="full" fill="clear" color="danger" (click)="openMenu()">
+      Ver menú completo
+    </ion-button>
+    <ion-button expand="full" color="danger" (click)="cerrarCompra()">
+      Pedir de nuevo
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -1,4 +1,4 @@
-package com.manda2.app;
+package com.fulldomicilios.app;
 
 import android.os.Bundle;
 

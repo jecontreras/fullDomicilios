@@ -1,0 +1,41 @@
+.colorText {
+    color: white;
+}
+.label {
+    font-size: 20px;
+  }
+  .label2 {
+    font-size: 15px;
+  }
+  
+  input[type="radio"] {
+    display: none;
+  }
+  
+  .label {
+    color: grey;
+    //font-size: 45px;
+  }
+  
+  .clasificacion {
+    direction: rtl;
+    text-align: left;   
+    unicode-bidi: bidi-override;
+  }
+  
+  .label:hover,
+  .label:hover ~ .label {
+    color: orange;
+  }
+  
+  input[type="radio"]:checked ~ .label {
+    color: orange;
+  }
+  .checkcolor {
+    color: orange;
+  }
+
+
+  .textInfo{
+    font-size: 12px;
+  }

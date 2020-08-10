@@ -23,7 +23,7 @@
   </ion-refresher>
 
   <ion-list>
-    <ion-item *ngFor="let item of listRow" [routerLink]="['/view-restaurante', item.id ]" >
+    <ion-item *ngFor="let item of listRow" [routerLink]="['/view-restaurante', item.id ]"  lines="none">
       <div slot="start">
         <img class="img_dimenciones rounded" [src]="item.foto">
       </div>
@@ -41,5 +41,3 @@
   </ion-infinite-scroll>
 
 </ion-content>
-
-<app-menus></app-menus>

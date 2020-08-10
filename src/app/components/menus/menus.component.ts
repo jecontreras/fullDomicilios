@@ -79,6 +79,8 @@ export class MenusComponent implements OnInit {
   cambioView( event:any ){
     let select:any = event.detail.value;
     if ( select == 'Buscar') this.Router.navigate(['/buscar']);
+    if( select == "Inicio" ) this.Router.navigate(['/home']);
+    if( select == "Pedidos" ) this.Router.navigate(['/pedidos']);
   }
 
 }

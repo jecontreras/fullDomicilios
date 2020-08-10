@@ -172,6 +172,56 @@ export class DataService {
       },
     ]
     let tabsBuscador:any = ["Restaurante","Platillos"];
+    let listPedidos:any = [
+      {
+        titulo: "Cerdo y pollo",
+        descripcion: "1x Costilla de Cerdo Ahumado",
+        createdAt: new Date(),
+        calificacion: 5,
+        listArticulos: listArticulos,
+        subtotalForm: "$ 12.000",
+        costoDomicilioForm: "$ 4.000",
+        totalForm: "$ 16.000",
+        direccion: "Cl 23 # 14 - 70 entregar en las manos - casa brisa del molino - Cucuta - NORTE DE SANTANDER",
+        numeroPedido: "001",
+        cambioDe: "$ 20.000",
+        empresa: {
+          titulo: "Cerdo y Pollito"
+        }
+      },
+      {
+        titulo: "Cerdo y pollo",
+        descripcion: "1x Costilla de Cerdo Ahumado",
+        createdAt: new Date(),
+        calificacion: 5,
+        listArticulos: listArticulos,
+        subtotalForm: "$ 12.000",
+        costoDomicilioForm: "$ 4.000",
+        totalForm: "$ 16.000",
+        direccion: "Cl 23 # 14 - 70 entregar en las manos - casa brisa del molino - Cucuta - NORTE DE SANTANDER",
+        numeroPedido: "001",
+        cambioDe: "$ 20.000",
+        empresa: {
+          titulo: "Cerdo y Pollito"
+        }
+      },
+      {
+        titulo: "Cerdo y pollo",
+        descripcion: "1x Costilla de Cerdo Ahumado",
+        createdAt: new Date(),
+        calificacion: 5,
+        listArticulos: listArticulos,
+        subtotalForm: "$ 12.000",
+        costoDomicilioForm: "$ 4.000",
+        totalForm: "$ 16.000",
+        direccion: "Cl 23 # 14 - 70 entregar en las manos - casa brisa del molino - Cucuta - NORTE DE SANTANDER",
+        numeroPedido: "001",
+        cambioDe: "$ 20.000",
+        empresa: {
+          titulo: "Cerdo y Pollito"
+        }
+      },
+    ];
     for( let row of listArticulos ){
       row.precioForma = this.convertiendo( row.precio );
       row.precioPromoForma = this.convertiendo( row.precioPromo );
@@ -192,6 +242,7 @@ export class DataService {
       listOpcion: listOpcion,
       listHistorial: listHistorial,
       tabsBuscador: tabsBuscador,
+      listPedidos: listPedidos,
       domicilio: {
         icon: "bicycle-outline",
         titulo: "Entregar en 60-70 min",

@@ -20,6 +20,10 @@ export class CalificacionPage implements OnInit {
     valoracion: 5
   };
 
+  fotoCalificar:string = "./assets/images/calificar.jpg";
+
+  listNumeros:any = [1,2,3,4,5];
+
   constructor(
     private modalCtrl: ModalController,
     private _store: Store<STORAGES>,
@@ -38,21 +42,6 @@ export class CalificacionPage implements OnInit {
   ngOnInit() {
     this.data = this.navparams.get('obj');
   }
-
-  submitComentario(){
-    let data = this.dataForm;
-    data.creador = this.dataUser.id;
-    data.usuario = this.data.chatDe.id;
-    data.ordenes = this.data.ordenes.id;
-    this.btndisableComentario = true;
-    this._resena.saved( data ).subscribe((res:any)=>{
-      this._tools.presentToast( "Comentario Agregado" );
-      this.dataForm = { valoracion: 5 };
-      this.btndisableComentario = false;
-      this.exit();
-    },(error:any) => { this._tools.presentToast(" Error de Servidor "); this.btndisableComentario = false; });
-  }
-
 
   exit(){
     this.modalCtrl.dismiss();

@@ -1,6 +1,6 @@
 {
   "appId": "com.fulldomicilios.app",
-  "appName": "FullDomicilios",
+  "appName": "android",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
