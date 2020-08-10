@@ -25,15 +25,15 @@ export class DetallepedidoPage implements OnInit {
     this.data = this.navparams.get('obj');
   }
 
-  openArticulo(){
-
-  }
-
   openMenu(){
 
   }
 
   cerrarCompra(){
+
+  }
+
+  openArticulo( item ){
 
   }
 

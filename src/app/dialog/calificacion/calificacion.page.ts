@@ -43,6 +43,10 @@ export class CalificacionPage implements OnInit {
     this.data = this.navparams.get('obj');
   }
 
+  openArticulo( item:any ){
+
+  }
+
   exit(){
     this.modalCtrl.dismiss();
   }

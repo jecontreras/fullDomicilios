@@ -81,6 +81,7 @@ export class MenusComponent implements OnInit {
     if ( select == 'Buscar') this.Router.navigate(['/buscar']);
     if( select == "Inicio" ) this.Router.navigate(['/home']);
     if( select == "Pedidos" ) this.Router.navigate(['/pedidos']);
+    if( select == "Perfil" ) this.Router.navigate(['/perfil']);
   }
 
 }
