@@ -1,0 +1,34 @@
+<ion-list>
+  <ion-item lines="none" *ngFor="let item of listRow">
+    <ion-list>
+      <ion-item line="none">
+        <div slot="start">
+          <img class="imgP" src="./assets/productos/cupon.png">
+        </div>
+        <ion-item lines="none">
+          <h4>{{ item.titulo }}</h4>
+        </ion-item>
+        <ion-icon name="gift-outline"></ion-icon>
+      </ion-item>
+      <ion-item line="none">
+        <ion-text color="dark">
+          <p>{{ item.descripcion }}</p>
+        </ion-text>
+      </ion-item>
+      <ion-item line="none">
+        <ion-text color="danger" slot="start">
+          <p>Ver reglas</p> <ion-icon name="chevron-down-outline"></ion-icon>
+        </ion-text>
+        <ion-text color="dark" slot="end">
+          <p>Expiró en {{ item.expira | date }}</p>
+        </ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-icon name="time-outline" slot="start"></ion-icon> 
+        <ion-text color="dark">
+          <h6>{{ item.expirtaDes }}</h6>
+        </ion-text>
+      </ion-item>
+    </ion-list>
+  </ion-item>
+</ion-list>

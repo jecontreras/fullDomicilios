@@ -39,42 +39,49 @@ export class DataService {
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 1,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       },
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 2,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       },
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 3,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       },
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 4,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       },
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 5,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       },
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 6,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       },
       {
         foto: "https://i.ytimg.com/vi/aVZ1l7ACkmY/maxresdefault.jpg",
         titulo: "Donde la Negra Costeña",
+        id: 7,
         rango: "* 4,8 . Tipica . 7,7km",
         detalles: "45-55 min . $ 5.000"
       }
@@ -222,6 +229,54 @@ export class DataService {
         }
       },
     ];
+    let listFavoritos:any = listRestaurante;
+    let listMenus:any = [
+      {
+        icons: "chatbubble-ellipses-outline",
+        titulo: "Chats",
+        url: "/chat"
+      },
+      {
+        icons: "heart-outline",
+        titulo: "Favoritos",
+        url: "/favoritos"
+      },
+      {
+        icons: "laptop-outline",
+        titulo: "Cupones",
+        url: "/cupones"
+      },
+      {
+        icons: "card-outline",
+        titulo: "Forma de pago",
+        url: "/formapago"
+      },
+      {
+        icons: "notifications-outline",
+        titulo: "Avisos",
+        url: "/avisos"
+      },
+      {
+        icons: "settings-outline",
+        titulo: "Configuraciones",
+        url: "/configuracion"
+      },
+      {
+        icons: "fast-food-outline",
+        titulo: "Sugerir restarurante",
+        url: "/sugerirrestaurante"
+      },
+      {
+        icons: "medkit-outline",
+        titulo: "Ayuda",
+        url: "/ayuda"
+      },
+      {
+        icons: "planet-outline",
+        titulo: "Únete con nosotros",
+        url: "/unetenosotros"
+      },
+    ];
     for( let row of listArticulos ){
       row.precioForma = this.convertiendo( row.precio );
       row.precioPromoForma = this.convertiendo( row.precioPromo );
@@ -243,6 +298,8 @@ export class DataService {
       listHistorial: listHistorial,
       tabsBuscador: tabsBuscador,
       listPedidos: listPedidos,
+      listFavoritos: listFavoritos,
+      listMenus: listMenus,
       domicilio: {
         icon: "bicycle-outline",
         titulo: "Entregar en 60-70 min",

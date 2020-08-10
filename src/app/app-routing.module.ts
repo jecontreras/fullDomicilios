@@ -55,6 +55,38 @@ const routes: Routes = [
         path: 'perfil',
         loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
       },
+      {
+        path: 'favoritos',
+        loadChildren: () => import('./pages/favoritos/favoritos.module').then( m => m.FavoritosPageModule)
+      },
+      {
+        path: 'cupones',
+        loadChildren: () => import('./pages/cupones/cupones.module').then( m => m.CuponesPageModule)
+      },
+      {
+        path: 'formapago',
+        loadChildren: () => import('./pages/forma-pago/forma-pago.module').then( m => m.FormaPagoPageModule)
+      },
+      {
+        path: 'avisos',
+        loadChildren: () => import('./pages/avisos/avisos.module').then( m => m.AvisosPageModule)
+      },
+      {
+        path: 'configuracion',
+        loadChildren: () => import('./pages/configuracion/configuracion.module').then( m => m.ConfiguracionPageModule)
+      },
+      {
+        path: 'sugerirrestaurante',
+        loadChildren: () => import('./pages/sugerir-restaurante/sugerir-restaurante.module').then( m => m.SugerirRestaurantePageModule)
+      },
+      {
+        path: 'ayuda',
+        loadChildren: () => import('./pages/ayuda/ayuda.module').then( m => m.AyudaPageModule)
+      },
+      {
+        path: 'unetenosotros',
+        loadChildren: () => import('./pages/unete-nosotros/unete-nosotros.module').then( m => m.UneteNosotrosPageModule)
+      },
     ]
   },
 ];

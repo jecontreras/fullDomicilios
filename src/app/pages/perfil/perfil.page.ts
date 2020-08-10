@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { STORAGES } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-perfil',
@@ -10,55 +11,11 @@ import { Store } from '@ngrx/store';
 export class PerfilPage implements OnInit {
   
   dataUser:any = {};
-  listMenus:any = [
-    {
-      icons: "chatbubble-ellipses-outline",
-      titulo: "Chats",
-      url: "/perfil"
-    },
-    {
-      icons: "heart-outline",
-      titulo: "Favoritos",
-      url: "/perfil"
-    },
-    {
-      icons: "laptop-outline",
-      titulo: "Cupones",
-      url: "/perfil"
-    },
-    {
-      icons: "card-outline",
-      titulo: "Forma de pago",
-      url: "/perfil"
-    },
-    {
-      icons: "notifications-outline",
-      titulo: "Avisos",
-      url: "/perfil"
-    },
-    {
-      icons: "settings-outline",
-      titulo: "Configuraciones",
-      url: "/perfil"
-    },
-    {
-      icons: "fast-food-outline",
-      titulo: "Sugerir restarurante",
-      url: "/perfil"
-    },
-    {
-      icons: "medkit-outline",
-      titulo: "Ayuda",
-      url: "/perfil"
-    },
-    {
-      icons: "planet-outline",
-      titulo: "Únete con nosotros",
-      url: "/perfil"
-    },
-  ]
+  listMenus:any = [];
+
   constructor(
     private _store: Store<STORAGES>,
+    private _dataServe: DataService
   ) {
     this._store.subscribe((store:any)=>{
       store = store.name;
@@ -68,6 +25,7 @@ export class PerfilPage implements OnInit {
   }
 
   ngOnInit() {
+    this.listMenus = this._dataServe.dbs.listMenus;
   }
 
 }

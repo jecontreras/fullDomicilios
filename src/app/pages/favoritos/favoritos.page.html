@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" [routerLink]="[ '/perfil']">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>FAVORITOS</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="100">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item *ngFor="let item of listRow" [routerLink]="['/view-restaurante', item.id ]"  lines="none">
+      <div slot="start">
+        <img class="img_dimenciones rounded" [src]="item.foto">
+      </div>
+      <ion-label>
+        <h2>{{ item.titulo }}</h2>
+        <h3>{{ item.rango }}</h3>
+        <p>{{ item.detalles }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="  ( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
