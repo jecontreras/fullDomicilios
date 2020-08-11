@@ -3,11 +3,11 @@ import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-list-cupones',
-  templateUrl: './list-cupones.component.html',
-  styleUrls: ['./list-cupones.component.scss'],
+  templateUrl: './list-cupones.page.html',
+  styleUrls: ['./list-cupones.page.scss'],
 })
-export class ListCuponesComponent implements OnInit {
-  
+export class ListCuponesPage implements OnInit {
+
   listRow:any = [];
   @Input() query: any;
   ev:any = {};
@@ -19,6 +19,7 @@ export class ListCuponesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log( this.query );
     this.listRow = this._dataServe.dbs.listCupones;
     
   }
@@ -48,9 +49,9 @@ export class ListCuponesComponent implements OnInit {
   }
 
   loadData(ev){
-    console.log(ev);
+    console.log( this.query );
     this.evScroll = ev;
-    this.query.skip++;
+    this.query.page++;
     this.getRow();
   }
 

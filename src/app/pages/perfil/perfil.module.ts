@@ -8,6 +8,7 @@ import { PerfilPageRoutingModule } from './perfil-routing.module';
 
 import { PerfilPage } from './perfil.page';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [

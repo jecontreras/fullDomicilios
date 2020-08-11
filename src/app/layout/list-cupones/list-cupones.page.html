@@ -22,8 +22,9 @@
       </ion-item>
       <ion-item line="none">
         <ion-text color="danger" slot="start">
-          <p (click)="item.check=!item.check">Ver reglas <ion-icon name="chevron-down-outline"></ion-icon></p>
-          <span *ngIf="item.check" class="colorDark">
+          <p (click)="item.check=!item.check">Ver reglas <ion-icon name="chevron-down-outline"></ion-icon>
+          </p>
+          <span *ngIf="item.check" class="colorDark textDetalles">
             <p> - Valor del cupón: ${{ item.valorCupon }}</p>
             <p> - Pedido min: ${{ item.valorPedido }}</p>
             <p> - Uso en restaurante : ${{ item.usoRestaurant }}</p>
@@ -37,7 +38,7 @@
         </ion-text>
       </ion-item>
       <ion-item lines="none">
-        <ion-icon name="time-outline" slot="start"></ion-icon> 
+        <ion-icon name="time-outline" slot="start"></ion-icon>
         <ion-text color="dark">
           <h6>{{ item.expirtaDes }}</h6>
         </ion-text>
@@ -50,5 +51,5 @@
 
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  
+
 </ion-list>

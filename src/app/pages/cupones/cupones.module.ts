@@ -8,13 +8,14 @@ import { CuponesPageRoutingModule } from './cupones-routing.module';
 
 import { CuponesPage } from './cupones.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { ListCuponesPageModule } from 'src/app/layout/list-cupones/list-cupones.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ComponentsModule,
+    ListCuponesPageModule,
     CuponesPageRoutingModule
   ],
   declarations: [CuponesPage]

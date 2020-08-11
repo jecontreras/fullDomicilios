@@ -88,7 +88,8 @@ const routes: Routes = [
         loadChildren: () => import('./pages/unete-nosotros/unete-nosotros.module').then( m => m.UneteNosotrosPageModule)
       },
     ]
-  },
+  }
+
 ];
 
 @NgModule({

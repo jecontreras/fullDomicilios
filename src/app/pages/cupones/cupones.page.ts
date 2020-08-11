@@ -10,8 +10,10 @@ export class CuponesPage implements OnInit {
   
   listOpcion:any = ["ACTIVOS","NO DISPONIBLE"];
   view:string = "ACTIVOS";
-  query:any = {
-    where: {}
+  public query:any = {
+    where: {},
+    limit: 5,
+    page: 0
   };
   @ViewChild("vistas", {static: false}) segment: IonSegment;
 
