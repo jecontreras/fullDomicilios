@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { STORAGES } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
 import { ToolsService } from 'src/app/services/tools.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonSegment } from '@ionic/angular';
 import { CarritoPage } from 'src/app/dialog/carrito/carrito.page';
 import { Router } from '@angular/router';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-menus',
@@ -13,32 +14,17 @@ import { Router } from '@angular/router';
 })
 export class MenusComponent implements OnInit {
 
-  listMenu:any = [
-    {
-      titulo: "Inicio",
-      icon: "home-outline"
-    },
-    {
-      titulo: "Buscar",
-      icon: "search-outline"
-    },
-    {
-      titulo: "Pedidos",
-      icon: "clipboard-outline"
-    },
-    {
-      titulo: "Perfil",
-      icon: "person-outline"
-    }
-  ];
+  listMenu:any = [];
   countCarro:any ={
     precio: 0,
     cantidad: 0
-  }
+  };
+  @ViewChild("tabs", {static: false}) segment: IonSegment;
   constructor(
     private _store: Store<STORAGES>,
     private _tools: ToolsService,
     private modalCtrl: ModalController,
+    private _DataServe: DataService,
     private Router: Router
   ) { 
     this._store.subscribe((store:any)=>{
@@ -52,7 +38,8 @@ export class MenusComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log( this.countCarro );
+    this.listMenu = this._DataServe.dbs.listMenu;
+    setTimeout(()=> { this.segment.value = "Inicio"; console.log( this.segment )}, 2000 );
   }
 
   procesoCarro( carrito:any ){

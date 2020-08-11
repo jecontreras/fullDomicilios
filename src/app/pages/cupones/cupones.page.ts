@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonSegment } from '@ionic/angular';
 
 @Component({
   selector: 'app-cupones',
@@ -12,9 +13,12 @@ export class CuponesPage implements OnInit {
   query:any = {
     where: {}
   };
+  @ViewChild("vistas", {static: false}) segment: IonSegment;
+
   constructor() { }
 
   ngOnInit() {
+    setTimeout(()=> { this.segment.value = "ACTIVOS"; console.log( this.segment )}, 2000 );
   }
 
   cambioView( ev:any ){

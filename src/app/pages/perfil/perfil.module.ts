@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { PerfilPageRoutingModule } from './perfil-routing.module';
 
 import { PerfilPage } from './perfil.page';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { PerfilPage } from './perfil.page';
     FormsModule,
     IonicModule,
     PerfilPageRoutingModule
+  ],
+  providers: [
+    InAppBrowser
   ],
   declarations: [PerfilPage]
 })

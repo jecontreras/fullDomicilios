@@ -6,10 +6,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sugerir-restaurante.page.scss'],
 })
 export class SugerirRestaurantePage implements OnInit {
-
+  
+  data:any = {};
+  
   constructor() { }
 
   ngOnInit() {
+  }
+
+  formEnviar(){
+    
   }
 
 }

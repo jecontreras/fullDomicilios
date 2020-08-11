@@ -1,9 +1,45 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>avisos</ion-title>
-  </ion-toolbar>
+  <ion-item lines="none">
+    <ion-button slot="start" fill="clear" [routerLink]="[ '/perfil']">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>AVISOS</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="100">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
 
+  <ion-list>
+    <ion-item *ngFor="let item of listRow" (click)="view(item)">
+      <ion-avatar slot="start">
+        <img [src]="item.foto || 'https://hostel.keralauniversity.ac.in/images/NoImage.jpg'">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ item.titulo }}</h2>
+        <ion-text color="dark">
+          <p>{{ item.descripcion }}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="loadData( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

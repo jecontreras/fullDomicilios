@@ -1,9 +1,47 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>sugerirRestaurante</ion-title>
-  </ion-toolbar>
+  <ion-item lines="none">
+    <ion-button slot="start" fill="clear" [routerLink]="[ '/perfil']">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>SUGERIR RESTAURANTE</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
 </ion-header>
-
-<ion-content>
+<ion-content class="ion-padding">
+  
+  <ion-item lines="none">
+    <ion-text color="dark">
+      <h4>¿No encontraste el restaurante que querias?</h4>
+      <ion-label>Puedes dejar tu sugerencia aqui</ion-label>
+    </ion-text>
+  </ion-item>
+  <ion-item>
+    <ion-label class="ion-color-lavel" position="stacked">Nombre del restaurante <ion-text color="danger">*</ion-text>
+    </ion-label>
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.nombre" required type="text"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label class="ion-color-lavel" position="stacked">Teléfono del restaurante <ion-text color="danger">*</ion-text>
+    </ion-label>
+    <ion-input class="ion-color-lavel" [(ngModel)]="data.telefono" required type="text"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-toolbar>
+      <div>
+        <ion-button color="light" expand="full" (click)="formEnviar()">
+          Enviar
+        </ion-button>
+      </div>
+    </ion-toolbar>
+  </ion-item>
 
 </ion-content>

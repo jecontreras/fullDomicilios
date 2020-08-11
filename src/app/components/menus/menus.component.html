@@ -14,13 +14,15 @@
     <p slot="end" class="precioFormat"> {{ countCarro.precio }} </p>
   </ion-toolbar>
 
-  <ion-segment #tabs scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
-    <ion-segment-button mode="md" class="textSegtman" [value]="item.titulo" *ngFor="let item of listMenu">
-      <ion-icon color="dark" [name]="item.icon"></ion-icon>
-      <ion-text color="dark">
-        <ion-label class="titulo"> {{ item.titulo }}</ion-label>
-      </ion-text>
-    </ion-segment-button>
-  </ion-segment>
+  <ion-toolbar class="menuBottom">
+    <ion-segment #tabs scrollable mode="md" color="primary" (ionChange)="cambioView( $event )">
+      <ion-segment-button mode="md" class="textSegtman" [value]="item.titulo" *ngFor="let item of listMenu">
+        <ion-icon color="dark" [name]="item.icon"></ion-icon>
+        <ion-text color="dark">
+          <ion-label class="titulo"> {{ item.titulo }}</ion-label>
+        </ion-text>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 
 </ion-footer>

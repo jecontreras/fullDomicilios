@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { STORAGES } from 'src/app/interfas/sotarage';
 import { Store } from '@ngrx/store';
 import { DataService } from 'src/app/services/data.service';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'app-perfil',
@@ -15,7 +16,8 @@ export class PerfilPage implements OnInit {
 
   constructor(
     private _store: Store<STORAGES>,
-    private _dataServe: DataService
+    private _dataServe: DataService,
+    private iab: InAppBrowser,
   ) {
     this._store.subscribe((store:any)=>{
       store = store.name;
@@ -26,6 +28,12 @@ export class PerfilPage implements OnInit {
 
   ngOnInit() {
     this.listMenus = this._dataServe.dbs.listMenus;
+  }
+
+  openAyuda( opt:string ){
+    let url:string = "";
+    if( opt == 'ayuda' ) url='https://wa.me/573102565249?text=Hola servicio al cliente';
+    const browser = this.iab.create(url, '_system');
   }
 
 }

@@ -1,9 +1,136 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>configuracion</ion-title>
-  </ion-toolbar>
+  <ion-item lines="none">
+    <ion-button slot="start" fill="clear" [routerLink]="[ '/perfil']" *ngIf="view == 'CONFIGURACIÓN'">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button slot="start" fill="clear" (click)="view = 'CONFIGURACIÓN'" *ngIf="view != 'CONFIGURACIÓN' && !view2">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-button slot="start" fill="clear" (click)="view2 = ''" *ngIf="view != 'CONFIGURACIÓN' && view2">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>{{ view }}</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
 </ion-header>
 
 <ion-content>
+  
+  <ion-list *ngIf="view == 'CONFIGURACIÓN'">
+    <ion-item *ngFor="let item of ListRow" (click)="openView( item )">
+     <ion-text color="dark">
+       <p>{{ item.titulo }}</p>
+     </ion-text>
+     <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+    </ion-item>
+  </ion-list>
+  
+  <div *ngIf="view == 'EDITAR DATOS'">
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label class="ion-color-lavel" position="stacked">Nombre completo <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input class="ion-color-lavel" [(ngModel)]="data.nombre" required type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="ion-color-lavel" position="stacked">CC/NIT <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input class="ion-color-lavel" [(ngModel)]="data.documento" required type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="ion-color-lavel" position="stacked">Número celular <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input class="ion-color-lavel" [(ngModel)]="data.celular" required type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="ion-color-lavel" position="stacked">E-mail <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input class="ion-color-lavel" [(ngModel)]="data.email" required type="text"></ion-input>
+      </ion-item>
+    </ion-list>
+  </div>
+  
+  <div *ngIf="view == 'CONFIGURAR NOTIFICACIONES'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            ¿Cómo quieres recibir noticias y promociones de FullDomicilio?
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-list>
+      <ion-item>
+        <ion-text color="dark" slot="start">
+          <h5>Notificaciones</h5>
+        </ion-text>
+        <ion-checkbox slot="end" [(ngModel)]="data.notificaciones" color="primary"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-text color="dark" slot="start">
+          <h5>E-mail</h5>
+        </ion-text>
+        <ion-checkbox slot="end" [(ngModel)]="data.notifiEmail" color="primary"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-text color="dark" slot="start">
+          <h5>WhatsApp</h5>
+        </ion-text>
+        <ion-checkbox slot="end" [(ngModel)]="data.notifiWhatsapp" color="primary"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-text color="dark" slot="start">
+          <h5>SMS</h5>
+        </ion-text>
+        <ion-checkbox slot="end" [(ngModel)]="data.notifiSms" color="primary"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-toolbar color="light">
+          <div class="ion-text-center ion-padding">
+            Las noticias y promosiones pueden ser desactivadas. las notificaciones sobre tus pedidos son fundamentales
+            para una mejor experiencia
+          </div>
+        </ion-toolbar>
+      </ion-item>
+    </ion-list>
 
+  </div>
+
+  <div *ngIf="view == 'SOBRE ESTA VERSIÓN'">
+    <ion-list *ngIf="!view2">
+      <ion-item (click)="openView2('terminos')">
+        <ion-text>
+          <p>Términos y condiciones</p>
+        </ion-text>
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-item>
+      <ion-item (click)="openView2('aviso')">
+        <ion-text>
+          <p>Aviso de privacidad</p>
+        </ion-text>
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <p>Versión {{ ( data.versionApp || "6.5.5") }}</p>
+        </ion-text>
+      </ion-item>
+    </ion-list>
+    <div *ngIf="view2 =='terminos'" class="ion-padding">
+      <p [innerHtml]="avisos.terminos"></p>
+    </div>
+    <div *ngIf="view2 =='aviso'" class="ion-padding">
+      <p [innerHtml]="avisos.aviso"></p>
+    </div>
+  </div>
 </ion-content>

@@ -1,4 +1,9 @@
 <ion-list>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="100">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
   <ion-item lines="none" *ngFor="let item of listRow">
     <ion-list>
       <ion-item line="none">
@@ -12,14 +17,22 @@
       </ion-item>
       <ion-item line="none">
         <ion-text color="dark">
-          <p>{{ item.descripcion }}</p>
+          <p>{{ item.subtitulo }}</p>
         </ion-text>
       </ion-item>
       <ion-item line="none">
         <ion-text color="danger" slot="start">
-          <p>Ver reglas</p> <ion-icon name="chevron-down-outline"></ion-icon>
+          <p (click)="item.check=!item.check">Ver reglas <ion-icon name="chevron-down-outline"></ion-icon></p>
+          <span *ngIf="item.check" class="colorDark">
+            <p> - Valor del cupón: ${{ item.valorCupon }}</p>
+            <p> - Pedido min: ${{ item.valorPedido }}</p>
+            <p> - Uso en restaurante : ${{ item.usoRestaurant }}</p>
+            <p> - Cupones : ${{ item.cupones }}</p>
+            <p> - ${{ item.valido }}</p>
+            <p> - Disponible hasta las: ${{ item.disponible }}</p>
+          </span>
         </ion-text>
-        <ion-text color="dark" slot="end">
+        <ion-text color="dark" slot="end" *ngIf="!item.check">
           <p>Expiró en {{ item.expira | date }}</p>
         </ion-text>
       </ion-item>
@@ -31,4 +44,11 @@
       </ion-item>
     </ion-list>
   </ion-item>
+
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="loadData( $event )">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingtext="Cargando data..">
+
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  
 </ion-list>

@@ -269,13 +269,174 @@ export class DataService {
       {
         icons: "medkit-outline",
         titulo: "Ayuda",
-        url: "/ayuda"
+        //url: "/ayuda"
       },
       {
         icons: "planet-outline",
         titulo: "Únete con nosotros",
         url: "/unetenosotros"
       },
+    ];
+    let listCupones:any = [
+      {
+        titulo: "Tienes $5.000",
+        subtitulo: "Asi pides #ComoTeGusta",
+        expira: new Date(),
+        expirtaDes: "La validez ha expirado",
+        estado: "finalizado",
+        valorCupon: "$4.900",
+        valorPedido: "$9.900",
+        usoRestaurant: "limitados",
+        cupones: "Limitados",
+        valido: "Válido hasta agotar existencia",
+        disponible: "9:00 P.M."
+      },
+      {
+        titulo: "Tienes $4.000",
+        subtitulo: "Asi pides #ComoTeGusta",
+        expira: new Date(),
+        expirtaDes: "La validez ha expirado",
+        estado: "finalizado",
+        valorCupon: "$4.900",
+        valorPedido: "$9.900",
+        usoRestaurant: "limitados",
+        cupones: "Limitados",
+        valido: "Válido hasta agotar existencia",
+        disponible: "9:00 P.M."
+      },
+      {
+        titulo: "Tienes $4.000",
+        subtitulo: "Asi pides #ComoTeGusta",
+        expira: new Date(),
+        expirtaDes: "La validez ha expirado",
+        estado: "finalizado",
+        valorCupon: "$4.900",
+        valorPedido: "$9.900",
+        usoRestaurant: "limitados",
+        cupones: "Limitados",
+        valido: "Válido hasta agotar existencia",
+        disponible: "9:00 P.M."
+      },
+    ];
+    let listAvisos:any = [
+      {
+        titulo: "Avisos de pruebas",
+        descripcion: "Esta es la descripcion",
+        foto: "https://hostel.keralauniversity.ac.in/images/NoImage.jpg"
+      },
+      {
+        titulo: "Avisos de pruebas",
+        descripcion: "Esta es la descripcion",
+        foto: "https://hostel.keralauniversity.ac.in/images/NoImage.jpg"
+      },
+      {
+        titulo: "Avisos de pruebas",
+        descripcion: "Esta es la descripcion",
+        foto: "https://hostel.keralauniversity.ac.in/images/NoImage.jpg"
+      },
+    ];
+    let listConfigurarciones:any = [
+      {
+        titulo: "Editar datos",
+        id: "EDITAR DATOS"
+      },
+      {
+        titulo: "Configurar notificaciones",
+        id: "CONFIGURAR NOTIFICACIONES"
+      },
+      {
+        titulo: "Sobre esta versión",
+        id: "SOBRE ESTA VERSIÓN"
+      },
+      {
+        titulo: "Borrar el historial de busqueda",
+      },
+      {
+        titulo: "Cerrar sesión"
+      },
+    ];
+    let listTipoCocina:any = [
+      {
+        titulo: "Arepas"
+      },
+      {
+        titulo: "Arabe"
+      },
+      {
+        titulo: "Bebidas"
+      },
+      {
+        titulo: "Crepes"
+      },
+      {
+        titulo: "Comida Rapida"
+      },
+      {
+        titulo: "Desayunos"
+      },
+      {
+        titulo: "Ejecutiva"
+      },
+      {
+        titulo: "Hamburguesas"
+      },
+      {
+        titulo: "Gourmet"
+      },
+      {
+        titulo: "Helados"
+      },
+      {
+        titulo: "Internacional"
+      },
+      {
+        titulo: "Licores"
+      },
+      {
+        titulo: "Mariscos"
+      },
+      {
+        titulo: "Mercado"
+      },
+      {
+        titulo: "Mexicana"
+      },
+      {
+        titulo: "Oriental"
+      },
+      {
+        titulo: "Parrilla"
+      },
+      {
+        titulo: "Pasta"
+      },
+      {
+        titulo: "Picada"
+      },
+      {
+        titulo: "Pizza"
+      },
+      {
+        titulo: "Pollo"
+      },
+      {
+        titulo: "Postres"
+      },
+      {
+        titulo: "Saludable"
+      },
+      {
+        titulo: "Sandwiches"
+      },
+      {
+        titulo: "Sopas"
+      },
+      {
+        titulo: "Sushi"
+      },
+      {
+        titulo: "Tipica"
+      }
     ];
     for( let row of listArticulos ){
       row.precioForma = this.convertiendo( row.precio );
@@ -300,6 +461,10 @@ export class DataService {
       listPedidos: listPedidos,
       listFavoritos: listFavoritos,
       listMenus: listMenus,
+      listCupones: listCupones,
+      listAvisos: listAvisos,
+      listConfigurarciones: listConfigurarciones,
+      listTipoCocina: listTipoCocina,
       domicilio: {
         icon: "bicycle-outline",
         titulo: "Entregar en 60-70 min",

@@ -1,9 +1,133 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>uneteNosotros</ion-title>
-  </ion-toolbar>
+  <ion-item lines="none">
+    <ion-button slot="start" fill="clear" [routerLink]="[ '/perfil']">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div class="ion-text-center">
+            <ion-text color="dark">
+              <h6>UNETE CON NOSOTROS</h6>
+            </ion-text>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item lines="none">
+      <ion-text color="dark">
+        <h2 class="textDanger">Tengo un Restaurante</h2>
+        <span>Rellena la informacón completa, es necesario para poder ponernos en contacto contigo.</span>
+      </ion-text>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-text color="dark">
+        <h2>Datos del restaurante</h2>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Nombre de tu restaurante <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.nombre" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Teléfono de tu restaurante <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.telefono" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Tipo de cocina <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-select>
+        <ion-select-option *ngFor="let item of listTipoCocina" [value]="item.titulo">{{ item.titulo }}</ion-select-option>
+      </ion-select>
+    </ion-item>
 
+    <ion-item>
+      <ion-text color="dark">
+        <h2>Dirección del restaurante</h2>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Departamento <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-select [(ngModel)]="data.departamento" (ngModelChange)="blurdepartamento()">
+        <ion-select-option *ngFor="let item of listDepartamento" [value]="item.departamento">{{ item.departamento }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Ciudad <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-select [(ngModel)]="data.ciudad">
+        <ion-select-option *ngFor="let item of listCiudad" [value]="item">{{ item }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Dirección de tu restaurante <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.direccion" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Indicaciones Adicionales <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.indicacionesAdicionales" required type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-text color="dark">
+        <h2>¿Ya haces domicilios?</h2>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">¿Hace cuanto comenzaste? (Ej. 2 años )</ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.domicilioComenso" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">¿Cuántas entregas hace por mes? (Ej. 400 )</ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.domicilioEntregas" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">¿Cuántas repartidores están fijos? (Ej. 2)</ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.domicilioRepartidores" required type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-text color="dark">
+        <h2>Tus datos de contacto</h2>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Nombre completo <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.nombreCliente" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Correo electrónico <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.correoCliente" required type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-color-lavel" position="stacked">Celular <ion-text color="danger">*</ion-text>
+      </ion-label>
+      <ion-input class="ion-color-lavel" [(ngModel)]="data.celularCliente" required type="text"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-toolbar>
+        <div>
+          <ion-button color="danger" expand="full" (click)="guardar()">
+            Enviar
+          </ion-button>
+        </div>
+      </ion-toolbar>
+    </ion-item>
+
+
+
+  </ion-list>
 </ion-content>
