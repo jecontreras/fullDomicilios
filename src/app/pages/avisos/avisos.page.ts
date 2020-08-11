@@ -49,5 +49,8 @@ export class AvisosPage implements OnInit {
     this.query.skip++;
     this.getRow();
   }
+  view( item:any ){
+
+  }
 
 }
